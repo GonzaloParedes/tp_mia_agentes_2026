@@ -115,7 +115,7 @@ class MyAgent:
             )
             # Condición de parada normal: texto sin tool_calls = respuesta final.
             if not response.tool_calls:
-                return AgentResult(answer=response.content, steps=steps)
+                return AgentResult(answer=response.content or "", steps=steps)
 
             # El LLM "pidió" usar tools: guardamos ese pedido como mensaje
             # assistant antes de ejecutar nada. El dict de tool_calls sigue
