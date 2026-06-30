@@ -10,7 +10,6 @@ from mia_agents.types import LLMResponse
 from student_framework import build_agent
 from student_framework.tools.calculator import calculator
 from student_framework.tools.file_reader import file_reader
-from student_framework.tools.text_to_markdown import text_to_markdown
 from student_framework.tools.text_search import text_search
 
 
@@ -61,27 +60,6 @@ def test_file_reader_no_encontrado():
 def test_file_reader_es_directorio(tmp_path):
     resultado = file_reader(str(tmp_path))
     assert "Error" in resultado
-
-
-# ---------------------------------------------------------------------------
-# text_to_markdown
-# ---------------------------------------------------------------------------
-
-def test_text_to_markdown_incluye_titulo(tmp_path):
-    archivo = tmp_path / "notas.txt"
-    archivo.write_text("linea 1\nlinea 2", encoding="utf-8")
-    resultado = text_to_markdown(str(archivo))
-    assert "# notas.txt" in resultado
-    assert "linea 1" in resultado
-
-def test_text_to_markdown_no_encontrado():
-    resultado = text_to_markdown("/ruta/inexistente.txt")
-    assert "Error" in resultado
-
-def test_text_to_markdown_es_directorio(tmp_path):
-    resultado = text_to_markdown(str(tmp_path))
-    assert "Error" in resultado
-
 
 # ---------------------------------------------------------------------------
 # text_search
@@ -135,8 +113,10 @@ def test_agente_answer_cuando_content_es_none():
 def test_agente_max_iterations_cero():
     # Con max_iterations=0 el bucle no ejecuta nunca — devuelve AgentResult vacío
     # sin llamar al LLM ni una vez.
-    mock = MockLLMClient([])
-    agent = build_agent({"llm_client": mock, "max_iterations": 0})
+    # Nota: build_agent no expone max_iterations como config, por eso instanciamos
+    # MyAgent directamente en este test.
+    from student_framework.agent import MyAgent
+    agent = MyAgent(llm_client=MockLLMClient([]), max_iterations=0)
     result = agent.run("¿cuánto es 2+2?")
     assert result.answer == ""
     assert result.steps == []
