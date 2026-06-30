@@ -11,10 +11,12 @@ Los tests de conformidad en `tests/conformance/test_m1.py` y
 
 from __future__ import annotations
 
+import json
 from typing import Any, Callable
 
+
 from mia_agents.protocols import LLMClient
-from mia_agents.types import AgentResult, ToolSchema
+from mia_agents.types import AgentResult, AgentStep, ToolSchema
 
 
 class MyAgent:
@@ -48,6 +50,8 @@ class MyAgent:
         self._system = system_prompt
         self._max_iterations = max_iterations
         self._max_history_messages = max_history_messages
+        self._tools = {}
+        self._schemas = {}
         # TODO (M1): inicializa el estado interno para las herramientas registradas.
         # TODO (M2): inicializa la estructura de historial conversacional.
 
@@ -65,7 +69,12 @@ class MyAgent:
         El callable se invoca con kwargs que coinciden con la firma.
         Debe devolver una cadena.
         """
-        raise NotImplementedError("M1: implementa el registro de herramientas")
+        # self._tools: nombre -> callable, para ejecutar la tool cuando el LLM la pide.
+        # self._schemas: nombre -> ToolSchema, para anunciarle al LLM qué tools existen
+        # (se pasan en chat(tools=...)). Ambos indexados por schema.name, no por el
+        # nombre de la variable Python.
+        self._tools[schema.name] = tool
+        self._schemas[schema.name] = schema
 
     def run(self, user_message: str) -> AgentResult:
         """Ejecuta el bucle del agente hasta una respuesta final o hasta max_iterations.
@@ -83,7 +92,7 @@ class MyAgent:
             limpia cuando se alcance.
           - Registra cada invocación de herramienta como un `AgentStep`
             dentro de `result.steps`.
-
+            
         En el M2, además, llamadas sucesivas sobre la misma instancia
         deben continuar la conversación, y la longitud de la lista de
         mensajes enviada al LLM no debe superar `self._max_history_messages`.
@@ -91,8 +100,80 @@ class MyAgent:
         `LLMResponse` y exponlos en `AgentResult.input_tokens` /
         `AgentResult.output_tokens`.
         """
-        raise NotImplementedError("M1: implementa el bucle del agente")
+        messages = [{"role": "user", "content": user_message}]
+        steps = []
 
+        # Tope de llamadas al LLM: evita loops infinitos si el modelo no
+        # converge nunca a una respuesta de solo texto.
+        for x in range(self._max_iterations):
+            response = self._llm.chat(
+                messages=messages,
+                # tools nunca es None: el contrato exige que el LLM vea
+                # los esquemas disponibles desde la primera llamada.
+                tools=list(self._schemas.values()),
+                system=self._system,
+            )
+            # Condición de parada normal: texto sin tool_calls = respuesta final.
+            if not response.tool_calls:
+                return AgentResult(answer=response.content, steps=steps)
+
+            # El LLM "pidió" usar tools: guardamos ese pedido como mensaje
+            # assistant antes de ejecutar nada. El dict de tool_calls sigue
+            # la forma {"function": {"name", "arguments"}} que esperan los
+            # providers (Ollama/Bedrock) al normalizar el historial saliente
+            # — no es un detalle de un proveedor en particular, es el
+            # formato genérico del framework.
+            messages.append({
+                "role": "assistant",
+                "content": response.content or "",
+                "tool_calls": [
+                    {
+                        "id": tc.id,
+                        "type": "function",
+                        "function": {"name": tc.name, "arguments": tc.arguments},
+                    }
+                    for tc in response.tool_calls
+                ],
+            })
+            for tool_call in response.tool_calls:
+                # Un único try/except cubre: nombre de tool inexistente
+                # (KeyError), JSON inválido en arguments (JSONDecodeError)
+                # y cualquier excepción que tire la tool misma. Así el
+                # agente nunca rompe run(), ni siquiera ante una tool
+                # alucinada por el LLM.
+                try:
+                    tool = self._tools[tool_call.name]
+                    kwargs = json.loads(tool_call.arguments)
+                    output = tool(**kwargs)
+                    error = None
+                except Exception as e:
+                    output = None
+                    error = str(e)
+
+                # Un AgentStep por cada tool_call, sin importar si tuvo
+                # éxito o no — error queda en None solo en el caso exitoso.
+                steps.append(AgentStep(
+                tool_name=tool_call.name,
+                tool_input=tool_call.arguments,
+                tool_output=output,
+                error=error,
+                ))
+
+                # Realimentación al LLM: el resultado (o el error, como
+                # texto) se vuelca como mensaje "tool" antes de la próxima
+                # llamada a chat, para que el modelo pueda usarlo.
+                messages.append({
+                    "role": "tool",
+                    "tool_call_id": tool_call.id,
+                    "name": tool_call.name,
+                    "content": output if error is None else f"Error: {error}",
+                })
+
+        # Se agotaron las iteraciones sin llegar a una respuesta de solo
+        # texto: igual devolvemos un AgentResult válido con lo ejecutado
+        # hasta el corte (steps), nunca una excepción.
+        return AgentResult(answer="", steps=steps)
+    
     def structured_call(
         self,
         prompt: str,
