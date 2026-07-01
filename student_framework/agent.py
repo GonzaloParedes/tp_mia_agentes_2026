@@ -23,7 +23,18 @@ class MyAgent:
     def __init__(
         self,
         llm_client: LLMClient,
-        system_prompt: str = "Eres un asistente útil.",
+        system_prompt: str = (
+    "Eres un asistente útil que responde en español.\n\n"
+    "Tenés acceso a estas herramientas:\n"
+    "- calculator: para operaciones matemáticas (+, -, *, %).\n"
+    "- file_reader: para leer el contenido completo de un archivo de texto.\n"
+    "- text_search: para buscar un término dentro de un archivo de texto.\n\n"
+    "Usá una herramienta SOLO cuando la pregunta lo requiera explícitamente "
+    "(cálculos numéricos, lectura o búsqueda en archivos). "
+    "Para saludos, preguntas generales o conversación, respondé directamente "
+    "sin invocar ninguna herramienta."
+),
+
         max_iterations: int = 10,
         max_history_messages: int = 50,
     ) -> None:
