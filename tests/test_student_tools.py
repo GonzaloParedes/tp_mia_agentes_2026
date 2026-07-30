@@ -13,6 +13,14 @@ from student_framework.tools.file_reader import file_reader
 from student_framework.tools.text_search import text_search
 
 
+@pytest.fixture
+def sandboxed(tmp_path, monkeypatch):
+    """Redirige el sandbox de file_reader/text_search a un tmp_path aislado,
+    para poder probar estas tools sin tocar la carpeta real del sandbox."""
+    monkeypatch.setattr("student_framework.tools._sandbox.SANDBOX_ROOT", tmp_path)
+    return tmp_path
+
+
 # ---------------------------------------------------------------------------
 # calculator
 # ---------------------------------------------------------------------------
@@ -43,53 +51,57 @@ def test_calculator_precision_float():
 # file_reader
 # ---------------------------------------------------------------------------
 
-def test_file_reader_archivo_normal(tmp_path):
-    archivo = tmp_path / "hola.txt"
-    archivo.write_text("contenido de prueba", encoding="utf-8")
-    assert file_reader(str(archivo)) == "contenido de prueba"
+def test_file_reader_archivo_normal(sandboxed):
+    (sandboxed / "hola.txt").write_text("contenido de prueba", encoding="utf-8")
+    assert file_reader("hola.txt") == "contenido de prueba"
 
-def test_file_reader_archivo_vacio(tmp_path):
-    archivo = tmp_path / "vacio.txt"
-    archivo.write_text("", encoding="utf-8")
-    assert file_reader(str(archivo)) == ""
+def test_file_reader_archivo_vacio(sandboxed):
+    (sandboxed / "vacio.txt").write_text("", encoding="utf-8")
+    assert file_reader("vacio.txt") == ""
 
-def test_file_reader_no_encontrado():
+def test_file_reader_no_encontrado(sandboxed):
+    resultado = file_reader("no_existe.txt")
+    assert "Error" in resultado
+
+def test_file_reader_es_directorio(sandboxed):
+    (sandboxed / "subcarpeta").mkdir()
+    resultado = file_reader("subcarpeta")
+    assert "Error" in resultado
+    assert "directorio" in resultado
+
+def test_file_reader_ruta_absoluta_rechazada():
     resultado = file_reader("/ruta/inexistente/archivo.txt")
     assert "Error" in resultado
 
-def test_file_reader_es_directorio(tmp_path):
-    resultado = file_reader(str(tmp_path))
+def test_file_reader_escape_con_puntos_rechazado():
+    resultado = file_reader("../secreto.txt")
     assert "Error" in resultado
 
 # ---------------------------------------------------------------------------
 # text_search
 # ---------------------------------------------------------------------------
 
-def test_text_search_encuentra_coincidencia(tmp_path):
-    archivo = tmp_path / "log.txt"
-    archivo.write_text("ERROR en linea 1\nTodo bien\nERROR en linea 3", encoding="utf-8")
-    resultado = text_search(str(archivo), "ERROR")
+def test_text_search_encuentra_coincidencia(sandboxed):
+    (sandboxed / "log.txt").write_text("ERROR en linea 1\nTodo bien\nERROR en linea 3", encoding="utf-8")
+    resultado = text_search("log.txt", "ERROR")
     assert "Línea 1" in resultado
     assert "Línea 3" in resultado
     assert "Línea 2" not in resultado
 
-def test_text_search_case_insensitive(tmp_path):
-    archivo = tmp_path / "log.txt"
-    archivo.write_text("Error grave\ntodo bien", encoding="utf-8")
-    resultado = text_search(str(archivo), "error")
+def test_text_search_case_insensitive(sandboxed):
+    (sandboxed / "log.txt").write_text("Error grave\ntodo bien", encoding="utf-8")
+    resultado = text_search("log.txt", "error")
     assert "Línea 1" in resultado
 
-def test_text_search_sin_coincidencias(tmp_path):
-    archivo = tmp_path / "log.txt"
-    archivo.write_text("todo bien", encoding="utf-8")
-    resultado = text_search(str(archivo), "ERROR")
+def test_text_search_sin_coincidencias(sandboxed):
+    (sandboxed / "log.txt").write_text("todo bien", encoding="utf-8")
+    resultado = text_search("log.txt", "ERROR")
     assert "No se encontraron" in resultado
 
-def test_text_search_termino_vacio(tmp_path):
+def test_text_search_termino_vacio(sandboxed):
     # Término vacío coincide con todas las líneas — limitación conocida
-    archivo = tmp_path / "log.txt"
-    archivo.write_text("linea 1\nlinea 2\nlinea 3", encoding="utf-8")
-    resultado = text_search(str(archivo), "")
+    (sandboxed / "log.txt").write_text("linea 1\nlinea 2\nlinea 3", encoding="utf-8")
+    resultado = text_search("log.txt", "")
     assert "3 coincidencia(s)" in resultado
 
 def test_text_search_no_encontrado():

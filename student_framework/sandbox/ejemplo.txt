@@ -1,0 +1,2 @@
+Este es un archivo de ejemplo dentro del sandbox.
+El agente puede leerlo con file_reader("ejemplo.txt").
