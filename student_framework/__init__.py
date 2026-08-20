@@ -36,6 +36,10 @@ def build_agent(config: dict[str, Any] | None = None) -> Agent:
     llm = config.get("llm_client") or LLMClient.from_env() #NO CAMBIAR
     kwargs: dict[str, Any] = {"llm_client": llm} #NO CAMBIAR
     
+    if "system_prompt" in config:
+        kwargs["system_prompt"] = config["system_prompt"]
+    if "max_iterations" in config:
+        kwargs["max_iterations"] = config["max_iterations"]
     if "max_history_messages" in config:
         kwargs["max_history_messages"] = config["max_history_messages"]
 
