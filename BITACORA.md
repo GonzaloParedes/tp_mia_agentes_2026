@@ -975,3 +975,56 @@ Ahora el agente entra en loop con look luego de haber cumplido el objetivo. No i
 ```
 - Si cualquier tool devuelve que `puerta_principal` "Se abre", "está abierta" o "ya está abierta", el objetivo de abrir la puerta ya está cumplido. Terminá inmediatamente con respuesta final y no uses ninguna otra herramienta.
 ```
+---
+
+## Eval automatizado
+
+Se implemento una primera version de `eval/run.py` para dejar la evaluacion de M3 reproducible.
+
+- Lee el prompt especializado desde `M3-PROMPT`.
+- Construye el agente con `build_agent(config)`, pasando `system_prompt`, `max_iterations` y `max_history_messages`.
+- Registra las herramientas del mundo: `look`, `examine`, `take`, `use` y `go` cuando el escenario lo habilita.
+- Permite correr un escenario puntual con `--scenario` o todos los escenarios si se omite ese argumento.
+- Evalua con `check_goal`, no con el texto final del agente.
+- Guarda `eval/results/latest/results.jsonl` y `eval/results/latest/summary.json`.
+- Clasifica errores con reglas en Python, sin LLM: `navigation_error`, `repeated_action`, `repeated_look`, `post_goal_overrun`, `max_iterations`, `tool_error`, etc.
+
+Comandos:
+
+```powershell
+.\.venv\Scripts\python.exe eval\run.py --scenario easy
+.\.venv\Scripts\python.exe eval\run.py
+```
+
+---
+
+## Comparacion de 3 experimentos de prompt
+
+Se reviso la corrida `eval/results/experiments/20260821-110521`, con 8 escenarios y `max_iterations=30`, `max_history_messages=80`.
+
+Resultados:
+
+- `00-prompt_max_iterations`: sin prompt especializado. Paso 6/8 escenarios, `success_rate=0.75`, promedio de 18.12 tool calls y 469258 tokens totales.
+- `01-prompt_max_iterations`: con `prompts/01_PROMPT`. Paso 6/8 escenarios, `success_rate=0.75`, promedio de 20.5 tool calls y 660913 tokens totales.
+- `02-prompt_max_iterations`: con `prompts/02_PROMPT`. Paso 7/8 escenarios, `success_rate=0.875`, promedio de 21.75 tool calls y 866198 tokens totales.
+
+Conclusion parcial:
+
+- `02_PROMPT` es el mejor en accuracy: resuelve todos los escenarios easy, medium y hard, y 2/3 extreme.
+- El costo sube bastante: `02_PROMPT` usa mas pasos y muchos mas tokens que la variante sin prompt.
+- `01_PROMPT` no mejora la tasa de exito respecto de no usar prompt especializado, pero consume mas tokens.
+- El unico fallo de `02_PROMPT` fue `vault-combination`. El agente vio `nucleo_rojo`, `llave_deposito` y `destornillador` en `banco_herramientas`, pero tomo solo `nucleo_rojo`; despues intento usar `llave_deposito` sin tenerla y entro en loop.
+- Tambien quedan casos donde el mundo ya cumple el objetivo, pero el agente sigue actuando hasta el limite. Esto aparece como `post_goal_overrun` o `max_iterations` aunque `check_goal` marque el escenario como resuelto.
+
+Proximo paso:
+
+Probar una mejora de arquitectura con memoria estructurada, no solo prompt engineering. La memoria deberia registrar al menos:
+
+- sala actual;
+- salidas conocidas por sala;
+- objetos vistos por sala;
+- inventario observado;
+- objetos revelados pero no tomados;
+- acciones fallidas o repetidas.
+
+La hipotesis es que esto deberia reducir errores de inventario, navegacion y repeticion, especialmente en `vault-combination`, `office-sequence` y escenarios con backtracking.

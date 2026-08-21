@@ -1,0 +1,23 @@
+[
+  {
+    "id": "01_default",
+    "description": "Baseline default: usa el prompt interno del agente y sus valores default.",
+    "prompt": null,
+    "max_iterations": null,
+    "max_history_messages": null
+  },
+  {
+    "id": "02_01-prompt",
+    "description": "Primer experimento de prompt.",
+    "prompt": "prompts/01_PROMPT",
+    "max_iterations": null,
+    "max_history_messages": null
+  },
+  {
+    "id": "03_02-prompt",
+    "description": "Segundo experimento de prompt.",
+    "prompt": "prompts/02_PROMPT",
+    "max_iterations": null,
+    "max_history_messages": null
+  }
+]

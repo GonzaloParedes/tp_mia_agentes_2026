@@ -1,0 +1,35 @@
+[
+
+  {
+    "id": "00-prompt_max_iterations",
+    "description": "Ablacion de memoria.",
+    "prompt": "prompts/02_PROMPT",
+    "max_iterations": 10,
+    "max_history_messages": 80,
+    "results_dir": "eval/results/00-prompt_max_iterations"
+  },
+  {
+    "id": "01-prompt_max_iterations",
+    "description": "Ablacion de memoria.",
+    "prompt": "prompts/02_PROMPT",
+    "max_iterations": 20,
+    "max_history_messages": 80,
+    "results_dir": "eval/results/01-prompt_max_iterations"
+  },
+  {
+    "id": "02-prompt_max_iterations",
+    "description": "Ablacion de memoria.",
+    "prompt": "prompts/02_PROMPT",
+    "max_iterations": 30,
+    "max_history_messages": 80,
+    "results_dir": "eval/results/02-prompt_max_iterations"
+  },
+  {
+    "id": "03-prompt_max_iterations",
+    "description": "Ablacion de memoria.",
+    "prompt": "prompts/02_PROMPT",
+    "max_iterations": 40,
+    "max_history_messages": 80,
+    "results_dir": "eval/results/03-prompt_max_iterations"
+  }
+]

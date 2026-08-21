@@ -1,0 +1,27 @@
+[
+
+  {
+    "id": "00-prompt_max_iterations",
+    "description": "Sin prompt, max_iterations=30, max_history_messages=80",
+    "prompt": null,
+    "max_iterations": 30,
+    "max_history_messages": 80,
+    "results_dir": "eval/results/00-prompt_max_iterations"
+  },
+  {
+    "id": "01-prompt_max_iterations",
+    "description": "Con prompt 01, max_iterations=30, max_history_messages=80",
+    "prompt": "prompts/01_PROMPT",
+    "max_iterations": 30,
+    "max_history_messages": 80,
+    "results_dir": "eval/results/01-prompt_max_iterations"
+  },
+  {
+    "id": "02-prompt_max_iterations",
+    "description": "Con prompt 02, max_iterations=30, max_history_messages=80",
+    "prompt": "prompts/02_PROMPT",
+    "max_iterations": 30,
+    "max_history_messages": 80,
+    "results_dir": "eval/results/02-prompt_max_iterations"
+  }
+]

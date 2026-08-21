@@ -1,0 +1,11 @@
+[
+
+  {
+    "id": "00-03-prompt",
+    "description": "Sin prompt, max_iterations=30, max_history_messages=80",
+    "prompt": "prompts/03_PROMPT",
+    "max_iterations": 30,
+    "max_history_messages": 80,
+    "results_dir": "eval/results/00-03-prompt"
+  }
+]
