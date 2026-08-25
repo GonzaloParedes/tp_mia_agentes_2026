@@ -28,6 +28,7 @@ def _comparison_rows(experiment_summaries: list[dict[str, Any]]) -> list[dict[st
             {
                 "id": experiment["id"],
                 "description": experiment.get("description", ""),
+                "runs": experiment.get("runs", summary.get("runs", 1)),
                 "success_rate": summary["success_rate"],
                 "passed": summary["passed"],
                 "failed": summary["failed"],
@@ -37,6 +38,7 @@ def _comparison_rows(experiment_summaries: list[dict[str, Any]]) -> list[dict[st
                 "input_tokens": summary["input_tokens"],
                 "output_tokens": summary["output_tokens"],
                 "total_tokens": summary["input_tokens"] + summary["output_tokens"],
+                "use_structured_memory": experiment.get("use_structured_memory", False),
                 "error_categories": summary.get("error_categories", {}),
                 "by_difficulty": summary.get("by_difficulty", {}),
             }

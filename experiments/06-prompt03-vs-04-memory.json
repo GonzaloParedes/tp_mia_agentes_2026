@@ -1,0 +1,18 @@
+[
+  {
+    "id": "00_prompt03_structured_memory",
+    "description": "Prompt 03 con memoria estructurada activa.",
+    "prompt": "prompts/03_PROMPT",
+    "max_iterations": 45,
+    "max_history_messages": 80,
+    "use_structured_memory": true
+  },
+  {
+    "id": "01_prompt04_structured_memory",
+    "description": "Prompt 04 compatible con memoria estructurada activa.",
+    "prompt": "prompts/04_PROMPT",
+    "max_iterations": 45,
+    "max_history_messages": 80,
+    "use_structured_memory": true
+  }
+]

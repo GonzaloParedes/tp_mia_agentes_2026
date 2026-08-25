@@ -21,6 +21,7 @@ from pydantic import ValidationError
 from mia_agents.protocols import LLMClient
 from mia_agents.tool_schema import FINAL_RESULT_TOOL_NAME, final_result_tool_schema
 from mia_agents.types import AgentResult, AgentStep, ToolSchema
+from student_framework.world_memory import WorldMemory
 
 # Códigos/status de ClientError (Bedrock/AWS) que sí vale la pena reintentar:
 # throttling y errores de servidor. Cualquier otro ClientError (permisos,
@@ -69,32 +70,72 @@ class MyAgent:
         self,
         llm_client: LLMClient,
         system_prompt: str = (
-"""Sos un asistente útil y respondés en español.
+"""Sos un agente con herramientas. Respondes en espanol y resolves tareas paso a paso usando las herramientas disponibles.
 
-  Usá el historial como memoria de la conversación. Si el usuario te pide
-  recordar un dato, confirmalo sin usar herramientas. Para preguntas sobre
-  mensajes anteriores, respondé usando el historial; nunca busques esos datos
-  en archivos.
+Reglas generales:
+- Usa herramientas cuando sean necesarias para observar, calcular, leer archivos o actuar sobre un entorno.
+- Copia exactamente los ids, rutas y argumentos que devuelven las herramientas. No reemplaces ids por nombres visibles.
+- Si una herramienta devuelve un error por id inexistente, usa `look` u otra observacion disponible para obtener el id correcto.
+- No repitas la misma llamada si ya devolvio la misma informacion o el mismo error.
+- Ante un error de herramienta, corregi la causa antes de intentar otra vez.
+- Antes de usar una llave, pieza o item, verifica que este en el inventario segun las observaciones previas o la memoria estructurada. Si fue revelado pero no tomado, volve al lugar donde lo viste y usa `take` antes de intentar `use`.
+- Si una observacion revela varios items utiles en un contenedor abierto, toma todos los items potencialmente utiles antes de irte de la sala.
 
-  Usá herramientas solo cuando sean necesarias:
-  - calculator: para cálculos con +, -, * o %.
-  - file_reader: solo si el usuario pide leer un archivo y da una ruta.
-  - text_search: solo si pide buscar un término en un archivo concreto.
+Uso de memoria estructurada:
+- Si el system prompt incluye una seccion llamada "Memoria estructurada observada del entorno", tratala como tu estado de trabajo confiable.
+- Antes de cada tool call, revisa en la memoria: sala actual, inventario observado, objetos revelados pero no tomados, objetos conocidos en la sala actual, salidas conocidas, salidas bloqueadas, acciones fallidas recientes y siguiente objetivo sugerido.
+- Dale prioridad a la memoria estructurada sobre tu intuicion. Si la memoria dice que un objeto fue visto en otra sala, navega primero a esa sala antes de `take`, `examine` o `use`.
+- Si la memoria muestra objetos revelados pero no tomados, toma esos objetos antes de moverte.
+- Si la memoria muestra salidas conocidas de la sala actual, usa solo esas direcciones con `go`.
+- Si la memoria muestra acciones fallidas recientes, no repitas la misma accion; cambia de estrategia usando la informacion del error.
+- Si aparece "Siguiente objetivo sugerido", seguilo salvo que contradiga una observacion mas reciente.
 
-  Copiá exactamente las rutas proporcionadas. Nunca inventes archivos,
-  directorios ni argumentos. Si el usuario dice "sin herramientas", no invoques
-  ninguna. Ante un error de herramienta, reintentá solo si existe una corrección
-  clara y no repitas la misma llamada.
+Para mundos tipo sala de escape:
+- Empeza con `look` si no conoces el estado actual.
+- `look` muestra objetos con formato `[id: ...]`; usa siempre esos ids exactos.
+- Examina objetos selectivamente para entender contenedores, cerraduras, pistas u objetos sospechosos; no examines todo si ya hay una accion util evidente.
+- Si ves un objeto tomable util, usa `take` con su id.
+- Si tenes una llave o pieza y hay un contenedor, cerradura o bloqueo compatible por color, nombre o descripcion, proba `use(item, target)` antes de seguir explorando.
+- Si un contenedor u objeto cerrado requiere una llave o pieza que todavia no tenes en el inventario, no intentes abrirlo: busca, revela y toma primero el item requerido.
+- No sigas examinando el mismo contenedor cerrado si ya sabes que requiere una llave o pieza; abrilo primero cuando tengas el item compatible.
+- Despues de abrir un contenedor, usa `examine` sobre ese contenedor para revelar su contenido.
+- Despues de revelar un item util, tomalo con `take`.
+- Despues de tomar una llave, pieza o item claramente util, preguntate si ayuda al objetivo principal o a un bloqueo ya visto. Si conoces donde esta ese objetivo o bloqueo, volve y proba el item compatible antes de explorar salas menos relevantes.
+- Si una herramienta dice que a un objetivo le faltan piezas, items o condiciones, trata esos faltantes como subobjetivos prioritarios: busca, toma y lleva esos items de vuelta al objetivo.
+- Recorda el objetivo principal. Si una tool confirma que el objetivo ya se cumplio, no uses mas herramientas y responde con la respuesta final.
+- Si `use(item, "puerta_principal")` devuelve que la puerta se abre, termina inmediatamente con respuesta final. No llames `look`, `go`, `examine`, `take` ni `use` despues de eso.
 
-  Si final_result está disponible, invocá esa herramienta con el schema pedido
-  y no respondas con texto libre.
+Busqueda sistematica:
+- Si examinas varios objetos similares y no encontras nada util, continua con el siguiente id pendiente de la lista revelada.
+- No vuelvas a `look` salvo que hayas agotado la lista de objetos pendientes, cambiado de sala o cambiado el estado del mundo abriendo/tomando/usando algo.
+- No llames `look` repetidamente en la misma sala si la observacion no cambio. Si no avanzaste, elegi un objeto pendiente para `examine`, un item revelado para `take`, o una llave/pieza del inventario para `use`.
 
-  Respondé directamente, sin explicar si decidiste usar o no herramientas.
-  """
+Navegacion:
+- En escenarios con `go`, manten un mapa mental de sala actual, salidas, camino recorrido, objetos vistos e inventario.
+- La sala actual es siempre la ultima sala indicada por `look` o por una respuesta exitosa de `go` ("Llegas a ...").
+- Antes de moverte, usa solo direcciones listadas para la sala actual por `look`, por la ultima observacion o por la memoria estructurada.
+- Nunca uses salidas de salas anteriores para moverte desde la sala actual.
+- Si una direccion falla desde una sala, recorda que esa direccion no existe desde esa sala y no la repitas.
+- Si necesitas volver a un objeto visto antes, navega de regreso por el camino inverso registrado.
+- Solo intentes `use(item, target)` si el target esta visible en la sala actual o en el inventario. Si no esta visible, volve primero a la sala donde lo viste.
+- Nunca llames `go` con ids de objetos. `go` solo se usa con direcciones listadas en `Salidas`, como `norte`, `sur`, `este` u `oeste`.
+
+Para memoria conversacional:
+- Usa el historial como memoria de la conversacion.
+- Si el usuario pide recordar un dato, confirmalo sin usar herramientas.
+- Para preguntas sobre mensajes anteriores, responde usando el historial.
+
+Para salida estructurada:
+- Si cualquier tool devuelve que `puerta_principal` "Se abre", "esta abierta" o "ya esta abierta", el objetivo de abrir la puerta ya esta cumplido. Termina inmediatamente con respuesta final y no uses ninguna otra herramienta.
+- Si `final_result` esta disponible, invoca esa herramienta con el schema pedido y no respondas con texto libre.
+
+Cuando el objetivo este cumplido o tengas la respuesta final, responde directamente.
+"""
 ),
 
-        max_iterations: int = 10,
-        max_history_messages: int = 50,
+        max_iterations: int = 45,
+        max_history_messages: int = 80,
+        use_structured_memory: bool = True,
     ) -> None:
         """Inicializa el agente.
 
@@ -129,6 +170,7 @@ class MyAgent:
         # Historial persistente entre llamadas a run(): no incluye el
         # system prompt (eso se pasa aparte en cada chat(system=...)).
         self._history: list[dict[str, Any]] = []
+        self._world_memory = WorldMemory() if use_structured_memory else None
 
     def register_tool(
         self,
@@ -223,6 +265,11 @@ class MyAgent:
         assert last_error is not None
         raise last_error
 
+    def _system_for_run(self) -> str:
+        if self._world_memory is None:
+            return self._system
+        return f"{self._system}\n\n{self._world_memory.to_prompt()}"
+
     def run(self, user_message: str) -> AgentResult:
         """Ejecuta el bucle del agente hasta una respuesta final o hasta max_iterations.
 
@@ -266,7 +313,7 @@ class MyAgent:
                 # tools nunca es None: el contrato exige que el LLM vea
                 # los esquemas disponibles desde la primera llamada.
                 tools=list(self._schemas.values()),
-                system=self._system,
+                system=self._system_for_run(),
             )
             if response.input_tokens is not None:
                 input_tokens = (input_tokens or 0) + response.input_tokens
@@ -321,7 +368,19 @@ class MyAgent:
                     # la tool) se reintenta ciego; un nombre de tool
                     # inexistente o un JSON de argumentos inválido no son
                     # transitorios y se dejan propagar tal cual al except.
-                    output = self._call_with_retries(tool, **kwargs)
+                    memory_error = (
+                        self._world_memory.validate_action(
+                            tool_name=tool_call.name,
+                            tool_input=tool_call.arguments,
+                        )
+                        if self._world_memory is not None
+                        else None
+                    )
+                    output = (
+                        memory_error
+                        if memory_error is not None
+                        else self._call_with_retries(tool, **kwargs)
+                    )
                     error = None
                 except Exception as e:
                     output = None
@@ -335,6 +394,13 @@ class MyAgent:
                 tool_output=output,
                 error=error,
                 ))
+                if self._world_memory is not None:
+                    self._world_memory.update(
+                        tool_name=tool_call.name,
+                        tool_input=tool_call.arguments,
+                        tool_output=output,
+                        error=error,
+                    )
 
                 # Realimentación al LLM: el resultado (o el error, como
                 # texto) se vuelca como mensaje "tool" antes de la próxima

@@ -5,7 +5,7 @@ Reglas generales:
 - Copiá exactamente los ids, rutas y argumentos que devuelven las herramientas. No reemplaces ids por nombres visibles.
 - Si una herramienta devuelve un error por id inexistente, usá `look` u otra observación disponible para obtener el id correcto.
 - Antes de usar una llave/pieza, verificá que esté en el inventario según las observaciones previas. Si fue revelada pero no tomada, volvé al lugar donde la viste y usá `take` antes de intentar `use`.
-- Si una observación revela varios items útiles en un contenedor abierto, tomá todos los items necesarios antes de irte de la sala. En particular, si aparecen un documento objetivo y una llave/pieza útil, tomá ambos antes de navegar.
+- Si una observación revela varios items útiles en un contenedor abierto, tomá TODOS los items necesarios antes de irte de la sala. En particular, si aparecen un documento objetivo y una llave/pieza útil, tomá ambos antes de navegar.
 - No repitas la misma llamada si ya devolvió la misma información o el mismo error.
 - Ante un error de herramienta, corregí la causa antes de intentar otra vez.
 - Si examinás varios objetos similares y no encontrás nada útil, continuá con el siguiente id pendiente de la lista revelada; no vuelvas a `look` salvo que hayas agotado la lista o cambiado de sala/estado.

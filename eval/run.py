@@ -181,6 +181,8 @@ def _agent_config(args: argparse.Namespace, prompt: str | None) -> dict[str, Any
         config["max_iterations"] = args.max_iterations
     if args.max_history_messages is not None:
         config["max_history_messages"] = args.max_history_messages
+    if getattr(args, "use_structured_memory", False):
+        config["use_structured_memory"] = True
     return config
 
 
@@ -317,6 +319,60 @@ def _build_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def _aggregate_summaries(run_summaries: list[dict[str, Any]]) -> dict[str, Any]:
+    total = sum(summary["total"] for summary in run_summaries)
+    passed = sum(summary["passed"] for summary in run_summaries)
+    failed = sum(summary["failed"] for summary in run_summaries)
+    total_tool_calls = sum(summary["total_tool_calls"] for summary in run_summaries)
+    total_duration = sum(summary["total_duration_seconds"] for summary in run_summaries)
+    input_tokens = sum(summary["input_tokens"] for summary in run_summaries)
+    output_tokens = sum(summary["output_tokens"] for summary in run_summaries)
+
+    by_difficulty: dict[str, dict[str, Any]] = {}
+    error_categories: dict[str, int] = {}
+    failed_scenarios = []
+
+    for run_index, summary in enumerate(run_summaries, start=1):
+        for difficulty, bucket in summary.get("by_difficulty", {}).items():
+            aggregate = by_difficulty.setdefault(
+                difficulty,
+                {"total": 0, "passed": 0, "failed": 0, "success_rate": 0.0},
+            )
+            aggregate["total"] += bucket["total"]
+            aggregate["passed"] += bucket["passed"]
+            aggregate["failed"] += bucket["failed"]
+
+        for category, count in summary.get("error_categories", {}).items():
+            error_categories[category] = error_categories.get(category, 0) + count
+
+        for failed_case in summary.get("failed_scenarios", []):
+            failed_scenarios.append({"run": run_index, **failed_case})
+
+    for bucket in by_difficulty.values():
+        bucket["success_rate"] = (
+            round(bucket["passed"] / bucket["total"], 3)
+            if bucket["total"]
+            else 0.0
+        )
+
+    return {
+        "runs": len(run_summaries),
+        "total": total,
+        "passed": passed,
+        "failed": failed,
+        "success_rate": round(passed / total, 3) if total else 0.0,
+        "by_difficulty": by_difficulty,
+        "total_tool_calls": total_tool_calls,
+        "avg_tool_calls": round(total_tool_calls / total, 2) if total else 0.0,
+        "total_duration_seconds": round(total_duration, 3),
+        "avg_duration_seconds": round(total_duration / total, 3) if total else 0.0,
+        "input_tokens": input_tokens,
+        "output_tokens": output_tokens,
+        "error_categories": dict(sorted(error_categories.items())),
+        "failed_scenarios": failed_scenarios,
+    }
+
+
 def _write_results(rows: list[dict[str, Any]], summary: dict[str, Any], results_dir: Path) -> None:
     results_dir.mkdir(parents=True, exist_ok=True)
     with (results_dir / "results.jsonl").open("w", encoding="utf-8") as f:
@@ -358,6 +414,17 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--max-iterations", type=int, default=None)
     parser.add_argument("--max-history-messages", type=int, default=None)
     parser.add_argument(
+        "--use-structured-memory",
+        action="store_true",
+        help="Activa memoria estructurada observacional dentro del agente.",
+    )
+    parser.add_argument(
+        "--runs",
+        type=int,
+        default=1,
+        help="Cantidad de repeticiones por experimento cuando se usa --experiments.",
+    )
+    parser.add_argument(
         "--results-dir",
         default=str(DEFAULT_RESULTS_DIR),
         help="Directorio donde escribir results.jsonl.",
@@ -372,6 +439,8 @@ def _build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = _build_parser().parse_args(argv)
+    if args.runs < 1:
+        raise SystemExit("--runs debe ser >= 1.")
 
     if args.experiments:
         experiments = _load_experiments(_resolve_repo_path(args.experiments))
@@ -403,21 +472,43 @@ def main(argv: list[str] | None = None) -> int:
                 int(max_history_messages) if max_history_messages is not None else None
             )
 
+            exp_args.use_structured_memory = bool(
+                experiment.get("use_structured_memory", args.use_structured_memory)
+            )
+
             configured_results_dir = experiment.get("results_dir")
-            exp_args.results_dir = str(
+            experiment_results_dir = (
                 _resolve_repo_path(configured_results_dir)
                 if configured_results_dir
                 else experiment_run_dir / exp_id
             )
 
-            _, summary = _run_scenarios(exp_args)
+            run_summaries = []
+            for run_number in range(1, args.runs + 1):
+                print(f"## Repeticion: {run_number}/{args.runs}", file=sys.stderr)
+                if args.runs == 1:
+                    run_results_dir = experiment_results_dir
+                else:
+                    run_results_dir = experiment_results_dir / f"run_{run_number:02d}"
+                exp_args.results_dir = str(run_results_dir)
+                _, run_summary = _run_scenarios(exp_args)
+                run_summaries.append(run_summary)
+
+            summary = (
+                run_summaries[0]
+                if args.runs == 1
+                else _aggregate_summaries(run_summaries)
+            )
             summary_with_meta = {
                 "id": exp_id,
                 "description": experiment.get("description", ""),
                 "prompt": prompt_path,
                 "max_iterations": exp_args.max_iterations,
                 "max_history_messages": exp_args.max_history_messages,
-                "results_dir": experiment.get("results_dir", exp_args.results_dir),
+                "use_structured_memory": exp_args.use_structured_memory,
+                "runs": args.runs,
+                "results_dir": str(experiment_results_dir),
+                "run_summaries": run_summaries,
                 "summary": summary,
             }
             experiment_summaries.append(summary_with_meta)

@@ -42,6 +42,8 @@ def build_agent(config: dict[str, Any] | None = None) -> Agent:
         kwargs["max_iterations"] = config["max_iterations"]
     if "max_history_messages" in config:
         kwargs["max_history_messages"] = config["max_history_messages"]
+    if "use_structured_memory" in config:
+        kwargs["use_structured_memory"] = config["use_structured_memory"]
 
     agent = MyAgent(**kwargs)
 

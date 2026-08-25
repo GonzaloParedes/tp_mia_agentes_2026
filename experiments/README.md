@@ -14,6 +14,12 @@ Comando:
 .\.venv\Scripts\python.exe eval\run.py --experiments experiments\experiments.json
 ```
 
+Para repetir cada variante varias veces y reducir ruido del LLM:
+
+```powershell
+.\.venv\Scripts\python.exe eval\run.py --experiments experiments\04-structured-memory.json --runs 3
+```
+
 Cada corrida crea una carpeta nueva con timestamp:
 
 ```text
@@ -25,6 +31,12 @@ agregada. Para elegir manualmente el directorio:
 
 ```powershell
 .\.venv\Scripts\python.exe eval\run.py --experiments experiments\experiments.json --experiments-results-dir eval\results\experiments\mi-corrida
+```
+
+Experimento de memoria estructurada:
+
+```powershell
+.\.venv\Scripts\python.exe eval\run.py --experiments experiments\04-structured-memory.json --experiments-results-dir eval\results\experiments\structured-memory-active
 ```
 
 ## Experimentos definidos
@@ -50,3 +62,33 @@ El runner tambien genera comparacion agregada en:
 
 - `comparison.json`: tabla con las metricas principales por experimento.
 - `comparison.svg`: imagen con 4 plots comparando tasa de exito, tool calls, tokens y errores.
+
+Si se usa `--runs N`, cada experimento guarda sus repeticiones en:
+
+```text
+experimento/run_01/
+experimento/run_02/
+...
+```
+
+El `summary` del experimento agrega todas las repeticiones, y
+`run_summaries` conserva el resultado de cada repeticion.
+
+## Memoria estructurada
+
+El campo `"use_structured_memory": true` activa una memoria estructurada del
+agente. Esta memoria no reemplaza al LLM ni modifica el mundo: resume hechos
+extraidos de las herramientas (`look`, `examine`, `take`, `use`, `go`), los
+agrega al system prompt en cada iteracion y valida contradicciones fuertes
+antes de ejecutar algunas herramientas.
+
+La memoria registra sala actual, salidas conocidas, objetos vistos,
+inventario observado, objetos revelados pero no tomados, objetos abiertos y
+acciones fallidas recientes. La hipotesis del experimento es reducir errores
+de inventario, navegacion y repeticion.
+
+Guardrails activos iniciales:
+
+- bloquear `go` cuando la direccion no existe desde la sala actual conocida;
+- bloquear `use` cuando el item fue revelado pero no tomado, o no aparece en el inventario observado;
+- bloquear `take`, `examine` o `use` sobre objetos conocidos en otra sala cuando la sala actual es distinta.

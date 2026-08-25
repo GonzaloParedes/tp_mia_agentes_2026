@@ -1028,3 +1028,88 @@ Probar una mejora de arquitectura con memoria estructurada, no solo prompt engin
 - acciones fallidas o repetidas.
 
 La hipotesis es que esto deberia reducir errores de inventario, navegacion y repeticion, especialmente en `vault-combination`, `office-sequence` y escenarios con backtracking.
+
+---
+
+## Memoria estructurada pasiva
+
+Se probo `04-structured-memory` comparando `prompts/03_PROMPT` sin memoria contra el mismo prompt con memoria estructurada pasiva.
+
+Resultado:
+
+- Sin memoria: 7/8 escenarios, `success_rate=0.875`.
+- Con memoria pasiva: 6/8 escenarios, `success_rate=0.75`.
+
+La memoria pasiva empeoro el resultado. El caso nuevo que fallo fue `office-sequence`: el agente llego al `Archivo`, vio la `caja_fuerte`, pero empezo a repetir navegacion invalida (`go este`) y vueltas entre `Archivo` y `Corredor`, sin ir al `Deposito` a buscar `llave_caja`.
+
+Conclusion:
+
+- Agregar memoria como texto extra en el system prompt no alcanza.
+- La memoria agrego tokens y ruido, pero no impidio acciones contradictorias.
+- El agente podia ignorar hechos como "desde Archivo solo existe salida sur" o "esta accion ya fallo".
+
+Proximo paso:
+
+Convertir la memoria en guardrails activos antes de ejecutar herramientas. Primero se probaran dos controles simples:
+
+- bloquear `go` con direcciones que no existen desde la sala actual conocida;
+- bloquear `use` si el item no esta en el inventario observado o fue revelado pero no tomado.
+
+Implementacion:
+
+Se agrego una primera version de memoria activa. Antes de ejecutar herramientas, el agente valida contradicciones fuertes contra la memoria:
+
+- `go`: si la direccion no existe desde la sala actual conocida, no ejecuta la tool real y devuelve un error de memoria al LLM.
+- `use`: si el item fue revelado pero no tomado, o no esta en el inventario observado, no ejecuta la tool real.
+- `take` / `examine` / `use`: si el objeto fue visto en otra sala y la sala actual es distinta, se bloquea la accion y se pide navegar primero.
+
+Esto convierte la memoria de contexto pasivo en una capa minima de control previo a herramientas.
+
+---
+
+## Resultado memoria activa y variabilidad
+
+Se corrio `04-structured-memory` en `eval/results/experiments/structured-memory-active`.
+
+Resultado dentro de la misma corrida:
+
+- `00_prompt03_no_memory`: 5/8 escenarios, `success_rate=0.625`, 22.62 tool calls promedio, 849901 tokens.
+- `01_prompt03_structured_memory`: 6/8 escenarios, `success_rate=0.75`, 19.88 tool calls promedio, 809373 tokens.
+
+La memoria activa mejoro dentro de esta corrida: recupero `color-locks` y redujo `office-sequence` de 31 a 20 tool calls. Sin embargo, estos numeros no son directamente comparables contra el resultado anterior de `prompts/03_PROMPT` sin memoria, que habia dado 7/8, porque:
+
+- el LLM no es deterministico (`temperature=0.2` por default);
+- `prompts/03_PROMPT` tuvo cambios entre corridas;
+- una sola corrida por variante es demasiado fragil para concluir.
+
+Proximo ajuste de evaluacion:
+
+Agregar soporte de multiples repeticiones por experimento (`--runs N`) y reportar promedios. La comparacion importante pasa a ser promedio de success rate, tool calls, tokens y errores acumulados por variante.
+
+---
+
+## Experimento focalizado: vault-combination y memoria estructurada
+
+Se trabajo sobre `vault-combination` como escenario laboratorio porque era el fallo mas persistente en extreme.
+
+Cambios probados:
+
+- guardrail preventivo para no permitir `go` si en la sala actual hay objetos revelados pero no tomados;
+- mensaje mas accionable cuando `go` usa una direccion invalida y la memoria conoce una unica salida valida;
+- tracking generico de requisitos cuando una tool informa que a un objetivo le faltan piezas/items;
+- `prompts/04_PROMPT`, derivado de `03_PROMPT`, con instrucciones explicitas para leer y priorizar la memoria estructurada.
+
+Se descarto una idea que metia ruido: sugerir genericamente "probar items del inventario" contra targets conocidos. Aunque era general, hacia que el agente explorara combinaciones demasiado amplias y empeoraba el resultado.
+
+Resultado de `06-prompt03-vs-04-memory` sobre `vault-combination` con 3 runs:
+
+- `03_PROMPT` + memoria estructurada: 2/3, `success_rate=0.667`.
+- `04_PROMPT` + memoria estructurada: 3/3, `success_rate=1.0`.
+
+Conclusion:
+
+El resultado sugiere que no alcanza con agregar memoria estructurada al system prompt: el prompt tambien debe explicar como usarla. `04_PROMPT` mejora porque le indica al agente revisar sala actual, inventario, objetos revelados no tomados, salidas conocidas, acciones fallidas y siguiente objetivo sugerido antes de cada tool call.
+
+Proximo paso:
+
+Correr `06-prompt03-vs-04-memory.json` en todos los escenarios para verificar que `04_PROMPT` no este sobreajustado a `vault-combination`.

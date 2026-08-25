@@ -1,0 +1,18 @@
+[
+  {
+    "id": "00_vault_prompt03_no_memory",
+    "description": "Baseline focalizado para vault-combination: prompt 03 sin memoria estructurada.",
+    "prompt": "prompts/03_PROMPT",
+    "max_iterations": 30,
+    "max_history_messages": 80,
+    "use_structured_memory": false
+  },
+  {
+    "id": "01_vault_prompt03_structured_memory",
+    "description": "Baseline focalizado para vault-combination: prompt 03 con memoria estructurada activa.",
+    "prompt": "prompts/03_PROMPT",
+    "max_iterations": 30,
+    "max_history_messages": 80,
+    "use_structured_memory": true
+  }
+]
