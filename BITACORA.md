@@ -1113,3 +1113,31 @@ El resultado sugiere que no alcanza con agregar memoria estructurada al system p
 Proximo paso:
 
 Correr `06-prompt03-vs-04-memory.json` en todos los escenarios para verificar que `04_PROMPT` no este sobreajustado a `vault-combination`.
+
+---
+
+## Dimension cualitativa automatizada
+
+La consigna pide al menos una dimension cualitativa evaluada por rubrica o LLM-as-judge. Se implemento una rubrica automatica y reproducible en `eval/qualitative.py`.
+
+Comando:
+
+```powershell
+.\.venv\Scripts\python.exe .\eval\qualitative.py --results-dir eval\results\latest
+```
+
+El script lee `results.jsonl` y genera:
+
+- `qualitative_review.json`;
+- `qualitative_review.md`.
+
+Rubrica 0-3:
+
+- 0: no progresa o no hay trayectoria evaluable;
+- 1: progresa poco, se atasca o repite errores;
+- 2: progresa parcialmente o resuelve con ruido importante;
+- 3: resuelve con trayectoria coherente y sin repeticiones graves.
+
+La clasificacion usa senales observables de la traza: exito del goal, errores de runner, cantidad de steps, progreso observable (`take`, aperturas, navegacion), errores de tools, acciones repetidas y limite de iteraciones.
+
+Nota: si la corrida contiene `ExpiredTokenException` u otro `runner_error`, esos casos puntuan 0 porque no hay trayectoria del agente para evaluar. Para el informe final hay que correr esta rubrica sobre una evaluacion valida.

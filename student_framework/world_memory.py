@@ -121,6 +121,14 @@ class WorldMemory:
                         "pero no esta en el inventario. Primero usa `take`."
                     )
                 if self.inventory_known and item not in self.inventory:
+                    correction = self._inventory_id_correction(item)
+                    if correction is not None:
+                        item_id, label = correction
+                        return (
+                            f"Error: memoria estructurada: {item!r} no esta en el "
+                            f"inventario observado. Quizas quisiste usar {item_id!r} "
+                            f"({label}). Usa el id exacto devuelto por las herramientas."
+                        )
                     return (
                         f"Error: memoria estructurada: {item!r} no esta en el "
                         "inventario observado. Primero busca y toma ese item."
@@ -406,6 +414,14 @@ class WorldMemory:
             if item_id is not None:
                 found.add(item_id)
         return found
+
+    def _inventory_id_correction(self, requested_item: str) -> tuple[str, str] | None:
+        requested_key = _match_key(requested_item)
+        for item_id in sorted(self.inventory):
+            label = self.item_labels.get(item_id, item_id)
+            if requested_key in {_match_key(item_id), _match_key(label)}:
+                return item_id, label
+        return None
 
     def _validate_target_visible(self, target: str) -> str | None:
         if target in self.inventory:
