@@ -1,0 +1,115 @@
+{
+  "rubric": {
+    "0": "No progresa o no hay trayectoria evaluable.",
+    "1": "Progresa poco, se atasca o repite errores.",
+    "2": "Progresa parcialmente o resuelve con ruido importante.",
+    "3": "Resuelve con trayectoria coherente y sin repeticiones graves."
+  },
+  "total": 8,
+  "average_qualitative_score": 2.375,
+  "score_distribution": {
+    "2": 5,
+    "3": 3
+  },
+  "reviews": [
+    {
+      "scenario": "study-with-key",
+      "difficulty": "easy",
+      "goal_achieved": true,
+      "tool_calls": 5,
+      "error_categories": [],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves."
+    },
+    {
+      "scenario": "color-locks",
+      "difficulty": "medium",
+      "goal_achieved": true,
+      "tool_calls": 14,
+      "error_categories": [
+        "repeated_action"
+      ],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves."
+    },
+    {
+      "scenario": "library-search",
+      "difficulty": "hard",
+      "goal_achieved": true,
+      "tool_calls": 15,
+      "error_categories": [],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves."
+    },
+    {
+      "scenario": "extreme-archive",
+      "difficulty": "extreme",
+      "goal_achieved": true,
+      "tool_calls": 24,
+      "error_categories": [
+        "post_goal_overrun",
+        "repeated_action"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento."
+    },
+    {
+      "scenario": "apartment-keys",
+      "difficulty": "medium",
+      "goal_achieved": true,
+      "tool_calls": 12,
+      "error_categories": [
+        "navigation_error",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, aunque requiere varias correcciones de errores locales."
+    },
+    {
+      "scenario": "office-sequence",
+      "difficulty": "hard",
+      "goal_achieved": true,
+      "tool_calls": 21,
+      "error_categories": [
+        "navigation_error",
+        "post_goal_overrun",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento."
+    },
+    {
+      "scenario": "vault-combination",
+      "difficulty": "extreme",
+      "goal_achieved": true,
+      "tool_calls": 31,
+      "error_categories": [
+        "navigation_error",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento."
+    },
+    {
+      "scenario": "backtracking-vault",
+      "difficulty": "extreme",
+      "goal_achieved": true,
+      "tool_calls": 27,
+      "error_categories": [
+        "consecutive_repeated_action",
+        "navigation_error",
+        "repeated_action",
+        "repeated_look",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento."
+    }
+  ]
+}

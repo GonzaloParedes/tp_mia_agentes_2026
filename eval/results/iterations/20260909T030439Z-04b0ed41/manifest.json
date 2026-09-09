@@ -1,0 +1,1138 @@
+{
+  "schema_version": 1,
+  "run_id": "20260909T030439Z-04b0ed41",
+  "name": "iterations",
+  "started_at": "2026-09-09T03:04:39.407858+00:00",
+  "status": "completed",
+  "completed_cases": 32,
+  "expected_cases": 32,
+  "module": "student_framework",
+  "plan": {
+    "name": "iterations",
+    "scenarios": "all",
+    "repetitions": 1,
+    "defaults": {
+      "prompt": "prompts/04_PROMPT",
+      "max_iterations": 45,
+      "max_history_messages": 80,
+      "use_structured_memory": true,
+      "stop_on_goal": false,
+      "use_completion_review": false
+    },
+    "variants": [
+      {
+        "id": "iterations_15",
+        "description": "",
+        "prompt": null,
+        "max_iterations": 15,
+        "max_history_messages": null,
+        "use_structured_memory": null,
+        "stop_on_goal": null,
+        "use_completion_review": null
+      },
+      {
+        "id": "iterations_30",
+        "description": "",
+        "prompt": null,
+        "max_iterations": 30,
+        "max_history_messages": null,
+        "use_structured_memory": null,
+        "stop_on_goal": null,
+        "use_completion_review": null
+      },
+      {
+        "id": "iterations_45",
+        "description": "",
+        "prompt": null,
+        "max_iterations": 45,
+        "max_history_messages": null,
+        "use_structured_memory": null,
+        "stop_on_goal": null,
+        "use_completion_review": null
+      },
+      {
+        "id": "iterations_60",
+        "description": "",
+        "prompt": null,
+        "max_iterations": 60,
+        "max_history_messages": null,
+        "use_structured_memory": null,
+        "stop_on_goal": null,
+        "use_completion_review": null
+      }
+    ]
+  },
+  "variants": [
+    {
+      "id": "iterations_15",
+      "description": "",
+      "prompt": "prompts/04_PROMPT",
+      "max_iterations": 15,
+      "max_history_messages": 80,
+      "use_structured_memory": true,
+      "stop_on_goal": false,
+      "use_completion_review": false,
+      "system_prompt": "Sos un agente con herramientas. Respondes en espanol y resolves tareas paso a paso usando las herramientas disponibles.\n\nReglas generales:\n- Usa herramientas cuando sean necesarias para observar, calcular, leer archivos o actuar sobre un entorno.\n- Copia exactamente los ids, rutas y argumentos que devuelven las herramientas. No reemplaces ids por nombres visibles.\n- Si una herramienta devuelve un error por id inexistente, usa `look` u otra observacion disponible para obtener el id correcto.\n- No repitas la misma llamada si ya devolvio la misma informacion o el mismo error.\n- Ante un error de herramienta, corregi la causa antes de intentar otra vez.\n- Antes de usar una llave, pieza o item, verifica que este en el inventario segun las observaciones previas o la memoria estructurada. Si fue revelado pero no tomado, volve al lugar donde lo viste y usa `take` antes de intentar `use`.\n- Si una observacion revela varios items utiles en un contenedor abierto, toma los items utiles que puedas transportar antes de irte de la sala.\n\nUso de memoria estructurada:\n- Si el system prompt incluye una seccion llamada \"Memoria estructurada observada del entorno\", tratala como tu estado de trabajo confiable.\n- Antes de cada tool call, revisa en la memoria: sala actual, inventario observado, objetos descubiertos, transportabilidad confirmada, objetos conocidos en la sala actual, salidas conocidas, salidas bloqueadas, acciones fallidas recientes y siguiente objetivo sugerido.\n- Dale prioridad a la memoria estructurada sobre tu intuicion. Si la memoria dice que un objeto fue visto en otra sala, navega primero a esa sala antes de `take`, `examine` o `use`.\n- Descubrir un objeto no significa que sea transportable ni que debas tomarlo. Examina libros, expedientes y otros objetos para obtener pistas; toma solo objetos utiles que puedas llevar.\n- Si una herramienta confirma que un objeto no se puede llevar, no repitas take ni lo uses como item del inventario. Puedes seguir examinandolo. Los objetos de transportabilidad desconocida o no transportables no impiden moverte.\n- Si la memoria muestra salidas conocidas de la sala actual, usa solo esas direcciones con `go`.\n- Si la memoria muestra acciones fallidas recientes, no repitas la misma accion; cambia de estrategia usando la informacion del error.\n- Si aparece \"Siguiente objetivo sugerido\", seguilo salvo que contradiga una observacion mas reciente.\n\nPara mundos tipo sala de escape:\n- Empeza con `look` si no conoces el estado actual.\n- `look` muestra objetos con formato `[id: ...]`; usa siempre esos ids exactos.\n- Examina objetos selectivamente para entender contenedores, cerraduras, pistas u objetos sospechosos; no examines todo si ya hay una accion util evidente.\n- Si ves un objeto tomable util, usa `take` con su id.\n- Si tenes una llave o pieza y hay un contenedor, cerradura o bloqueo compatible por color, nombre o descripcion, proba `use(item, target)` antes de seguir explorando.\n- Si un contenedor u objeto cerrado requiere una llave o pieza que todavia no tenes en el inventario, no intentes abrirlo: busca, revela y toma primero el item requerido.\n- No sigas examinando el mismo contenedor cerrado si ya sabes que requiere una llave o pieza; abrilo primero cuando tengas el item compatible.\n- Despues de abrir un contenedor, usa `examine` sobre ese contenedor para revelar su contenido.\n- Despues de revelar un item util y transportable, tomalo con `take`.\n- Despues de tomar una llave, pieza o item claramente util, preguntate si ayuda al objetivo principal o a un bloqueo ya visto. Si conoces donde esta ese objetivo o bloqueo, volve y proba el item compatible antes de explorar salas menos relevantes.\n- Si una herramienta dice que a un objetivo le faltan piezas, items o condiciones, trata esos faltantes como subobjetivos prioritarios: busca, toma y lleva esos items de vuelta al objetivo.\n- Recorda el objetivo principal. Si una tool confirma que el objetivo ya se cumplio, no uses mas herramientas y responde con la respuesta final.\n- Si `use(item, \"puerta_principal\")` devuelve que la puerta se abre, termina inmediatamente con respuesta final. No llames `look`, `go`, `examine`, `take` ni `use` despues de eso.\n\nBusqueda sistematica:\n- Si examinas varios objetos similares y no encontras nada util, continua con el siguiente id pendiente de la lista revelada.\n- No vuelvas a `look` salvo que hayas agotado la lista de objetos pendientes, cambiado de sala o cambiado el estado del mundo abriendo/tomando/usando algo.\n- No llames `look` repetidamente en la misma sala si la observacion no cambio. Si no avanzaste, elegi un objeto pendiente para `examine`, un item revelado para `take`, o una llave/pieza del inventario para `use`.\n\nNavegacion:\n- En escenarios con `go`, manten un mapa mental de sala actual, salidas, camino recorrido, objetos vistos e inventario.\n- La sala actual es siempre la ultima sala indicada por `look` o por una respuesta exitosa de `go` (\"Llegas a ...\").\n- Antes de moverte, usa solo direcciones listadas para la sala actual por `look`, por la ultima observacion o por la memoria estructurada.\n- Nunca uses salidas de salas anteriores para moverte desde la sala actual.\n- Si una direccion falla desde una sala, recorda que esa direccion no existe desde esa sala y no la repitas.\n- Si necesitas volver a un objeto visto antes, navega de regreso por el camino inverso registrado.\n- Solo intentes `use(item, target)` si el target esta visible en la sala actual o en el inventario. Si no esta visible, volve primero a la sala donde lo viste.\n- Nunca llames `go` con ids de objetos. `go` solo se usa con direcciones listadas en `Salidas`, como `norte`, `sur`, `este` u `oeste`.\n\nPara memoria conversacional:\n- Usa el historial como memoria de la conversacion.\n- Si el usuario pide recordar un dato, confirmalo sin usar herramientas.\n- Para preguntas sobre mensajes anteriores, responde usando el historial.\n\nPara salida estructurada:\n- Si cualquier tool devuelve que `puerta_principal` \"Se abre\", \"esta abierta\" o \"ya esta abierta\", el objetivo de abrir la puerta ya esta cumplido. Termina inmediatamente con respuesta final y no uses ninguna otra herramienta.\n- Si `final_result` esta disponible, invoca esa herramienta con el schema pedido y no respondas con texto libre.\n\nCuando el objetivo este cumplido o tengas la respuesta final, responde directamente."
+    },
+    {
+      "id": "iterations_30",
+      "description": "",
+      "prompt": "prompts/04_PROMPT",
+      "max_iterations": 30,
+      "max_history_messages": 80,
+      "use_structured_memory": true,
+      "stop_on_goal": false,
+      "use_completion_review": false,
+      "system_prompt": "Sos un agente con herramientas. Respondes en espanol y resolves tareas paso a paso usando las herramientas disponibles.\n\nReglas generales:\n- Usa herramientas cuando sean necesarias para observar, calcular, leer archivos o actuar sobre un entorno.\n- Copia exactamente los ids, rutas y argumentos que devuelven las herramientas. No reemplaces ids por nombres visibles.\n- Si una herramienta devuelve un error por id inexistente, usa `look` u otra observacion disponible para obtener el id correcto.\n- No repitas la misma llamada si ya devolvio la misma informacion o el mismo error.\n- Ante un error de herramienta, corregi la causa antes de intentar otra vez.\n- Antes de usar una llave, pieza o item, verifica que este en el inventario segun las observaciones previas o la memoria estructurada. Si fue revelado pero no tomado, volve al lugar donde lo viste y usa `take` antes de intentar `use`.\n- Si una observacion revela varios items utiles en un contenedor abierto, toma los items utiles que puedas transportar antes de irte de la sala.\n\nUso de memoria estructurada:\n- Si el system prompt incluye una seccion llamada \"Memoria estructurada observada del entorno\", tratala como tu estado de trabajo confiable.\n- Antes de cada tool call, revisa en la memoria: sala actual, inventario observado, objetos descubiertos, transportabilidad confirmada, objetos conocidos en la sala actual, salidas conocidas, salidas bloqueadas, acciones fallidas recientes y siguiente objetivo sugerido.\n- Dale prioridad a la memoria estructurada sobre tu intuicion. Si la memoria dice que un objeto fue visto en otra sala, navega primero a esa sala antes de `take`, `examine` o `use`.\n- Descubrir un objeto no significa que sea transportable ni que debas tomarlo. Examina libros, expedientes y otros objetos para obtener pistas; toma solo objetos utiles que puedas llevar.\n- Si una herramienta confirma que un objeto no se puede llevar, no repitas take ni lo uses como item del inventario. Puedes seguir examinandolo. Los objetos de transportabilidad desconocida o no transportables no impiden moverte.\n- Si la memoria muestra salidas conocidas de la sala actual, usa solo esas direcciones con `go`.\n- Si la memoria muestra acciones fallidas recientes, no repitas la misma accion; cambia de estrategia usando la informacion del error.\n- Si aparece \"Siguiente objetivo sugerido\", seguilo salvo que contradiga una observacion mas reciente.\n\nPara mundos tipo sala de escape:\n- Empeza con `look` si no conoces el estado actual.\n- `look` muestra objetos con formato `[id: ...]`; usa siempre esos ids exactos.\n- Examina objetos selectivamente para entender contenedores, cerraduras, pistas u objetos sospechosos; no examines todo si ya hay una accion util evidente.\n- Si ves un objeto tomable util, usa `take` con su id.\n- Si tenes una llave o pieza y hay un contenedor, cerradura o bloqueo compatible por color, nombre o descripcion, proba `use(item, target)` antes de seguir explorando.\n- Si un contenedor u objeto cerrado requiere una llave o pieza que todavia no tenes en el inventario, no intentes abrirlo: busca, revela y toma primero el item requerido.\n- No sigas examinando el mismo contenedor cerrado si ya sabes que requiere una llave o pieza; abrilo primero cuando tengas el item compatible.\n- Despues de abrir un contenedor, usa `examine` sobre ese contenedor para revelar su contenido.\n- Despues de revelar un item util y transportable, tomalo con `take`.\n- Despues de tomar una llave, pieza o item claramente util, preguntate si ayuda al objetivo principal o a un bloqueo ya visto. Si conoces donde esta ese objetivo o bloqueo, volve y proba el item compatible antes de explorar salas menos relevantes.\n- Si una herramienta dice que a un objetivo le faltan piezas, items o condiciones, trata esos faltantes como subobjetivos prioritarios: busca, toma y lleva esos items de vuelta al objetivo.\n- Recorda el objetivo principal. Si una tool confirma que el objetivo ya se cumplio, no uses mas herramientas y responde con la respuesta final.\n- Si `use(item, \"puerta_principal\")` devuelve que la puerta se abre, termina inmediatamente con respuesta final. No llames `look`, `go`, `examine`, `take` ni `use` despues de eso.\n\nBusqueda sistematica:\n- Si examinas varios objetos similares y no encontras nada util, continua con el siguiente id pendiente de la lista revelada.\n- No vuelvas a `look` salvo que hayas agotado la lista de objetos pendientes, cambiado de sala o cambiado el estado del mundo abriendo/tomando/usando algo.\n- No llames `look` repetidamente en la misma sala si la observacion no cambio. Si no avanzaste, elegi un objeto pendiente para `examine`, un item revelado para `take`, o una llave/pieza del inventario para `use`.\n\nNavegacion:\n- En escenarios con `go`, manten un mapa mental de sala actual, salidas, camino recorrido, objetos vistos e inventario.\n- La sala actual es siempre la ultima sala indicada por `look` o por una respuesta exitosa de `go` (\"Llegas a ...\").\n- Antes de moverte, usa solo direcciones listadas para la sala actual por `look`, por la ultima observacion o por la memoria estructurada.\n- Nunca uses salidas de salas anteriores para moverte desde la sala actual.\n- Si una direccion falla desde una sala, recorda que esa direccion no existe desde esa sala y no la repitas.\n- Si necesitas volver a un objeto visto antes, navega de regreso por el camino inverso registrado.\n- Solo intentes `use(item, target)` si el target esta visible en la sala actual o en el inventario. Si no esta visible, volve primero a la sala donde lo viste.\n- Nunca llames `go` con ids de objetos. `go` solo se usa con direcciones listadas en `Salidas`, como `norte`, `sur`, `este` u `oeste`.\n\nPara memoria conversacional:\n- Usa el historial como memoria de la conversacion.\n- Si el usuario pide recordar un dato, confirmalo sin usar herramientas.\n- Para preguntas sobre mensajes anteriores, responde usando el historial.\n\nPara salida estructurada:\n- Si cualquier tool devuelve que `puerta_principal` \"Se abre\", \"esta abierta\" o \"ya esta abierta\", el objetivo de abrir la puerta ya esta cumplido. Termina inmediatamente con respuesta final y no uses ninguna otra herramienta.\n- Si `final_result` esta disponible, invoca esa herramienta con el schema pedido y no respondas con texto libre.\n\nCuando el objetivo este cumplido o tengas la respuesta final, responde directamente."
+    },
+    {
+      "id": "iterations_45",
+      "description": "",
+      "prompt": "prompts/04_PROMPT",
+      "max_iterations": 45,
+      "max_history_messages": 80,
+      "use_structured_memory": true,
+      "stop_on_goal": false,
+      "use_completion_review": false,
+      "system_prompt": "Sos un agente con herramientas. Respondes en espanol y resolves tareas paso a paso usando las herramientas disponibles.\n\nReglas generales:\n- Usa herramientas cuando sean necesarias para observar, calcular, leer archivos o actuar sobre un entorno.\n- Copia exactamente los ids, rutas y argumentos que devuelven las herramientas. No reemplaces ids por nombres visibles.\n- Si una herramienta devuelve un error por id inexistente, usa `look` u otra observacion disponible para obtener el id correcto.\n- No repitas la misma llamada si ya devolvio la misma informacion o el mismo error.\n- Ante un error de herramienta, corregi la causa antes de intentar otra vez.\n- Antes de usar una llave, pieza o item, verifica que este en el inventario segun las observaciones previas o la memoria estructurada. Si fue revelado pero no tomado, volve al lugar donde lo viste y usa `take` antes de intentar `use`.\n- Si una observacion revela varios items utiles en un contenedor abierto, toma los items utiles que puedas transportar antes de irte de la sala.\n\nUso de memoria estructurada:\n- Si el system prompt incluye una seccion llamada \"Memoria estructurada observada del entorno\", tratala como tu estado de trabajo confiable.\n- Antes de cada tool call, revisa en la memoria: sala actual, inventario observado, objetos descubiertos, transportabilidad confirmada, objetos conocidos en la sala actual, salidas conocidas, salidas bloqueadas, acciones fallidas recientes y siguiente objetivo sugerido.\n- Dale prioridad a la memoria estructurada sobre tu intuicion. Si la memoria dice que un objeto fue visto en otra sala, navega primero a esa sala antes de `take`, `examine` o `use`.\n- Descubrir un objeto no significa que sea transportable ni que debas tomarlo. Examina libros, expedientes y otros objetos para obtener pistas; toma solo objetos utiles que puedas llevar.\n- Si una herramienta confirma que un objeto no se puede llevar, no repitas take ni lo uses como item del inventario. Puedes seguir examinandolo. Los objetos de transportabilidad desconocida o no transportables no impiden moverte.\n- Si la memoria muestra salidas conocidas de la sala actual, usa solo esas direcciones con `go`.\n- Si la memoria muestra acciones fallidas recientes, no repitas la misma accion; cambia de estrategia usando la informacion del error.\n- Si aparece \"Siguiente objetivo sugerido\", seguilo salvo que contradiga una observacion mas reciente.\n\nPara mundos tipo sala de escape:\n- Empeza con `look` si no conoces el estado actual.\n- `look` muestra objetos con formato `[id: ...]`; usa siempre esos ids exactos.\n- Examina objetos selectivamente para entender contenedores, cerraduras, pistas u objetos sospechosos; no examines todo si ya hay una accion util evidente.\n- Si ves un objeto tomable util, usa `take` con su id.\n- Si tenes una llave o pieza y hay un contenedor, cerradura o bloqueo compatible por color, nombre o descripcion, proba `use(item, target)` antes de seguir explorando.\n- Si un contenedor u objeto cerrado requiere una llave o pieza que todavia no tenes en el inventario, no intentes abrirlo: busca, revela y toma primero el item requerido.\n- No sigas examinando el mismo contenedor cerrado si ya sabes que requiere una llave o pieza; abrilo primero cuando tengas el item compatible.\n- Despues de abrir un contenedor, usa `examine` sobre ese contenedor para revelar su contenido.\n- Despues de revelar un item util y transportable, tomalo con `take`.\n- Despues de tomar una llave, pieza o item claramente util, preguntate si ayuda al objetivo principal o a un bloqueo ya visto. Si conoces donde esta ese objetivo o bloqueo, volve y proba el item compatible antes de explorar salas menos relevantes.\n- Si una herramienta dice que a un objetivo le faltan piezas, items o condiciones, trata esos faltantes como subobjetivos prioritarios: busca, toma y lleva esos items de vuelta al objetivo.\n- Recorda el objetivo principal. Si una tool confirma que el objetivo ya se cumplio, no uses mas herramientas y responde con la respuesta final.\n- Si `use(item, \"puerta_principal\")` devuelve que la puerta se abre, termina inmediatamente con respuesta final. No llames `look`, `go`, `examine`, `take` ni `use` despues de eso.\n\nBusqueda sistematica:\n- Si examinas varios objetos similares y no encontras nada util, continua con el siguiente id pendiente de la lista revelada.\n- No vuelvas a `look` salvo que hayas agotado la lista de objetos pendientes, cambiado de sala o cambiado el estado del mundo abriendo/tomando/usando algo.\n- No llames `look` repetidamente en la misma sala si la observacion no cambio. Si no avanzaste, elegi un objeto pendiente para `examine`, un item revelado para `take`, o una llave/pieza del inventario para `use`.\n\nNavegacion:\n- En escenarios con `go`, manten un mapa mental de sala actual, salidas, camino recorrido, objetos vistos e inventario.\n- La sala actual es siempre la ultima sala indicada por `look` o por una respuesta exitosa de `go` (\"Llegas a ...\").\n- Antes de moverte, usa solo direcciones listadas para la sala actual por `look`, por la ultima observacion o por la memoria estructurada.\n- Nunca uses salidas de salas anteriores para moverte desde la sala actual.\n- Si una direccion falla desde una sala, recorda que esa direccion no existe desde esa sala y no la repitas.\n- Si necesitas volver a un objeto visto antes, navega de regreso por el camino inverso registrado.\n- Solo intentes `use(item, target)` si el target esta visible en la sala actual o en el inventario. Si no esta visible, volve primero a la sala donde lo viste.\n- Nunca llames `go` con ids de objetos. `go` solo se usa con direcciones listadas en `Salidas`, como `norte`, `sur`, `este` u `oeste`.\n\nPara memoria conversacional:\n- Usa el historial como memoria de la conversacion.\n- Si el usuario pide recordar un dato, confirmalo sin usar herramientas.\n- Para preguntas sobre mensajes anteriores, responde usando el historial.\n\nPara salida estructurada:\n- Si cualquier tool devuelve que `puerta_principal` \"Se abre\", \"esta abierta\" o \"ya esta abierta\", el objetivo de abrir la puerta ya esta cumplido. Termina inmediatamente con respuesta final y no uses ninguna otra herramienta.\n- Si `final_result` esta disponible, invoca esa herramienta con el schema pedido y no respondas con texto libre.\n\nCuando el objetivo este cumplido o tengas la respuesta final, responde directamente."
+    },
+    {
+      "id": "iterations_60",
+      "description": "",
+      "prompt": "prompts/04_PROMPT",
+      "max_iterations": 60,
+      "max_history_messages": 80,
+      "use_structured_memory": true,
+      "stop_on_goal": false,
+      "use_completion_review": false,
+      "system_prompt": "Sos un agente con herramientas. Respondes en espanol y resolves tareas paso a paso usando las herramientas disponibles.\n\nReglas generales:\n- Usa herramientas cuando sean necesarias para observar, calcular, leer archivos o actuar sobre un entorno.\n- Copia exactamente los ids, rutas y argumentos que devuelven las herramientas. No reemplaces ids por nombres visibles.\n- Si una herramienta devuelve un error por id inexistente, usa `look` u otra observacion disponible para obtener el id correcto.\n- No repitas la misma llamada si ya devolvio la misma informacion o el mismo error.\n- Ante un error de herramienta, corregi la causa antes de intentar otra vez.\n- Antes de usar una llave, pieza o item, verifica que este en el inventario segun las observaciones previas o la memoria estructurada. Si fue revelado pero no tomado, volve al lugar donde lo viste y usa `take` antes de intentar `use`.\n- Si una observacion revela varios items utiles en un contenedor abierto, toma los items utiles que puedas transportar antes de irte de la sala.\n\nUso de memoria estructurada:\n- Si el system prompt incluye una seccion llamada \"Memoria estructurada observada del entorno\", tratala como tu estado de trabajo confiable.\n- Antes de cada tool call, revisa en la memoria: sala actual, inventario observado, objetos descubiertos, transportabilidad confirmada, objetos conocidos en la sala actual, salidas conocidas, salidas bloqueadas, acciones fallidas recientes y siguiente objetivo sugerido.\n- Dale prioridad a la memoria estructurada sobre tu intuicion. Si la memoria dice que un objeto fue visto en otra sala, navega primero a esa sala antes de `take`, `examine` o `use`.\n- Descubrir un objeto no significa que sea transportable ni que debas tomarlo. Examina libros, expedientes y otros objetos para obtener pistas; toma solo objetos utiles que puedas llevar.\n- Si una herramienta confirma que un objeto no se puede llevar, no repitas take ni lo uses como item del inventario. Puedes seguir examinandolo. Los objetos de transportabilidad desconocida o no transportables no impiden moverte.\n- Si la memoria muestra salidas conocidas de la sala actual, usa solo esas direcciones con `go`.\n- Si la memoria muestra acciones fallidas recientes, no repitas la misma accion; cambia de estrategia usando la informacion del error.\n- Si aparece \"Siguiente objetivo sugerido\", seguilo salvo que contradiga una observacion mas reciente.\n\nPara mundos tipo sala de escape:\n- Empeza con `look` si no conoces el estado actual.\n- `look` muestra objetos con formato `[id: ...]`; usa siempre esos ids exactos.\n- Examina objetos selectivamente para entender contenedores, cerraduras, pistas u objetos sospechosos; no examines todo si ya hay una accion util evidente.\n- Si ves un objeto tomable util, usa `take` con su id.\n- Si tenes una llave o pieza y hay un contenedor, cerradura o bloqueo compatible por color, nombre o descripcion, proba `use(item, target)` antes de seguir explorando.\n- Si un contenedor u objeto cerrado requiere una llave o pieza que todavia no tenes en el inventario, no intentes abrirlo: busca, revela y toma primero el item requerido.\n- No sigas examinando el mismo contenedor cerrado si ya sabes que requiere una llave o pieza; abrilo primero cuando tengas el item compatible.\n- Despues de abrir un contenedor, usa `examine` sobre ese contenedor para revelar su contenido.\n- Despues de revelar un item util y transportable, tomalo con `take`.\n- Despues de tomar una llave, pieza o item claramente util, preguntate si ayuda al objetivo principal o a un bloqueo ya visto. Si conoces donde esta ese objetivo o bloqueo, volve y proba el item compatible antes de explorar salas menos relevantes.\n- Si una herramienta dice que a un objetivo le faltan piezas, items o condiciones, trata esos faltantes como subobjetivos prioritarios: busca, toma y lleva esos items de vuelta al objetivo.\n- Recorda el objetivo principal. Si una tool confirma que el objetivo ya se cumplio, no uses mas herramientas y responde con la respuesta final.\n- Si `use(item, \"puerta_principal\")` devuelve que la puerta se abre, termina inmediatamente con respuesta final. No llames `look`, `go`, `examine`, `take` ni `use` despues de eso.\n\nBusqueda sistematica:\n- Si examinas varios objetos similares y no encontras nada util, continua con el siguiente id pendiente de la lista revelada.\n- No vuelvas a `look` salvo que hayas agotado la lista de objetos pendientes, cambiado de sala o cambiado el estado del mundo abriendo/tomando/usando algo.\n- No llames `look` repetidamente en la misma sala si la observacion no cambio. Si no avanzaste, elegi un objeto pendiente para `examine`, un item revelado para `take`, o una llave/pieza del inventario para `use`.\n\nNavegacion:\n- En escenarios con `go`, manten un mapa mental de sala actual, salidas, camino recorrido, objetos vistos e inventario.\n- La sala actual es siempre la ultima sala indicada por `look` o por una respuesta exitosa de `go` (\"Llegas a ...\").\n- Antes de moverte, usa solo direcciones listadas para la sala actual por `look`, por la ultima observacion o por la memoria estructurada.\n- Nunca uses salidas de salas anteriores para moverte desde la sala actual.\n- Si una direccion falla desde una sala, recorda que esa direccion no existe desde esa sala y no la repitas.\n- Si necesitas volver a un objeto visto antes, navega de regreso por el camino inverso registrado.\n- Solo intentes `use(item, target)` si el target esta visible en la sala actual o en el inventario. Si no esta visible, volve primero a la sala donde lo viste.\n- Nunca llames `go` con ids de objetos. `go` solo se usa con direcciones listadas en `Salidas`, como `norte`, `sur`, `este` u `oeste`.\n\nPara memoria conversacional:\n- Usa el historial como memoria de la conversacion.\n- Si el usuario pide recordar un dato, confirmalo sin usar herramientas.\n- Para preguntas sobre mensajes anteriores, responde usando el historial.\n\nPara salida estructurada:\n- Si cualquier tool devuelve que `puerta_principal` \"Se abre\", \"esta abierta\" o \"ya esta abierta\", el objetivo de abrir la puerta ya esta cumplido. Termina inmediatamente con respuesta final y no uses ninguna otra herramienta.\n- Si `final_result` esta disponible, invoca esa herramienta con el schema pedido y no respondas con texto libre.\n\nCuando el objetivo este cumplido o tengas la respuesta final, responde directamente."
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "study-with-key",
+      "source": "C:\\dev\\MIA_repos\\tp_mia_agentes_2026\\scenarios\\01-study-with-key.json",
+      "definition": {
+        "id": "study-with-key",
+        "difficulty": "easy",
+        "description": "Un estudio con una llave dorada bajo la alfombra y una puerta cerrada.",
+        "user_message": "Te despiertas encerrado en un pequeño estudio. La puerta está cerrada. Encuentra la forma de salir. Usa las herramientas que tienes disponibles para explorar la sala y resolver el puzzle.",
+        "start_room": "estudio",
+        "rooms": {
+          "estudio": {
+            "name": "Estudio",
+            "description": "Un estudio pequeño forrado de libros. Una alfombra persa cubre el centro del suelo. A un lado hay un escritorio de roble. Al fondo, la puerta principal.",
+            "items": [
+              "alfombra",
+              "escritorio",
+              "puerta_principal"
+            ]
+          }
+        },
+        "items": {
+          "alfombra": {
+            "name": "alfombra",
+            "description": "Una vieja alfombra persa. Algo abulta debajo.",
+            "container": true,
+            "contains": [
+              "llave_oro"
+            ]
+          },
+          "llave_oro": {
+            "name": "llave dorada",
+            "description": "Una llave dorada, pesada al tacto.",
+            "takeable": true,
+            "hidden_by": "alfombra"
+          },
+          "escritorio": {
+            "name": "escritorio",
+            "description": "Un escritorio de roble con dos cajones. Ambos están abiertos y vacíos.",
+            "container": true,
+            "contains": []
+          },
+          "puerta_principal": {
+            "name": "puerta principal",
+            "description": "Una puerta robusta de roble. La cerradura es dorada y parece reciente.",
+            "locked": {
+              "requires_item": "llave_oro"
+            },
+            "open_state": "closed"
+          }
+        },
+        "goal": {
+          "type": "item_open",
+          "item": "puerta_principal"
+        }
+      }
+    },
+    {
+      "id": "color-locks",
+      "source": "C:\\dev\\MIA_repos\\tp_mia_agentes_2026\\scenarios\\02-medium-color-locks.json",
+      "definition": {
+        "id": "color-locks",
+        "difficulty": "medium",
+        "description": "Un sótano con cuatro cofres pintados de colores distintos. Cada cofre tiene una cerradura del mismo color, y cada uno (excepto uno) guarda dentro la llave del color del siguiente cofre. La cadena empieza con una llave plateada a la vista y termina con la llave dorada que abre la puerta principal.",
+        "user_message": "Te despiertas en un sótano frío. La puerta principal, al fondo, está cerrada con una cerradura dorada considerable. Sobre una repisa baja brilla una llave plateada. Repartidos por el suelo hay cuatro cofres pintados de colores distintos (plateado, rojo, verde y azul), cada uno con su cerradura del mismo color. Algunos cofres están cerrados con llave, otros no. Encuentra la forma de salir.",
+        "start_room": "sotano",
+        "rooms": {
+          "sotano": {
+            "name": "Sótano",
+            "description": "Un sótano de piedra con olor a humedad y una bombilla solitaria colgando del techo. Una repisa baja en la pared norte sostiene una llave plateada brillante. En el suelo descansan cuatro cofres pintados de colores distintos. Al fondo, una puerta de roble con cerradura dorada.",
+            "items": [
+              "llave_plata",
+              "cofre_plata",
+              "cofre_rojo",
+              "cofre_verde",
+              "cofre_azul",
+              "puerta_principal"
+            ]
+          }
+        },
+        "items": {
+          "llave_plata": {
+            "name": "llave plateada",
+            "description": "Una llave pequeña y brillante, de plata pulida. Por su tamaño, parece encajar en una cerradura igualmente pequeña.",
+            "takeable": true
+          },
+          "cofre_plata": {
+            "name": "cofre plateado",
+            "description": "Un cofre pequeño con tachuelas plateadas y una cerradura del mismo color. Encaja con una llave del mismo color.",
+            "container": true,
+            "contains": [
+              "llave_roja"
+            ],
+            "locked": {
+              "requires_item": "llave_plata"
+            },
+            "open_state": "closed"
+          },
+          "llave_roja": {
+            "name": "llave roja",
+            "description": "Una llave mediana esmaltada de rojo intenso.",
+            "takeable": true,
+            "hidden_by": "cofre_plata"
+          },
+          "cofre_rojo": {
+            "name": "cofre rojo",
+            "description": "Un cofre mediano pintado de rojo, con una cerradura roja del mismo tono. Encaja con una llave del mismo color.",
+            "container": true,
+            "contains": [
+              "llave_verde"
+            ],
+            "locked": {
+              "requires_item": "llave_roja"
+            },
+            "open_state": "closed"
+          },
+          "llave_verde": {
+            "name": "llave verde",
+            "description": "Una llave grande esmaltada de verde oscuro, gruesa.",
+            "takeable": true,
+            "hidden_by": "cofre_rojo"
+          },
+          "cofre_verde": {
+            "name": "cofre verde",
+            "description": "Un cofre grande pintado de verde, con una cerradura verde voluminosa. Encaja con una llave del mismo color.",
+            "container": true,
+            "contains": [
+              "llave_oro"
+            ],
+            "locked": {
+              "requires_item": "llave_verde"
+            },
+            "open_state": "closed"
+          },
+          "llave_oro": {
+            "name": "llave dorada",
+            "description": "Una llave dorada de aspecto institucional, gruesa y pesada. Encaja en cerraduras grandes.",
+            "takeable": true,
+            "hidden_by": "cofre_verde"
+          },
+          "cofre_azul": {
+            "name": "cofre azul",
+            "description": "Un cofre pintado de azul desconchado. Sorprendentemente, no tiene cerradura: las bisagras se abren al primer empujón.",
+            "container": true,
+            "contains": [
+              "trapo_viejo"
+            ]
+          },
+          "trapo_viejo": {
+            "name": "trapo viejo",
+            "description": "Un trapo gris y manchado de aceite. Inservible.",
+            "takeable": true,
+            "hidden_by": "cofre_azul"
+          },
+          "puerta_principal": {
+            "name": "puerta principal",
+            "description": "Una puerta gruesa de roble con marco metálico y una cerradura dorada considerable.",
+            "locked": {
+              "requires_item": "llave_oro"
+            },
+            "open_state": "closed"
+          }
+        },
+        "goal": {
+          "type": "item_open",
+          "item": "puerta_principal"
+        }
+      }
+    },
+    {
+      "id": "library-search",
+      "source": "C:\\dev\\MIA_repos\\tp_mia_agentes_2026\\scenarios\\03-hard-library-search.json",
+      "definition": {
+        "id": "library-search",
+        "difficulty": "hard",
+        "description": "Una biblioteca con ocho libros en una estantería alta. Uno de ellos guarda la llave de la caja fuerte; la caja, a su vez, contiene la llave grabada que abre la puerta. Los demás libros son prosa larga e inútil.",
+        "user_message": "Te despiertas en la biblioteca del archivero. La puerta principal está cerrada con una cerradura grabada. En la pared opuesta hay una caja fuerte empotrada, también cerrada. Una estantería alta ocupa la pared norte con ocho volúmenes encuadernados de forma parecida. Hay también un viejo escritorio en el centro. Encuentra la forma de salir.",
+        "start_room": "biblioteca",
+        "rooms": {
+          "biblioteca": {
+            "name": "Biblioteca del archivero",
+            "description": "Una sala rectangular con olor a papel viejo. Al norte, una estantería alta de roble cargada de libros antiguos. En el centro, un escritorio robusto con un cajón único, vacío al primer vistazo. En la pared oeste, empotrada en el muro, una caja fuerte de hierro con bisagras macizas y un disco de combinación que en realidad oculta una cerradura convencional. Enfrente, la puerta principal, de hierro negro, con la cerradura grabada de símbolos.",
+            "items": [
+              "escritorio",
+              "estanteria_alta",
+              "caja_fuerte",
+              "puerta_principal"
+            ]
+          }
+        },
+        "items": {
+          "escritorio": {
+            "name": "escritorio",
+            "description": "Un escritorio de roble con un único cajón estrecho. Lo abres y lo encuentras vacío salvo por restos de polvo y una pluma rota.",
+            "container": true,
+            "contains": []
+          },
+          "estanteria_alta": {
+            "name": "estantería alta",
+            "description": "Una estantería de roble de cuatro baldas. Solo la balda superior tiene libros — ocho volúmenes encuadernados con materiales distintos pero de tamaño parecido. Las baldas inferiores están vacías.",
+            "container": true,
+            "contains": [
+              "libro_geometria",
+              "libro_alquimia",
+              "libro_filosofia",
+              "libro_historia",
+              "libro_jurisprudencia",
+              "libro_recetario",
+              "libro_genealogia",
+              "libro_sermones"
+            ]
+          },
+          "libro_geometria": {
+            "name": "Elementos de geometría aplicada",
+            "description": "Encuadernación rígida de cartón forrado en tela negra, lomo reforzado. Proposición XVII (página 84): 'En todo triángulo, si se prolongan dos de sus lados hasta cortarse en un punto exterior, los ángulos así formados son iguales a los ángulos opuestos por el vértice del triángulo original.' La demostración ocupa página y media y se apoya en las proposiciones IV, IX y XII. El autor — Tomás del Riego, ingeniero militar — añade en nota al pie que esta proposición le ahorró tres días de cálculo en el trazado del fuerte de San Marcos, en el año 1721, y recomienda al lector aplicarla con prudencia cuando la regla no alcance. El resto del capítulo desarrolla seis problemas resueltos sobre triángulos semejantes, cuadrados inscritos en círculos y trazado de polígonos regulares de cinco, seis y ocho lados. Las figuras están grabadas en cobre y aparecen al pie de cada problema, con líneas de construcción discontinuas y letras latinas para los vértices.",
+            "hidden_by": "estanteria_alta"
+          },
+          "libro_alquimia": {
+            "name": "Notas sobre la transmutación de los metales",
+            "description": "Manuscrito en cuarto, encuadernación de cuero rojo desgastado, sin nombre de autor. Folio 23 verso: 'Operación segunda: tomadas las virutas de plomo del peso de una onza y tres adarmes, póngase en crisol de arcilla refractaria, cúbrase con sal de tártaro y cal viva en partes iguales, y caliéntese al rojo cereza durante doce horas seguidas sin dejar enfriar el fuelle. Apartado del fuego, déjese reposar el crisol hasta la mañana siguiente. Al romperlo se hallará una masa vidriosa en cuya superficie aparecerán glóbulos del metal del sol; recójanse con espátula de cuerno, no de metal vulgar. Sucede a veces, no diré con qué frecuencia, que la operación produzca solo una escoria gris y maloliente; en tal caso conviene revisar la pureza de la cal y la quietud del firmamento.' El folio siguiente lleva una receta similar para la cal de mercurio. Hay marcas de quemaduras en los márgenes y manchas oscuras que el lector cuidadoso reconocerá como hierro oxidado.",
+            "hidden_by": "estanteria_alta"
+          },
+          "libro_filosofia": {
+            "name": "Diálogos sobre la naturaleza del juicio",
+            "description": "Volumen de pequeño tamaño, encuadernado en piel verde con cantos dorados. Diálogo tercero, entre Macario y Filón: '— Dime, Filón: cuando juzgas a tu vecino, ¿le pesas con la misma balanza con que te pesas a ti mismo? — A veces, Macario; pero he advertido que la balanza pierde fiel cuando se mira de cerca. — Es decir, que cuanto más te conoces, menos riguroso eres contigo. — Más bien lo contrario: cuanto más me conozco, más comprendo por qué fallo, y eso me hace indulgente conmigo y a veces injusto con los demás. — De suerte que la indulgencia y la injusticia nacen de la misma raíz. — Eso parece. — Concluyamos entonces que el juicio sano no nace de conocerse, sino de olvidarse: solo el juez que ha dejado fuera de la sala su propio caso puede pesar limpio.' El diálogo prosigue durante diez páginas más, sin que ninguno de los dos consienta del todo en la conclusión del otro. El autor — un canónigo de Salamanca — anota al margen: 'tampoco yo estoy seguro'.",
+            "hidden_by": "estanteria_alta"
+          },
+          "libro_historia": {
+            "name": "Anales del reino, década quinta",
+            "description": "Tomo en folio, encuadernación de pergamino crudo, con cintas de cierre. Año 1437, entrada de mayo: 'Llegó al puerto de Santander, en la víspera de san Pedro, una flota de tres naves procedentes de Flandes con cargamento de paño teñido, ámbar y libros impresos. La corona compró el ámbar por mil quinientos maravedís, y el paño quedó para el infante don Sancho. Los libros, traducidos por un fraile de Burgos, se enviaron a la biblioteca real. Las naves regresaron con plata mexicana y aceite andaluz.' Junio: 'Hubo plaga de langosta en los campos de Tierra de Campos, perdiéndose dos tercios de la cosecha. La corona dispensó del diezmo a las parroquias afectadas.' Julio: 'El conde de Treviño murió de fiebres, sin heredero legítimo, y sus posesiones revirtieron a la corona tras un pleito que duró seis meses.' Las entradas continúan así, mes por mes, hasta el año 1442. Los márgenes están salpicados de números: probables totales presupuestarios anotados por algún funcionario.",
+            "hidden_by": "estanteria_alta"
+          },
+          "libro_jurisprudencia": {
+            "name": "Recopilación de sentencias del tribunal supremo",
+            "description": "Tomo grueso encuadernado en piel parda, con el escudo real estampado en seco en la cubierta. Sentencia 412 del año 1798: 'En la causa seguida contra Juan Espinosa, vecino de Trujillo, por presunta apropiación indebida de aguas de regadío comunal, vista la prueba documental y testimonial aportada por ambas partes, este tribunal falla: el demandado deberá restituir a la comunidad de regantes la cantidad de tres cargas de cebada equivalentes al daño estimado, abonará costas, y se le impone censura pública en plaza por hábito reiterado de prácticas similares. No procede pena de cárcel por carecer el reo de antecedentes formales. Notifíquese a la autoridad municipal correspondiente.' Las sentencias siguientes versan sobre lindes de fincas, herencias mal repartidas y cobros de censos vencidos. El estilo es severo y conciso; las decisiones tienden a buscar la restitución antes que el castigo. Al final del tomo, un índice ordena los casos por materia: aguas, lindes, herencias, mercados, contratos.",
+            "hidden_by": "estanteria_alta"
+          },
+          "libro_recetario": {
+            "name": "Recetario del cocinero mayor",
+            "description": "Manuscrito en cuarto, tapas blandas de pergamino, manchado de aceite. Receta del capón en pepitoria, página 47: 'Tómese un capón joven, bien limpio y troceado, y póngase a dorar en cazuela de barro con manteca de cerdo y un poco de tocino. Cuando esté tomado por todos lados, añádase una cabeza de ajos picada, un puñado de almendras tostadas y machacadas, una cucharada de harina y un vaso del mejor vino blanco que se tenga. Déjese reducir un cuarto de hora a fuego mediano; añádanse después dos huevos cocidos, picado fino el blanco y reservada la yema. Cúbrase con caldo de gallina hasta que el capón quede sumergido, y cuézase a fuego lento durante hora y media. Al final, deslíase la yema de huevo en un poco de la salsa y añádase a la cazuela fuera del fuego, removiendo bien para que ligue. Espolvoréese perejil picado y sírvase muy caliente.' Las páginas siguientes detallan recetas de pichones, conejo, ternera estofada y un curioso pastel de hojaldre con manzana.",
+            "hidden_by": "estanteria_alta"
+          },
+          "libro_genealogia": {
+            "name": "Genealogía de la casa de Andrade",
+            "description": "Tomo grande encuadernado en piel azul, con grabados heráldicos en el lomo. Capítulo I — Origen y primera generación: 'Pero Domínguez de Andrade, llamado el Calvo por su temprana pérdida de cabello, fundó la casa en el año 1284 al recibir de don Sancho IV las tierras de Andrade en Tierra de Lemos, en pago por sus servicios en la frontera de Granada. Casó en primeras nupcias con doña Mencía Rodríguez, de la cual tuvo tres hijos: Fernán, Diego y Teresa. Enviudó en 1297 y casó de nuevo con doña Aldonza Pérez de Sarria, sin sucesión. Murió en 1312 de heridas mal cicatrizadas tras una caída de caballo.' El árbol genealógico ocupa una página plegada y baja hasta finales del siglo XVIII, con doce ramas principales y numerosas colaterales. Los nombres se repiten: Fernán, Sancho, Pero, Teresa, Mencía. Las anotaciones marginales indican fechas de nacimiento, casamientos, defunciones y, en algunos casos, una breve nota sobre el oficio o las circunstancias del fin.",
+            "hidden_by": "estanteria_alta"
+          },
+          "libro_sermones": {
+            "name": "Colección de sermones dominicales",
+            "description": "Tomo encuadernado en piel negra con cantos rojos, muy usado. Sermón XXI, para el cuarto domingo de cuaresma: 'Mis hermanos, no es la enmienda lo que se nos pide, sino el principio de la enmienda; no la perfección, sino el ánimo de empezar. Cristo no espera al santo en el umbral de la iglesia: espera al pecador que se acerca. Si esto entendemos, lo demás vendrá; si esto no lo entendemos, ni con cuarenta días de ayuno ni con cuarenta noches en vela conseguiremos avanzar un palmo. La vida cristiana no es un palacio que uno construye desde fuera, piedra a piedra hasta dejarlo perfecto; es una casa heredada, que conviene barrer todos los días y reparar cuando algo se rompe.' El predicador — Fray Diego Méndez, dominico — repite la misma estructura en los sermones siguientes: una imagen sencilla, una insistencia, una invitación. El tomo está marcado en docenas de páginas con cintas de seda descoloridas; los márgenes llevan anotaciones de un párroco posterior.",
+            "container": true,
+            "contains": [
+              "llave_caja"
+            ],
+            "hidden_by": "estanteria_alta"
+          },
+          "llave_caja": {
+            "name": "llave de la caja",
+            "description": "Una llave pequeña de bronce, con un grabado: 'caja del archivero'.",
+            "takeable": true,
+            "hidden_by": "libro_sermones"
+          },
+          "caja_fuerte": {
+            "name": "caja fuerte",
+            "description": "Caja fuerte de hierro empotrada en el muro. El disco de combinación visible es decorativo: la cerradura real está bajo una placa metálica que solo se abre con una llave específica.",
+            "container": true,
+            "contains": [
+              "llave_grabada"
+            ],
+            "locked": {
+              "requires_item": "llave_caja"
+            },
+            "open_state": "closed"
+          },
+          "llave_grabada": {
+            "name": "llave grabada",
+            "description": "Una llave gruesa de hierro, con grabados de alquimia en la cabeza. Pesada. Encaja en una cerradura del mismo estilo.",
+            "takeable": true,
+            "hidden_by": "caja_fuerte"
+          },
+          "puerta_principal": {
+            "name": "puerta principal",
+            "description": "Una puerta de hierro negro con la cerradura grabada con símbolos. Solo una llave con grabado coincidente la abrirá.",
+            "locked": {
+              "requires_item": "llave_grabada"
+            },
+            "open_state": "closed"
+          }
+        },
+        "goal": {
+          "type": "item_open",
+          "item": "puerta_principal"
+        }
+      }
+    },
+    {
+      "id": "extreme-archive",
+      "source": "C:\\dev\\MIA_repos\\tp_mia_agentes_2026\\scenarios\\04-extreme-archive.json",
+      "definition": {
+        "id": "extreme-archive",
+        "difficulty": "extreme",
+        "description": "Archivo central de la facultad: una estantería con veinte expedientes voluminosos. Solo uno guarda la llave de la puerta; los demás son prosa burocrática extensa que, sumada, supera el contexto de modelos pequeños. Un agente single-loop no puede examinarlos todos sin desbordar.",
+        "user_message": "Te despiertas en el archivo central de la facultad. La puerta principal está cerrada con una cerradura institucional. La estantería frente a ti contiene veinte expedientes; cada uno parece un documento administrativo extenso y, a primera vista, indistinguible de los demás. Sospechas que solo uno guarda lo que necesitas. Encuentra la forma de salir sin perder el tiempo leyendo en vano.",
+        "start_room": "archivo",
+        "rooms": {
+          "archivo": {
+            "name": "Archivo central",
+            "description": "Una sala alargada con olor a papel y polvo. Una estantería metálica recorre la pared norte, llena de expedientes encuadernados con tela gris e identificados solo por un número de caso. En la pared sur, la puerta principal con cerradura institucional. No hay ventanas; la luz viene de un fluorescente que zumba.",
+            "items": [
+              "estanteria_archivo",
+              "puerta_principal"
+            ]
+          }
+        },
+        "items": {
+          "estanteria_archivo": {
+            "name": "estantería del archivo",
+            "description": "Una estantería metálica de cinco baldas. Cada balda contiene cuatro expedientes encuadernados en tela gris, identificados con una etiqueta blanca donde solo aparece el número de caso. Son veinte expedientes en total, todos del mismo tamaño aproximado.",
+            "container": true,
+            "contains": [
+              "expediente_1042",
+              "expediente_1387",
+              "expediente_1850",
+              "expediente_2104",
+              "expediente_2519",
+              "expediente_2841",
+              "expediente_3206",
+              "expediente_3478",
+              "expediente_3902",
+              "expediente_4117",
+              "expediente_4583",
+              "expediente_4860",
+              "expediente_5135",
+              "expediente_5404",
+              "expediente_5829",
+              "expediente_6201",
+              "expediente_6534",
+              "expediente_6987",
+              "expediente_7240",
+              "expediente_7615"
+            ]
+          },
+          "expediente_1042": {
+            "name": "expediente 1042",
+            "description": "RESOLUCIÓN DISCIPLINARIA Nº 1042/curso anterior. Estimado decanato: en respuesta a la denuncia presentada por la profesora doña Marta Hidalgo Cebrián el día 12 de noviembre, esta comisión disciplinaria ha procedido al examen del caso del estudiante con número de matrícula 80214, matriculado en el segundo curso de Filología Hispánica. Tras revisar las pruebas aportadas — copia del trabajo de fin de cuatrimestre, contraste con dos fuentes externas localizadas en repositorios académicos abiertos, e informe del programa institucional de detección de plagio — la comisión concluye por unanimidad que existe coincidencia textual no atribuida en un 34% del trabajo, superior al umbral del 15% que esta universidad considera tolerable como cita defectuosa. El estudiante alegó, en audiencia celebrada el 28 de noviembre, que la similitud se debía a la consulta de notas tomadas durante una asignatura previa cuyos materiales habrían sido compartidos por el propio docente. Esta línea de defensa no se ha podido verificar porque el docente referido se encontraba de baja médica en el momento de la consulta y los materiales no constan en el repositorio institucional. La comisión, por tanto, propone como sanción: suspensión de la convocatoria ordinaria de la asignatura afectada, obligación de cursar el taller de buenas prácticas académicas (ocho sesiones, vespertinas) durante el siguiente cuatrimestre, y anotación reservada en el expediente que se cancelará automáticamente a los tres años si no se reincidiera. La presente resolución es susceptible de recurso ante el rectorado en el plazo de quince días naturales. Firmado: presidenta de la comisión, secretaria y vocal externo. ANEXO PROCEDIMENTAL. A los efectos de la aplicación de la presente resolución se aclaran los siguientes extremos conforme al reglamento interno aprobado en consejo de gobierno del 14 de marzo y a la normativa supletoria que pueda resultar aplicable: los plazos se computarán por días naturales salvo mención expresa en contrario, tomándose como referencia la fecha de notificación efectiva mediante medio acreditado y no la de emisión del documento; los recursos administrativos que procedan se presentarán ante el órgano superior jerárquico (rectorado) conforme al procedimiento general previsto en el reglamento de procedimiento administrativo institucional, con expresa observancia del principio de doble instancia; la suspensión cautelar de la ejecución solo podrá acordarse mediante auto motivado en aquellos supuestos en que la ejecución cause perjuicios de imposible o difícil reparación o cuando los motivos de fondo aparezcan como sólidos a juicio del instructor del recurso, conforme a los criterios establecidos en la doctrina interna del servicio jurídico. Quedan a salvo las acciones jurisdiccionales que la parte interesada considere oportuno ejercitar ante los tribunales ordinarios competentes en la materia, sin que la pendencia del recurso administrativo prejuzgue su admisibilidad. Se notifica a los efectos correspondientes.",
+            "hidden_by": "estanteria_archivo"
+          },
+          "expediente_1387": {
+            "name": "expediente 1387",
+            "description": "MEMORÁNDUM INTERNO 1387. Asunto: redistribución de despachos en el ala oeste del edificio Cervantes tras la reforma del tercer piso. Remitente: vicedecanato de infraestructuras. Destinatarios: profesorado del departamento de Literatura Comparada. La reciente reforma del ala oeste, aprobada en consejo de departamento del pasado abril y financiada con cargo a la partida extraordinaria de mantenimiento, ha supuesto la pérdida temporal de tres despachos compartidos y dos individuales. La obra concluye en febrero, momento en el cual se procederá al reparto definitivo conforme a los siguientes criterios, ordenados por prioridad: antigüedad en el departamento, dedicación (tiempo completo o parcial), número de doctorandos en dirección activa, y necesidades específicas certificadas por servicios médicos o de igualdad. La adjudicación provisional, vigente hasta febrero, asigna a la profesora Castellón el despacho 3.14, al profesor Ruiz-Mora el 3.16, y mantiene a las dos asociadas en el espacio compartido 3.18-bis. Cualquier discrepancia con esta asignación provisional deberá presentarse por escrito a la secretaría del decanato antes del 30 del presente mes; pasada esa fecha se entenderá aceptada. Recordamos que el material almacenado en los despachos previamente ocupados durante la reforma fue trasladado a las cajas etiquetadas del sótano S-2; cualquier objeto no reclamado antes del fin del cuatrimestre se considerará excedente y se procederá a su disposición conforme a la normativa interna. Para consultas, la coordinadora de infraestructuras atiende los miércoles por la tarde. ANTECEDENTES DOCUMENTALES. Para una mejor comprensión del contexto del presente expediente conviene reseñar los siguientes antecedentes que constan en el archivo institucional y que han servido para sostener la coherencia de la práctica administrativa en esta materia: existió un caso de similar naturaleza tramitado el año dos mil dieciocho, expediente 9421, cuya resolución sentó un criterio que ha venido aplicándose con carácter orientativo desde entonces; durante el curso anterior se tramitaron tres asuntos análogos, todos resueltos en sentido coherente con aquel precedente, lo que ha consolidado una línea interpretativa estable; el servicio jurídico, en informe consultivo de marzo del año en curso, confirmó la solidez de la línea interpretativa y sugirió su consolidación mediante incorporación expresa al reglamento interno cuando este se revise; por su parte, el defensor universitario ha emitido informe favorable sobre la práctica seguida, sin perjuicio de recomendar la publicación sistemática de las resoluciones en el repositorio institucional para garantizar la transparencia. Se deja constancia de estos antecedentes a efectos informativos y sin que de ellos se derive vinculación jurídica directa.",
+            "hidden_by": "estanteria_archivo"
+          },
+          "expediente_1850": {
+            "name": "expediente 1850",
+            "description": "SOLICITUD DE DOTACIÓN PRESUPUESTARIA Nº 1850. Departamento solicitante: Química Inorgánica. Concepto: renovación parcial del equipamiento del laboratorio L-204, en concreto sustitución del espectrofotómetro UV-visible (modelo en uso desde 1998, fuera de cobertura técnica desde 2019) y adquisición de una centrífuga refrigerada de bancada. Justificación: el equipo actual presenta una deriva no compensable que invalida cualquier medida con rigor para publicación; la centrífuga existente carece de control térmico y no permite trabajar con muestras biológicas sin riesgo de degradación. Importe total estimado, incluyendo IVA y portes: cuarenta y dos mil setecientos euros. Cofinanciación propuesta: cuarenta por ciento del coste mediante el remanente del proyecto MIA-2021-0438 (que concluye en marzo y dispone de saldo no comprometido tras la última auditoría), restante sesenta por ciento con cargo a la partida departamental de inversión plurianual. La solicitud cuenta con el aval de los tres grupos de investigación que comparten el espacio (catálisis, electroquímica, materiales) y se ha verificado la compatibilidad eléctrica del laboratorio mediante informe del servicio técnico, que también señala la necesidad de instalar un punto de toma con regulador de tensión, cuyo coste (mil cuatrocientos euros) se ha incluido en el presupuesto. Plazos: si la aprobación se produce antes del 15 de enero, el equipamiento puede estar operativo en marzo, lo que permite incorporar los nuevos datos a la memoria anual del cuatrienio. Adjuntos: tres presupuestos comparativos, dos referencias institucionales y plan de mantenimiento. DISPOSICIONES COMPLEMENTARIAS. Para la efectividad de cuanto se acuerda se establecen las siguientes disposiciones de carácter complementario, cuya observancia será obligatoria para todas las partes implicadas y para los servicios universitarios concernidos en su ejecución: el seguimiento corresponderá a la unidad responsable, que elaborará un informe semestral durante los primeros dos años y anual con posterioridad, salvo que las circunstancias aconsejen otra periodicidad; cualquier modificación material de las circunstancias que justificaron la presente resolución, especialmente si supone una alteración sustancial de los hechos, deberá comunicarse a la comisión en el plazo máximo de treinta días, con la documentación acreditativa correspondiente; las personas que participaron en la instrucción del expediente conservan deber de reserva respecto del contenido, conforme a la normativa de protección de datos y al reglamento interno de tratamiento de información sensible; los costes derivados de la ejecución de las medidas se asumirán con cargo a las partidas presupuestarias correspondientes, sin que ello suponga modificación del presupuesto general aprobado para el ejercicio en curso. La presente disposición forma parte integrante de la resolución principal y entrará en vigor con ella.",
+            "hidden_by": "estanteria_archivo"
+          },
+          "expediente_2104": {
+            "name": "expediente 2104",
+            "description": "RECURSO DE ADMISIÓN Nº 2104. Recurrente: candidato con número de identificación 19-AB-9981 (datos personales reservados). Asunto: revisión de la nota de acceso al máster oficial en Estudios Filosóficos Avanzados, plaza no concedida en la primera convocatoria del presente curso. El candidato sostiene que la baremación de su expediente académico previo no ha considerado adecuadamente las asignaturas cursadas en programa de movilidad internacional durante el grado, conforme al procedimiento descrito en el reglamento de admisiones (artículo 12, apartado tercero). La comisión de admisiones, en sesión extraordinaria del 7 del corriente, ha procedido a una nueva revisión documental con presencia de la responsable de la secretaría académica y representación de la coordinación del máster. Tras la revisión se constata: las asignaturas cursadas en el extranjero figuraban en el expediente con su nota original y no con la equivalencia institucional, lo que efectivamente penaliza la media; aplicada la equivalencia, la nota de acceso del candidato pasa de 7,12 a 7,84, posición que se encuentra dentro del corte para admisión. Por tanto, la comisión resuelve: estimar el recurso, ofrecer plaza al candidato 19-AB-9981 con efecto retroactivo al inicio del curso, y exhortar a la secretaría a revisar de oficio los expedientes presentados con asignaturas internacionales en el mismo período. La presente resolución se notifica al recurrente y al servicio de admisiones; el coordinador del máster habilitará los trámites de matrícula extraordinaria. CONSIDERACIONES PRESUPUESTARIAS. Sin perjuicio del fondo del asunto conviene dejar constancia de las implicaciones económicas asociadas, tanto las directas como las indirectas, a fin de facilitar el seguimiento contable y la rendición de cuentas: los gastos directos imputables al expediente, ya devengados o previsibles a corto plazo, se estiman en cuantía moderada y se cubrirán con cargo a la partida ordinaria del servicio responsable, sin necesidad de modificación presupuestaria ni de aprobación adicional por parte del consejo de gobierno; los gastos indirectos derivados de horas de personal dedicadas a la instrucción y de suministros de oficina son los habituales para este tipo de tramitación y no requieren reseña específica; existe, no obstante, un capítulo de gasto eventual ligado a posibles recursos o impugnaciones, que podría suponer el devengo de honorarios profesionales adicionales si el procedimiento se complicara, por lo que el servicio competente mantendrá una reserva contable preventiva por el importe estimado conforme a los baremos vigentes; la auditoría interna anual revisará la imputación contable correcta de todos los gastos asociados, dentro del ciclo ordinario de control financiero institucional. No procede transferencia de crédito ni habilitación extraordinaria de la partida.",
+            "hidden_by": "estanteria_archivo"
+          },
+          "expediente_2519": {
+            "name": "expediente 2519",
+            "description": "INFORME DE CONTRATACIÓN DE PROFESORADO ASOCIADO Nº 2519. Plaza convocada: una plaza de profesor asociado a tiempo parcial, área de Historia Contemporánea, dedicación seis horas semanales, vinculada a la docencia de la asignatura 'Movimientos sociales en el siglo XX' del segundo curso del grado. La comisión de selección, presidida por la catedrática del área e integrada por dos profesoras titulares y un representante del decanato como secretario sin voto, ha examinado las once candidaturas presentadas dentro del plazo. Tras la valoración de méritos académicos (publicaciones, docencia previa, proyectos competitivos) y profesionales (la convocatoria exige actividad profesional remunerada fuera de la universidad), la comisión elabora la siguiente terna ordenada: en primer lugar, candidata número 7, doctora en historia con seis años de experiencia en archivística profesional en el archivo municipal y publicaciones recientes en revistas indexadas; en segundo lugar, candidato número 3, con perfil profesional sólido pero menor recorrido docente; en tercer lugar, candidato número 9. Se descartan ocho candidaturas por no acreditar el requisito de actividad profesional externa. Se propone la contratación de la candidata número 7, con incorporación efectiva al inicio del próximo cuatrimestre y contrato anual prorrogable. El informe ha sido aprobado por unanimidad. Quedan a disposición de los recurrentes las actas detalladas en la secretaría del decanato durante el plazo legal de impugnación. OBSERVACIONES PARTICULARES DEL ÓRGANO INSTRUCTOR. Más allá de la parte dispositiva, el órgano instructor estima oportuno consignar las siguientes observaciones a título de orientación general, sin que constituyan parte vinculante de la resolución y a fin de facilitar la valoración futura de casos análogos: se ha observado durante la tramitación del presente expediente que algunos extremos podrían beneficiarse de una clarificación normativa interna, en concreto en lo relativo a los plazos de presentación de pruebas y a los criterios de baremación aplicables, materias en las cuales el reglamento vigente admite cierta indeterminación que dificulta la práctica administrativa; se sugiere, asimismo, que la formación periódica del personal técnico que tramita este tipo de expedientes incorpore módulos específicos sobre los aspectos más controvertidos, dada la complejidad creciente de la casuística; se hace notar, por último, que ciertos procedimientos colaterales podrían beneficiarse de una revisión integral en el plazo de los próximos tres ejercicios, sin que ello deba interpretarse como crítica al sistema actual sino como contribución constructiva al perfeccionamiento de la práctica administrativa.",
+            "hidden_by": "estanteria_archivo"
+          },
+          "expediente_2841": {
+            "name": "expediente 2841",
+            "description": "ACTA DEL COMITÉ DE ÉTICA DE LA INVESTIGACIÓN Nº 2841. Sesión ordinaria del 18 del mes en curso, en la sala de juntas del rectorado, con asistencia de siete miembros y un suplente. Orden del día: dictamen sobre tres proyectos sometidos a revisión previa al inicio de la fase de campo. Primer proyecto, código E-25-117: estudio cualitativo sobre estrategias de afrontamiento en cuidadores principales de pacientes con demencia, mediante entrevistas semiestructuradas. La comisión, tras revisar el protocolo, el consentimiento informado y el procedimiento de pseudoanonimización, dictamina favorablemente con dos sugerencias menores: ampliar la cláusula de derecho a retirar el consentimiento en cualquier momento sin justificación y especificar el plazo de conservación de las grabaciones. Segundo proyecto, código E-25-118: investigación experimental sobre toma de decisiones bajo presión temporal con estudiantes voluntarios. Dictamen favorable sin observaciones; el protocolo es robusto y la población diana no presenta vulnerabilidades específicas. Tercer proyecto, código E-25-119: investigación con menores escolarizados sobre exposición a contenidos digitales. Aquí la comisión emite dictamen provisional con observaciones: se requiere consentimiento parental escrito, informe de la dirección del centro escolar, y supervisión adicional durante las sesiones. El equipo investigador deberá presentar la documentación complementaria en la siguiente sesión, en la cual se reabrirá el caso. Quedan registradas dos abstenciones por conflicto de interés en proyectos no relacionados con la sesión. ANEXO PROCEDIMENTAL. A los efectos de la aplicación de la presente resolución se aclaran los siguientes extremos conforme al reglamento interno aprobado en consejo de gobierno del 14 de marzo y a la normativa supletoria que pueda resultar aplicable: los plazos se computarán por días naturales salvo mención expresa en contrario, tomándose como referencia la fecha de notificación efectiva mediante medio acreditado y no la de emisión del documento; los recursos administrativos que procedan se presentarán ante el órgano superior jerárquico (rectorado) conforme al procedimiento general previsto en el reglamento de procedimiento administrativo institucional, con expresa observancia del principio de doble instancia; la suspensión cautelar de la ejecución solo podrá acordarse mediante auto motivado en aquellos supuestos en que la ejecución cause perjuicios de imposible o difícil reparación o cuando los motivos de fondo aparezcan como sólidos a juicio del instructor del recurso, conforme a los criterios establecidos en la doctrina interna del servicio jurídico. Quedan a salvo las acciones jurisdiccionales que la parte interesada considere oportuno ejercitar ante los tribunales ordinarios competentes en la materia, sin que la pendencia del recurso administrativo prejuzgue su admisibilidad. Se notifica a los efectos correspondientes.",
+            "hidden_by": "estanteria_archivo"
+          },
+          "expediente_3206": {
+            "name": "expediente 3206",
+            "description": "PROPUESTA DE ADQUISICIÓN BIBLIOGRÁFICA Nº 3206. Servicio remitente: biblioteca de humanidades. Período: primer semestre. Concepto: actualización de la colección de literatura latinoamericana del siglo XX, especialmente narrativa de la segunda mitad del siglo, donde la biblioteca presenta lagunas significativas detectadas en el último estudio de uso. La propuesta detalla noventa y dos títulos, seleccionados según los siguientes criterios: relevancia académica (presencia en bibliografías recomendadas de las asignaturas del grado y del máster), demanda no satisfecha (registros de préstamo interbibliotecario solicitados al menos tres veces en los últimos dos cursos), disponibilidad en formato impreso de calidad y, en su caso, edición crítica preferente sobre edición popular. Importe estimado, considerando descuentos editoriales habituales y costes de procesamiento técnico (catalogación, encuadernación reforzada y etiquetado RFID): nueve mil cuatrocientos veinte euros. Se propone financiar la adquisición con cargo a la partida ordinaria del servicio bibliotecario, dentro del marco anual aprobado, sin necesidad de partida extraordinaria. Plazos: si la aprobación se produce antes del 30, los ejemplares pueden estar disponibles para el siguiente cuatrimestre. La directora de la biblioteca se compromete a presentar al término del año un informe de uso de los nuevos fondos para evaluar el impacto de la inversión. Se adjunta la lista detallada de los noventa y dos títulos y la justificación bibliográfica por subcolección. ANTECEDENTES DOCUMENTALES. Para una mejor comprensión del contexto del presente expediente conviene reseñar los siguientes antecedentes que constan en el archivo institucional y que han servido para sostener la coherencia de la práctica administrativa en esta materia: existió un caso de similar naturaleza tramitado el año dos mil dieciocho, expediente 9421, cuya resolución sentó un criterio que ha venido aplicándose con carácter orientativo desde entonces; durante el curso anterior se tramitaron tres asuntos análogos, todos resueltos en sentido coherente con aquel precedente, lo que ha consolidado una línea interpretativa estable; el servicio jurídico, en informe consultivo de marzo del año en curso, confirmó la solidez de la línea interpretativa y sugirió su consolidación mediante incorporación expresa al reglamento interno cuando este se revise; por su parte, el defensor universitario ha emitido informe favorable sobre la práctica seguida, sin perjuicio de recomendar la publicación sistemática de las resoluciones en el repositorio institucional para garantizar la transparencia. Se deja constancia de estos antecedentes a efectos informativos y sin que de ellos se derive vinculación jurídica directa.",
+            "hidden_by": "estanteria_archivo"
+          },
+          "expediente_3478": {
+            "name": "expediente 3478",
+            "description": "REGISTRO DE MANTENIMIENTO DEL EDIFICIO B Nº 3478. Período del informe: trimestre anterior. Edificio: B, también conocido como pabellón de Lenguas Modernas, ubicado en el campus norte. Incidencias registradas y actuaciones realizadas: humedad ascendente en la pared sur del aula B-104, detectada el 3 de octubre, intervenida con sellado provisional y diagnóstico estructural pendiente, presupuestada la reparación definitiva en mil doscientos euros; avería del sistema de calefacción central, jornadas 18 a 22 de octubre, debida al fallo de la bomba primaria, sustituida por nueva, garantía dos años; rotura del cristal de la puerta principal por causa accidental, jornada del 4 de noviembre, sustituido en veinticuatro horas, coste asumido por el seguro de responsabilidad civil del centro; pintada en la fachada oeste detectada el 11 de noviembre, retirada inmediata por personal de limpieza, sin más incidencias; revisión periódica del sistema antiincendios, jornada 28 de noviembre, sin observaciones críticas, próxima revisión en seis meses. Consumos del trimestre: electricidad ligeramente por encima del promedio (5%), atribuido al periodo de transición climática y al funcionamiento intermitente de la calefacción; agua dentro de parámetros habituales; gas reducido en un 8% por la eficiencia de la nueva bomba. Próximas actuaciones programadas: revisión de los extractores de los aseos del primer piso, sustitución de las luminarias del pasillo principal por modelos LED y limpieza profunda de la fachada en primavera. Sin incidencias graves que reportar. DISPOSICIONES COMPLEMENTARIAS. Para la efectividad de cuanto se acuerda se establecen las siguientes disposiciones de carácter complementario, cuya observancia será obligatoria para todas las partes implicadas y para los servicios universitarios concernidos en su ejecución: el seguimiento corresponderá a la unidad responsable, que elaborará un informe semestral durante los primeros dos años y anual con posterioridad, salvo que las circunstancias aconsejen otra periodicidad; cualquier modificación material de las circunstancias que justificaron la presente resolución, especialmente si supone una alteración sustancial de los hechos, deberá comunicarse a la comisión en el plazo máximo de treinta días, con la documentación acreditativa correspondiente; las personas que participaron en la instrucción del expediente conservan deber de reserva respecto del contenido, conforme a la normativa de protección de datos y al reglamento interno de tratamiento de información sensible; los costes derivados de la ejecución de las medidas se asumirán con cargo a las partidas presupuestarias correspondientes, sin que ello suponga modificación del presupuesto general aprobado para el ejercicio en curso. La presente disposición forma parte integrante de la resolución principal y entrará en vigor con ella.",
+            "hidden_by": "estanteria_archivo"
+          },
+          "expediente_3902": {
+            "name": "expediente 3902",
+            "description": "ACTA DE DEFENSA DE TESIS DOCTORAL Nº 3902. Doctoranda: doña Elena Vargas-Almeida. Programa de doctorado: Ciencias Cognitivas y Lenguaje. Título de la tesis: 'Procesamiento sintáctico y carga cognitiva en aprendices tardíos de una segunda lengua: un estudio electrofisiológico'. Tribunal: presidente catedrático de la Universidad de Salamanca, vocal primero catedrática de la Universidad Autónoma de Barcelona, vocal segundo profesor titular de la Universidad del País Vasco, secretario profesor titular de esta universidad, vocal suplente externo. La sesión se celebra el 14 del corriente, a las once horas, en la sala de grados del decanato. Tras la exposición de la doctoranda (cuarenta y cinco minutos, dentro del plazo reglamentario), los miembros del tribunal formulan preguntas durante una hora cuarenta minutos sobre los siguientes ejes: justificación metodológica del paradigma electrofisiológico frente a alternativas conductuales, control de variables relacionadas con la edad de adquisición y la exposición acumulada a la lengua segunda, generalización de los hallazgos más allá del par lingüístico estudiado, y limitaciones del análisis estadístico empleado en el segundo experimento. La doctoranda responde con solvencia y matiza con humildad las limitaciones del trabajo. Tras deliberación a puerta cerrada de treinta minutos, el tribunal otorga por unanimidad la calificación de sobresaliente, y por cuatro votos a favor (con una abstención por consideraciones procedimentales) propone la mención cum laude. El secretario procede a la firma del acta y a la comunicación a la escuela de doctorado. CONSIDERACIONES PRESUPUESTARIAS. Sin perjuicio del fondo del asunto conviene dejar constancia de las implicaciones económicas asociadas, tanto las directas como las indirectas, a fin de facilitar el seguimiento contable y la rendición de cuentas: los gastos directos imputables al expediente, ya devengados o previsibles a corto plazo, se estiman en cuantía moderada y se cubrirán con cargo a la partida ordinaria del servicio responsable, sin necesidad de modificación presupuestaria ni de aprobación adicional por parte del consejo de gobierno; los gastos indirectos derivados de horas de personal dedicadas a la instrucción y de suministros de oficina son los habituales para este tipo de tramitación y no requieren reseña específica; existe, no obstante, un capítulo de gasto eventual ligado a posibles recursos o impugnaciones, que podría suponer el devengo de honorarios profesionales adicionales si el procedimiento se complicara, por lo que el servicio competente mantendrá una reserva contable preventiva por el importe estimado conforme a los baremos vigentes; la auditoría interna anual revisará la imputación contable correcta de todos los gastos asociados, dentro del ciclo ordinario de control financiero institucional. No procede transferencia de crédito ni habilitación extraordinaria de la partida.",
+            "hidden_by": "estanteria_archivo"
+          },
+          "expediente_4117": {
+            "name": "expediente 4117",
+            "description": "RESOLUCIÓN DE CONTROVERSIA PATRIMONIAL Nº 4117. Asunto: definición de la titularidad y el uso del local situado en la planta baja del edificio C, esquina noroeste, identificado registralmente como local 1-N de doscientos cuarenta metros cuadrados. Partes implicadas: el departamento de Música, que viene ocupando el espacio desde hace doce años como sala de ensayos y archivo de partituras, y el servicio de actividades culturales, que reclama el espacio para destinarlo a la organización de exposiciones temporales conforme al plan estratégico aprobado en el último consejo de gobierno. La comisión patrimonial, tras visita técnica al local, revisión de la documentación histórica (orden de uso del año 2013, posteriores prórrogas tácitas, cláusulas del plan director vigente) y audiencia de las partes en sesiones separadas, considera lo siguiente: el uso continuado del departamento de Música ha consolidado de hecho una destinación funcional acorde con la naturaleza del espacio (acústica adecuada, paneles fonoabsorbentes instalados con autorización en su día); la propuesta de actividades culturales, sin embargo, responde a una necesidad estratégica formalmente aprobada en órgano superior y dispone de financiación específica. La resolución propone una solución mixta: mantener el uso musical en el ala oeste del local (ciento veinte metros cuadrados), reasignar el ala este al servicio cultural (ciento veinte metros cuadrados), con la condición de tabicar las dos zonas mediante panel acústico (presupuesto de obra estimado en ocho mil euros, asumido a partes iguales). El plazo de ejecución es de noventa días desde la firma. Cualquiera de las partes puede recurrir ante el rectorado en quince días. Acompaña planos y plan de obra. OBSERVACIONES PARTICULARES DEL ÓRGANO INSTRUCTOR. Más allá de la parte dispositiva, el órgano instructor estima oportuno consignar las siguientes observaciones a título de orientación general, sin que constituyan parte vinculante de la resolución y a fin de facilitar la valoración futura de casos análogos: se ha observado durante la tramitación del presente expediente que algunos extremos podrían beneficiarse de una clarificación normativa interna, en concreto en lo relativo a los plazos de presentación de pruebas y a los criterios de baremación aplicables, materias en las cuales el reglamento vigente admite cierta indeterminación que dificulta la práctica administrativa; se sugiere, asimismo, que la formación periódica del personal técnico que tramita este tipo de expedientes incorpore módulos específicos sobre los aspectos más controvertidos, dada la complejidad creciente de la casuística; se hace notar, por último, que ciertos procedimientos colaterales podrían beneficiarse de una revisión integral en el plazo de los próximos tres ejercicios, sin que ello deba interpretarse como crítica al sistema actual sino como contribución constructiva al perfeccionamiento de la práctica administrativa.",
+            "hidden_by": "estanteria_archivo"
+          },
+          "expediente_4583": {
+            "name": "expediente 4583",
+            "description": "REVISIÓN DE BECA DE INVESTIGACIÓN PREDOCTORAL Nº 4583. Beneficiaria: doctoranda número de expediente predoctoral PRE-23-018. Programa: Ciencias del Mar y Cambio Climático. Período evaluado: primer año de disfrute de la beca (inicio en septiembre del curso anterior, evaluación intermedia obligatoria al cumplir un año). La comisión académica del programa, integrada por el coordinador y dos profesores externos a la línea de investigación de la beneficiaria, ha revisado la siguiente documentación: informe de actividades elaborado por la beneficiaria (veinte páginas, dentro del límite reglamentario), informe del director de tesis (cinco páginas), plan de trabajo para el segundo año, y cualquier publicación o comunicación a congreso presentada en el período. Resumen de actuación: la beneficiaria ha completado la fase de formación metodológica (cinco cursos de doctorado y una estancia breve de dos semanas en un grupo colaborador en Lisboa), ha generado dos conjuntos de datos primarios a partir de campañas oceanográficas, y ha presentado una comunicación en formato póster al congreso anual de la sociedad de oceanografía. Aún no dispone de publicaciones, lo cual es esperable en el primer año del programa. Valoración: positiva. Se aprueba la continuidad de la beca para el segundo año. Se recomiendan dos ajustes al plan de trabajo: priorizar la redacción del primer artículo metodológico antes del verano para no demorar la publicación hasta el tercer año, y solicitar la incorporación al consejo de redacción de la revista departamental como experiencia editorial. Sin observaciones críticas adicionales. ANEXO PROCEDIMENTAL. A los efectos de la aplicación de la presente resolución se aclaran los siguientes extremos conforme al reglamento interno aprobado en consejo de gobierno del 14 de marzo y a la normativa supletoria que pueda resultar aplicable: los plazos se computarán por días naturales salvo mención expresa en contrario, tomándose como referencia la fecha de notificación efectiva mediante medio acreditado y no la de emisión del documento; los recursos administrativos que procedan se presentarán ante el órgano superior jerárquico (rectorado) conforme al procedimiento general previsto en el reglamento de procedimiento administrativo institucional, con expresa observancia del principio de doble instancia; la suspensión cautelar de la ejecución solo podrá acordarse mediante auto motivado en aquellos supuestos en que la ejecución cause perjuicios de imposible o difícil reparación o cuando los motivos de fondo aparezcan como sólidos a juicio del instructor del recurso, conforme a los criterios establecidos en la doctrina interna del servicio jurídico. Quedan a salvo las acciones jurisdiccionales que la parte interesada considere oportuno ejercitar ante los tribunales ordinarios competentes en la materia, sin que la pendencia del recurso administrativo prejuzgue su admisibilidad. Se notifica a los efectos correspondientes.",
+            "hidden_by": "estanteria_archivo"
+          },
+          "expediente_4860": {
+            "name": "expediente 4860",
+            "description": "SOLICITUD Y EVALUACIÓN DE AÑO SABÁTICO Nº 4860. Solicitante: profesor titular del departamento de Sociología Política, con quince años de antigüedad en esta universidad y sin haber disfrutado de período sabático previo. Período solicitado: curso académico completo, con inicio en septiembre del próximo año y conclusión en julio del siguiente. Destino propuesto: estancia de investigación dividida entre dos instituciones — primer semestre en el Centro de Estudios Latinoamericanos de la Universidad de Lieja (Bélgica), segundo semestre en el Instituto de Investigaciones Sociales de la Universidad Nacional Autónoma de México. Ambas instituciones acreditan invitación formal y manifiestan disponer de espacio físico y acceso a recursos. Plan de trabajo: redacción de una monografía sobre movimientos sociales transnacionales en América Latina, basada en material recopilado durante los últimos seis años pero pendiente de sistematización, con compromiso de entregar manuscrito completo en editorial al final del período. Plan de cobertura docente: la docencia del solicitante (dos asignaturas obligatorias y una optativa) será asumida temporalmente por dos profesores ayudantes doctores del mismo departamento, previo acuerdo del consejo de departamento del 5 del mes pasado. Se solicita expresamente la conservación del salario en su integridad, conforme a lo previsto en la normativa de sabáticos para casos de estancias acreditadas. La comisión evaluadora ha verificado el cumplimiento de los requisitos formales y emite informe favorable. La aprobación definitiva depende del visto bueno del rectorado, cuya respuesta se espera dentro de los próximos sesenta días. ANTECEDENTES DOCUMENTALES. Para una mejor comprensión del contexto del presente expediente conviene reseñar los siguientes antecedentes que constan en el archivo institucional y que han servido para sostener la coherencia de la práctica administrativa en esta materia: existió un caso de similar naturaleza tramitado el año dos mil dieciocho, expediente 9421, cuya resolución sentó un criterio que ha venido aplicándose con carácter orientativo desde entonces; durante el curso anterior se tramitaron tres asuntos análogos, todos resueltos en sentido coherente con aquel precedente, lo que ha consolidado una línea interpretativa estable; el servicio jurídico, en informe consultivo de marzo del año en curso, confirmó la solidez de la línea interpretativa y sugirió su consolidación mediante incorporación expresa al reglamento interno cuando este se revise; por su parte, el defensor universitario ha emitido informe favorable sobre la práctica seguida, sin perjuicio de recomendar la publicación sistemática de las resoluciones en el repositorio institucional para garantizar la transparencia. Se deja constancia de estos antecedentes a efectos informativos y sin que de ellos se derive vinculación jurídica directa.",
+            "hidden_by": "estanteria_archivo"
+          },
+          "expediente_5135": {
+            "name": "expediente 5135",
+            "description": "PROTOCOLO DE ELECCIONES A DIRECCIÓN DE DEPARTAMENTO Nº 5135. Departamento convocante: Matemática Aplicada. Causa de la convocatoria: finalización del mandato vigente de cuatro años el 30 de junio. Calendario electoral: convocatoria oficial publicada el día 1 del mes en curso, plazo de presentación de candidaturas hasta el día 21, campaña electoral del 22 al 28, jornada de votación el 1 del mes siguiente, escrutinio el mismo día por la mesa electoral y proclamación provisional inmediata, plazo de reclamaciones de tres días hábiles, proclamación definitiva si no hay reclamaciones o resueltas las que se hubieren presentado. Censo electoral: la totalidad del profesorado con dedicación a tiempo completo (treinta y cuatro personas), una representación del profesorado a tiempo parcial proporcional al peso docente (cuatro personas), representación del personal técnico de apoyo (dos personas), representación del estudiantado de doctorado (dos personas). Total de votos posibles: cuarenta y dos, con la salvedad de que cada categoría tiene un peso ponderado conforme a la normativa interna. Modalidad de votación: presencial en la sede del departamento, con posibilidad de voto delegado por causa justificada. Mesa electoral: tres miembros titulares y dos suplentes, designados por sorteo entre el censo. Hasta la fecha de cierre del informe se han presentado dos candidaturas, ambas con programas detallados publicados en el tablón institucional. La campaña incluye dos debates abiertos previstos para los días 23 y 26. DISPOSICIONES COMPLEMENTARIAS. Para la efectividad de cuanto se acuerda se establecen las siguientes disposiciones de carácter complementario, cuya observancia será obligatoria para todas las partes implicadas y para los servicios universitarios concernidos en su ejecución: el seguimiento corresponderá a la unidad responsable, que elaborará un informe semestral durante los primeros dos años y anual con posterioridad, salvo que las circunstancias aconsejen otra periodicidad; cualquier modificación material de las circunstancias que justificaron la presente resolución, especialmente si supone una alteración sustancial de los hechos, deberá comunicarse a la comisión en el plazo máximo de treinta días, con la documentación acreditativa correspondiente; las personas que participaron en la instrucción del expediente conservan deber de reserva respecto del contenido, conforme a la normativa de protección de datos y al reglamento interno de tratamiento de información sensible; los costes derivados de la ejecución de las medidas se asumirán con cargo a las partidas presupuestarias correspondientes, sin que ello suponga modificación del presupuesto general aprobado para el ejercicio en curso. La presente disposición forma parte integrante de la resolución principal y entrará en vigor con ella.",
+            "hidden_by": "estanteria_archivo"
+          },
+          "expediente_5404": {
+            "name": "expediente 5404",
+            "description": "PROPUESTA DE REVISIÓN CURRICULAR Nº 5404. Grado afectado: Ingeniería Informática. Departamento responsable: Lenguajes y Sistemas. Motivación: actualización de los contenidos del segundo y tercer curso para incorporar avances de los últimos cinco años en aprendizaje automático, computación distribuida y prácticas de desarrollo seguro. La revisión propuesta no implica supresión de asignaturas existentes sino refundición y rebalanceo de créditos. En concreto: la asignatura 'Bases de datos II' pierde dos créditos que se trasladan a una nueva asignatura optativa 'Procesamiento de datos a gran escala', impartida en el segundo cuatrimestre del tercer curso; la asignatura 'Programación orientada a objetos avanzada' se reformula como 'Diseño de software y patrones', con mayor énfasis en revisión por pares y prácticas de integración continua; se incorpora una asignatura nueva, 'Seguridad en el desarrollo de software', de seis créditos, obligatoria en el tercer curso, asumida por una de las plazas vacantes del departamento. La propuesta ha pasado por consejo de departamento (aprobada con dos abstenciones), comisión académica de centro (favorable) y se ha sometido a consulta al profesorado afectado y a la representación estudiantil. La aprobación final corresponde al consejo de gobierno y posteriormente al organismo autonómico de calidad. Plazo previsto de entrada en vigor: dos cursos después de la aprobación, con período transitorio para los estudiantes que iniciaron el grado con el plan anterior. El presupuesto adicional necesario es marginal. CONSIDERACIONES PRESUPUESTARIAS. Sin perjuicio del fondo del asunto conviene dejar constancia de las implicaciones económicas asociadas, tanto las directas como las indirectas, a fin de facilitar el seguimiento contable y la rendición de cuentas: los gastos directos imputables al expediente, ya devengados o previsibles a corto plazo, se estiman en cuantía moderada y se cubrirán con cargo a la partida ordinaria del servicio responsable, sin necesidad de modificación presupuestaria ni de aprobación adicional por parte del consejo de gobierno; los gastos indirectos derivados de horas de personal dedicadas a la instrucción y de suministros de oficina son los habituales para este tipo de tramitación y no requieren reseña específica; existe, no obstante, un capítulo de gasto eventual ligado a posibles recursos o impugnaciones, que podría suponer el devengo de honorarios profesionales adicionales si el procedimiento se complicara, por lo que el servicio competente mantendrá una reserva contable preventiva por el importe estimado conforme a los baremos vigentes; la auditoría interna anual revisará la imputación contable correcta de todos los gastos asociados, dentro del ciclo ordinario de control financiero institucional. No procede transferencia de crédito ni habilitación extraordinaria de la partida.",
+            "hidden_by": "estanteria_archivo"
+          },
+          "expediente_5829": {
+            "name": "expediente 5829",
+            "description": "JUSTIFICACIÓN DE ADQUISICIÓN DE EQUIPAMIENTO INFORMÁTICO Nº 5829. Servicio remitente: aulas informáticas del centro. Concepto: renovación parcial del equipamiento del aula I-3, en concreto sustitución de veinticuatro estaciones de trabajo con antigüedad superior a ocho años, que presentan tasas de avería crecientes y no soportan adecuadamente los entornos de desarrollo más recientes utilizados en docencia. Importe total estimado: dieciocho mil cuatrocientos sesenta euros, incluyendo monitores, periféricos, software base e instalación. Cofinanciación: la dotación se solicita íntegramente con cargo a la partida ordinaria de renovación tecnológica, que dispone del saldo necesario sin necesidad de modificación presupuestaria. Justificación técnica detallada: los equipos actuales tienen procesadores incompatibles con virtualización moderna, lo que limita las prácticas en asignaturas como 'Sistemas operativos avanzados' y 'Redes y seguridad'; la memoria RAM (cuatro gigabytes) es insuficiente para entornos de desarrollo con contenedores; los discos duros mecánicos generan latencias percibidas como obstáculo durante las sesiones prácticas. Especificaciones propuestas para los nuevos equipos: procesador de generación reciente con soporte completo de virtualización, dieciséis gigabytes de RAM, disco sólido de quinientos doce gigabytes, monitor de veinticuatro pulgadas con resolución mínima estándar, soporte ergonómico ajustable. Tres presupuestos comparativos adjuntos. Plazo de entrega previsto: cuatro semanas desde el pedido. Garantía: tres años con servicio técnico in situ. OBSERVACIONES PARTICULARES DEL ÓRGANO INSTRUCTOR. Más allá de la parte dispositiva, el órgano instructor estima oportuno consignar las siguientes observaciones a título de orientación general, sin que constituyan parte vinculante de la resolución y a fin de facilitar la valoración futura de casos análogos: se ha observado durante la tramitación del presente expediente que algunos extremos podrían beneficiarse de una clarificación normativa interna, en concreto en lo relativo a los plazos de presentación de pruebas y a los criterios de baremación aplicables, materias en las cuales el reglamento vigente admite cierta indeterminación que dificulta la práctica administrativa; se sugiere, asimismo, que la formación periódica del personal técnico que tramita este tipo de expedientes incorpore módulos específicos sobre los aspectos más controvertidos, dada la complejidad creciente de la casuística; se hace notar, por último, que ciertos procedimientos colaterales podrían beneficiarse de una revisión integral en el plazo de los próximos tres ejercicios, sin que ello deba interpretarse como crítica al sistema actual sino como contribución constructiva al perfeccionamiento de la práctica administrativa.",
+            "hidden_by": "estanteria_archivo"
+          },
+          "expediente_6201": {
+            "name": "expediente 6201",
+            "description": "EXPEDIENTE DE INVESTIGACIÓN POR DENUNCIA DE ACOSO Nº 6201. Estado: cerrado, archivado con resolución. Naturaleza de la denuncia: acoso laboral presentado por personal técnico contra una jefatura intermedia, presentado el 4 de septiembre del año anterior. Investigación: realizada por la unidad de igualdad de la universidad, con participación de la asesoría jurídica externa contratada al efecto, durante un período de cuatro meses, conforme al protocolo institucional de prevención del acoso. Métodos empleados: entrevistas individuales a la persona denunciante, a la persona denunciada y a doce testigos del entorno laboral; análisis documental de comunicaciones internas, registros de horarios y evaluaciones de desempeño; revisión de informes médicos aportados voluntariamente por la persona denunciante. Conclusiones: la unidad investigadora constata la existencia de un patrón conductual susceptible de configurar acoso laboral en el sentido del protocolo aplicable, consistente en sobrecarga sistemática de tareas, marginación de canales informales de comunicación y descalificación pública en reuniones. La denuncia se considera fundada en lo sustancial. Resolución adoptada: traslado preventivo de la persona denunciada a una unidad funcionalmente distinta, expediente disciplinario por separado (en curso a fecha de este informe), formación obligatoria en gestión de equipos para mandos intermedios, refuerzo del seguimiento del bienestar laboral por parte de prevención de riesgos. El presente expediente queda cerrado en su parte investigadora; el seguimiento de las medidas correrá por canales separados conforme a la normativa de protección de datos. ANEXO PROCEDIMENTAL. A los efectos de la aplicación de la presente resolución se aclaran los siguientes extremos conforme al reglamento interno aprobado en consejo de gobierno del 14 de marzo y a la normativa supletoria que pueda resultar aplicable: los plazos se computarán por días naturales salvo mención expresa en contrario, tomándose como referencia la fecha de notificación efectiva mediante medio acreditado y no la de emisión del documento; los recursos administrativos que procedan se presentarán ante el órgano superior jerárquico (rectorado) conforme al procedimiento general previsto en el reglamento de procedimiento administrativo institucional, con expresa observancia del principio de doble instancia; la suspensión cautelar de la ejecución solo podrá acordarse mediante auto motivado en aquellos supuestos en que la ejecución cause perjuicios de imposible o difícil reparación o cuando los motivos de fondo aparezcan como sólidos a juicio del instructor del recurso, conforme a los criterios establecidos en la doctrina interna del servicio jurídico. Quedan a salvo las acciones jurisdiccionales que la parte interesada considere oportuno ejercitar ante los tribunales ordinarios competentes en la materia, sin que la pendencia del recurso administrativo prejuzgue su admisibilidad. Se notifica a los efectos correspondientes.",
+            "hidden_by": "estanteria_archivo"
+          },
+          "expediente_6534": {
+            "name": "expediente 6534",
+            "description": "CARTA INSTITUCIONAL DE APOYO A SOLICITUD DE VISADO Nº 6534. Destinatario: consulado correspondiente. Asunto: respaldo institucional a la solicitud de visado de estudios presentada por la candidata identificada en el expediente externo correspondiente (datos personales bajo protección). La presente carta tiene por objeto certificar formalmente, ante las autoridades consulares competentes, los siguientes extremos relativos a la trayectoria académica prevista de la candidata: la candidata ha sido admitida al máster oficial en Estudios Internacionales y Diplomacia ofrecido por esta universidad, conforme al procedimiento ordinario de admisión, tras superar las pruebas y los requisitos académicos establecidos en la convocatoria pública; la duración del programa es de dos cursos académicos a tiempo completo, con inicio en septiembre próximo y conclusión prevista en julio del año posterior, incluyendo período de elaboración del trabajo de fin de máster; el programa exige presencialidad estricta, con un mínimo del ochenta por ciento de asistencia documentada para la superación de las asignaturas; la candidata ha acreditado disponer de medios económicos suficientes para su mantenimiento durante el período de estudios, conforme a lo exigido por la normativa de extranjería aplicable, mediante documentación aportada al servicio de admisiones; la universidad se compromete a notificar a las autoridades correspondientes cualquier alteración significativa en la situación académica de la candidata (suspensión, abandono, modificación del régimen de matrícula) en los plazos establecidos. Esta carta se emite a solicitud de la propia candidata para los efectos consulares correspondientes. ANTECEDENTES DOCUMENTALES. Para una mejor comprensión del contexto del presente expediente conviene reseñar los siguientes antecedentes que constan en el archivo institucional y que han servido para sostener la coherencia de la práctica administrativa en esta materia: existió un caso de similar naturaleza tramitado el año dos mil dieciocho, expediente 9421, cuya resolución sentó un criterio que ha venido aplicándose con carácter orientativo desde entonces; durante el curso anterior se tramitaron tres asuntos análogos, todos resueltos en sentido coherente con aquel precedente, lo que ha consolidado una línea interpretativa estable; el servicio jurídico, en informe consultivo de marzo del año en curso, confirmó la solidez de la línea interpretativa y sugirió su consolidación mediante incorporación expresa al reglamento interno cuando este se revise; por su parte, el defensor universitario ha emitido informe favorable sobre la práctica seguida, sin perjuicio de recomendar la publicación sistemática de las resoluciones en el repositorio institucional para garantizar la transparencia. Se deja constancia de estos antecedentes a efectos informativos y sin que de ellos se derive vinculación jurídica directa.",
+            "hidden_by": "estanteria_archivo"
+          },
+          "expediente_6987": {
+            "name": "expediente 6987",
+            "description": "RENOVACIÓN DEL CONTRATO DE SERVICIO DE CAFETERÍA Nº 6987. Concesión afectada: explotación de la cafetería principal del campus, ubicada en el edificio central, con un horario aprobado de siete a diecinueve horas durante el curso académico y horario reducido durante los periodos no lectivos. Contratante anterior: empresa cuya identificación consta en el expediente patrimonial. Causa de la renovación: vencimiento natural del contrato de cinco años, conforme a las cláusulas firmadas en su día. Procedimiento: la comisión de servicios universitarios ha valorado, en sesión del 12 del mes anterior, la idoneidad de proceder a una nueva licitación pública o a la prórroga del contrato vigente mediante negociación bilateral, en función del grado de satisfacción institucional y del cumplimiento contractual durante el período concluido. Tras evaluar los indicadores de calidad (encuesta anual de satisfacción aplicada a usuarios habituales, registro de incidencias sanitarias, cumplimiento de los compromisos sobre productos de proximidad y opciones alimentarias inclusivas), la comisión emite informe favorable a una prórroga acotada de dos años, con revisión de las condiciones económicas y mejora de tres compromisos específicos: ampliación del horario de tarde durante períodos de exámenes, introducción de al menos cinco opciones diarias adecuadas a dietas restringidas y revisión de la política de precios para asegurar un menú accesible al colectivo estudiantil. La empresa concesionaria ha aceptado las condiciones por escrito. El acuerdo definitivo se firmará en los próximos quince días. DISPOSICIONES COMPLEMENTARIAS. Para la efectividad de cuanto se acuerda se establecen las siguientes disposiciones de carácter complementario, cuya observancia será obligatoria para todas las partes implicadas y para los servicios universitarios concernidos en su ejecución: el seguimiento corresponderá a la unidad responsable, que elaborará un informe semestral durante los primeros dos años y anual con posterioridad, salvo que las circunstancias aconsejen otra periodicidad; cualquier modificación material de las circunstancias que justificaron la presente resolución, especialmente si supone una alteración sustancial de los hechos, deberá comunicarse a la comisión en el plazo máximo de treinta días, con la documentación acreditativa correspondiente; las personas que participaron en la instrucción del expediente conservan deber de reserva respecto del contenido, conforme a la normativa de protección de datos y al reglamento interno de tratamiento de información sensible; los costes derivados de la ejecución de las medidas se asumirán con cargo a las partidas presupuestarias correspondientes, sin que ello suponga modificación del presupuesto general aprobado para el ejercicio en curso. La presente disposición forma parte integrante de la resolución principal y entrará en vigor con ella.",
+            "hidden_by": "estanteria_archivo"
+          },
+          "expediente_7240": {
+            "name": "expediente 7240",
+            "description": "REVISIÓN DE PRESTACIONES POR JUBILACIÓN Nº 7240. Personal afectado: profesor catedrático del área de Física Teórica con cuarenta y dos años de servicio activo, jubilación efectiva el 30 de septiembre del próximo año. Concepto: revisión y certificación de los derechos pasivos y prestaciones complementarias institucionales conforme a la normativa vigente, así como condiciones de la posible vinculación como profesor emérito. Documentación examinada: hoja de servicios completa, certificados de cotización, informe de la unidad de retribuciones, evaluación académica del profesor durante los últimos diez años (publicaciones, dirección de tesis doctorales, gestión académica desempeñada en distintos cargos a lo largo de su trayectoria, participación en proyectos competitivos). Conclusiones: el profesor cumple holgadamente los requisitos para optar a la vinculación como emérito, modalidad sin retribución pero con mantenimiento de despacho compartido, acceso a infraestructura de investigación y obligación de continuar dirigiendo tesis doctorales pendientes hasta su conclusión. Sus prestaciones por jubilación se ajustan a los baremos correspondientes a su categoría y antigüedad, sin observaciones a destacar. La unidad de retribuciones tramitará la documentación con la entidad gestora correspondiente al menos tres meses antes de la fecha efectiva. El departamento prevé un acto de homenaje académico para el mes de junio, organizado conjuntamente por el decanato y los antiguos doctorandos del profesor, sin coste con cargo al presupuesto institucional ordinario. CONSIDERACIONES PRESUPUESTARIAS. Sin perjuicio del fondo del asunto conviene dejar constancia de las implicaciones económicas asociadas, tanto las directas como las indirectas, a fin de facilitar el seguimiento contable y la rendición de cuentas: los gastos directos imputables al expediente, ya devengados o previsibles a corto plazo, se estiman en cuantía moderada y se cubrirán con cargo a la partida ordinaria del servicio responsable, sin necesidad de modificación presupuestaria ni de aprobación adicional por parte del consejo de gobierno; los gastos indirectos derivados de horas de personal dedicadas a la instrucción y de suministros de oficina son los habituales para este tipo de tramitación y no requieren reseña específica; existe, no obstante, un capítulo de gasto eventual ligado a posibles recursos o impugnaciones, que podría suponer el devengo de honorarios profesionales adicionales si el procedimiento se complicara, por lo que el servicio competente mantendrá una reserva contable preventiva por el importe estimado conforme a los baremos vigentes; la auditoría interna anual revisará la imputación contable correcta de todos los gastos asociados, dentro del ciclo ordinario de control financiero institucional. No procede transferencia de crédito ni habilitación extraordinaria de la partida.",
+            "hidden_by": "estanteria_archivo",
+            "container": true,
+            "contains": [
+              "llave_archivo"
+            ]
+          },
+          "expediente_7615": {
+            "name": "expediente 7615",
+            "description": "POLÍTICA DE RECONOCIMIENTO A DONANTES INSTITUCIONALES Nº 7615. Marco general: la presente política regula los criterios mediante los cuales esta universidad reconoce públicamente las donaciones recibidas por personas físicas o jurídicas, ya sea en concepto de mecenazgo, patrocinio finalista o becas dotadas. La política responde a la doble necesidad de mantener la transparencia institucional y de incentivar la cultura de la donación en un entorno donde las fuentes de financiación complementaria se han diversificado. Tramos de reconocimiento: donaciones inferiores a cinco mil euros recibirán reconocimiento privado mediante carta firmada por el rectorado y mención en la memoria anual; donaciones entre cinco mil y veinticinco mil euros recibirán adicionalmente mención en la página web institucional dentro de la sección de mecenazgo; donaciones entre veinticinco mil y cien mil euros podrán optar a la dedicación temporal de un espacio físico, aula u otro elemento con el nombre del donante, durante el período acordado y previa firma del convenio correspondiente; donaciones superiores a cien mil euros, en el caso de cumplir los criterios de finalidad académica establecidos, podrán optar a denominaciones permanentes de cátedras, programas o becas. Procedimiento: cualquier propuesta de reconocimiento por encima de los cinco mil euros requiere informe favorable de la comisión de mecenazgo y aprobación del consejo de gobierno. Quedan excluidos del marco de reconocimiento los donantes cuya actividad principal o reputacional pueda comprometer los valores institucionales, según evaluación caso por caso de la propia comisión. OBSERVACIONES PARTICULARES DEL ÓRGANO INSTRUCTOR. Más allá de la parte dispositiva, el órgano instructor estima oportuno consignar las siguientes observaciones a título de orientación general, sin que constituyan parte vinculante de la resolución y a fin de facilitar la valoración futura de casos análogos: se ha observado durante la tramitación del presente expediente que algunos extremos podrían beneficiarse de una clarificación normativa interna, en concreto en lo relativo a los plazos de presentación de pruebas y a los criterios de baremación aplicables, materias en las cuales el reglamento vigente admite cierta indeterminación que dificulta la práctica administrativa; se sugiere, asimismo, que la formación periódica del personal técnico que tramita este tipo de expedientes incorpore módulos específicos sobre los aspectos más controvertidos, dada la complejidad creciente de la casuística; se hace notar, por último, que ciertos procedimientos colaterales podrían beneficiarse de una revisión integral en el plazo de los próximos tres ejercicios, sin que ello deba interpretarse como crítica al sistema actual sino como contribución constructiva al perfeccionamiento de la práctica administrativa.",
+            "hidden_by": "estanteria_archivo"
+          },
+          "llave_archivo": {
+            "name": "llave del archivo",
+            "description": "Una llave institucional pesada, con un grabado que dice 'Archivo Central'. La cabeza lleva una etiqueta de cartón muy gastada con un número de expediente prácticamente ilegible.",
+            "takeable": true,
+            "hidden_by": "expediente_7240"
+          },
+          "puerta_principal": {
+            "name": "puerta principal",
+            "description": "Una puerta de madera reforzada con marco metálico. La cerradura es institucional, con un escudo en bronce y la inscripción 'Archivo Central — Llave Maestra'.",
+            "locked": {
+              "requires_item": "llave_archivo"
+            },
+            "open_state": "closed"
+          }
+        },
+        "goal": {
+          "type": "item_open",
+          "item": "puerta_principal"
+        }
+      }
+    },
+    {
+      "id": "apartment-keys",
+      "source": "C:\\dev\\MIA_repos\\tp_mia_agentes_2026\\scenarios\\05-medium-apartment-keys.json",
+      "definition": {
+        "id": "apartment-keys",
+        "difficulty": "medium",
+        "description": "Un apartamento de tres ambientes conectados. La llave de la puerta principal está guardada en un cajón de la cocina, al otro extremo del recorrido. Hay que navegar entre salas, encontrar la llave y volver al recibidor para usarla.",
+        "user_message": "Te despiertas en el recibidor de un apartamento desconocido. La puerta principal está cerrada con llave y no la ves por ningún lado. Hay un pasillo que se interna en el apartamento. Explora los ambientes, encuentra la llave y vuelve a abrir la puerta principal.",
+        "start_room": "recibidor",
+        "rooms": {
+          "recibidor": {
+            "name": "Recibidor",
+            "description": "Un recibidor estrecho con un perchero vacío y un espejo polvoriento. La puerta principal, de metal, está cerrada con una cerradura simple. Un pasillo se abre hacia el norte.",
+            "items": [
+              "puerta_principal"
+            ],
+            "exits": {
+              "norte": "pasillo"
+            }
+          },
+          "pasillo": {
+            "name": "Pasillo",
+            "description": "Un pasillo en penumbra con cuadros torcidos. Conecta el recibidor al sur con la cocina al este.",
+            "items": [],
+            "exits": {
+              "sur": "recibidor",
+              "este": "cocina"
+            }
+          },
+          "cocina": {
+            "name": "Cocina",
+            "description": "Una cocina pequeña con azulejos blancos. Hay una mesada con un cajón cerrado y olor a café frío.",
+            "items": [
+              "cajon"
+            ],
+            "exits": {
+              "oeste": "pasillo"
+            }
+          }
+        },
+        "items": {
+          "puerta_principal": {
+            "name": "puerta principal",
+            "description": "Una puerta de metal con una cerradura simple. Necesita una llave para abrirse.",
+            "locked": {
+              "requires_item": "llave_oro"
+            },
+            "open_state": "closed"
+          },
+          "cajon": {
+            "name": "cajón de la cocina",
+            "description": "Un cajón de madera bajo la mesada. Se abre con un tirón y dentro hay cubiertos sueltos y algo más.",
+            "container": true,
+            "contains": [
+              "llave_oro"
+            ]
+          },
+          "llave_oro": {
+            "name": "llave dorada",
+            "description": "Una llave dorada corriente, del tipo de las cerraduras de entrada.",
+            "takeable": true,
+            "hidden_by": "cajon"
+          }
+        },
+        "goal": {
+          "type": "item_open",
+          "item": "puerta_principal"
+        }
+      }
+    },
+    {
+      "id": "office-sequence",
+      "source": "C:\\dev\\MIA_repos\\tp_mia_agentes_2026\\scenarios\\06-hard-office-sequence.json",
+      "definition": {
+        "id": "office-sequence",
+        "difficulty": "hard",
+        "description": "Una oficina de cuatro ambientes. La llave de una caja fuerte está en el depósito; la caja (en el archivo) guarda el documento confidencial y la llave maestra de la puerta. El objetivo es compuesto y con orden: hay que llevarse el documento ANTES de abrir la puerta principal, que se sella al abrirse.",
+        "user_message": "Te despiertas en una oficina vacía. Tu objetivo: salir por la puerta principal LLEVÁNDOTE el documento confidencial. Aviso importante: la puerta principal se sella en cuanto la abrís, así que asegurate de tener el documento contigo ANTES de abrirla. La puerta necesita una llave maestra; la llave maestra y el documento están en una caja fuerte del archivo; y la llave de esa caja está guardada en el depósito. Recorré los ambientes en el orden correcto.",
+        "start_room": "oficina",
+        "rooms": {
+          "oficina": {
+            "name": "Oficina principal",
+            "description": "Una oficina con un escritorio amplio y una puerta principal blindada. Un corredor sale hacia el este.",
+            "items": [
+              "escritorio",
+              "puerta_principal"
+            ],
+            "exits": {
+              "este": "pasillo"
+            }
+          },
+          "pasillo": {
+            "name": "Corredor",
+            "description": "Un corredor central que distribuye hacia la oficina (oeste), el archivo (norte) y el depósito (este).",
+            "items": [],
+            "exits": {
+              "oeste": "oficina",
+              "norte": "archivo",
+              "este": "deposito"
+            }
+          },
+          "deposito": {
+            "name": "Depósito",
+            "description": "Un cuarto de limpieza con estanterías metálicas y un cajón etiquetado 'LLAVES'.",
+            "items": [
+              "cajon_llaves"
+            ],
+            "exits": {
+              "oeste": "pasillo"
+            }
+          },
+          "archivo": {
+            "name": "Archivo",
+            "description": "Una sala con armarios de expedientes y una caja fuerte empotrada en la pared.",
+            "items": [
+              "caja_fuerte"
+            ],
+            "exits": {
+              "sur": "pasillo"
+            }
+          }
+        },
+        "items": {
+          "escritorio": {
+            "name": "escritorio",
+            "description": "Un escritorio amplio con cajones. Están todos vacíos salvo por clips y papel en blanco.",
+            "container": true,
+            "contains": []
+          },
+          "puerta_principal": {
+            "name": "puerta principal",
+            "description": "Una puerta blindada con una cerradura institucional. Necesita la llave maestra. Una placa advierte: 'Se sella automáticamente al abrir'.",
+            "locked": {
+              "requires_item": "llave_maestra"
+            },
+            "open_state": "closed"
+          },
+          "cajon_llaves": {
+            "name": "cajón de llaves",
+            "description": "Un cajón metálico etiquetado 'LLAVES'. Dentro cuelga una sola llave pequeña.",
+            "container": true,
+            "contains": [
+              "llave_caja"
+            ]
+          },
+          "llave_caja": {
+            "name": "llave de la caja fuerte",
+            "description": "Una llave pequeña y plana, claramente de una caja fuerte.",
+            "takeable": true,
+            "hidden_by": "cajon_llaves"
+          },
+          "caja_fuerte": {
+            "name": "caja fuerte",
+            "description": "Una caja fuerte empotrada con una cerradura de llave plana. Cerrada.",
+            "container": true,
+            "contains": [
+              "documento_confidencial",
+              "llave_maestra"
+            ],
+            "locked": {
+              "requires_item": "llave_caja"
+            },
+            "open_state": "closed"
+          },
+          "documento_confidencial": {
+            "name": "documento confidencial",
+            "description": "Una carpeta sellada con la leyenda 'CONFIDENCIAL'. Es lo que viniste a buscar.",
+            "takeable": true,
+            "hidden_by": "caja_fuerte"
+          },
+          "llave_maestra": {
+            "name": "llave maestra",
+            "description": "Una llave maestra pesada, de las que abren cerraduras institucionales.",
+            "takeable": true,
+            "hidden_by": "caja_fuerte"
+          }
+        },
+        "goal": {
+          "type": "sequence",
+          "goals": [
+            {
+              "type": "item_in_inventory",
+              "item": "documento_confidencial"
+            },
+            {
+              "type": "item_open",
+              "item": "puerta_principal"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "vault-combination",
+      "source": "C:\\dev\\MIA_repos\\tp_mia_agentes_2026\\scenarios\\07-extreme-vault-combination.json",
+      "definition": {
+        "id": "vault-combination",
+        "difficulty": "extreme",
+        "description": "Una instalación de cinco salas. La puerta principal es un panel que solo abre cuando se le colocan TRES núcleos de energía, repartidos en salas distintas. Uno de los núcleos está en un depósito tras una puerta cerrada (la llave está en el taller), y otro en una vitrina cerrada (la llave está en el depósito). Hay que recorrer todas las salas, encadenar llaves entre salas y volver al vestíbulo a combinar las tres piezas.",
+        "user_message": "Te despiertas en el vestíbulo de una instalación. La puerta principal no tiene cerradura común: es un panel con tres ranuras etiquetadas para 'núcleos de energía'. No hay ningún núcleo a la vista aquí. Un pasillo lleva al resto de la instalación. Tendrás que encontrar los tres núcleos —están en salas distintas— y traerlos al panel. Algunas puertas y vitrinas están cerradas y sus llaves no están donde las necesitás.",
+        "start_room": "vestibulo",
+        "rooms": {
+          "vestibulo": {
+            "name": "Vestíbulo",
+            "description": "Un vestíbulo de hormigón con un panel de seguridad junto a la puerta principal. El panel tiene tres ranuras vacías rotuladas 'NÚCLEO'. Un pasillo se abre al norte.",
+            "items": [
+              "puerta_principal"
+            ],
+            "exits": {
+              "norte": "galeria"
+            }
+          },
+          "galeria": {
+            "name": "Galería central",
+            "description": "Una galería que distribuye hacia varias salas: el taller al este, la biblioteca al oeste y, al norte, una puerta metálica de depósito que está cerrada.",
+            "items": [
+              "puerta_deposito"
+            ],
+            "exits": {
+              "sur": "vestibulo",
+              "este": "taller",
+              "oeste": "biblioteca",
+              "norte": "deposito"
+            },
+            "locked_exits": {
+              "norte": "puerta_deposito"
+            }
+          },
+          "taller": {
+            "name": "Taller",
+            "description": "Un taller con un banco de herramientas lleno de cajones. Huele a aceite y metal.",
+            "items": [
+              "banco_herramientas"
+            ],
+            "exits": {
+              "oeste": "galeria"
+            }
+          },
+          "biblioteca": {
+            "name": "Biblioteca",
+            "description": "Una sala con estanterías y una vitrina de cristal cerrada con llave en el centro.",
+            "items": [
+              "vitrina"
+            ],
+            "exits": {
+              "este": "galeria"
+            }
+          },
+          "deposito": {
+            "name": "Depósito",
+            "description": "Un depósito frío con un cajón de seguridad metálico contra la pared.",
+            "items": [
+              "cajon_deposito"
+            ],
+            "exits": {
+              "sur": "galeria"
+            }
+          }
+        },
+        "items": {
+          "puerta_principal": {
+            "name": "puerta principal",
+            "description": "Una puerta blindada controlada por un panel de tres ranuras. Solo abre cuando se colocan los tres núcleos de energía.",
+            "locked": {
+              "requires_items": [
+                "nucleo_rojo",
+                "nucleo_azul",
+                "nucleo_verde"
+              ]
+            },
+            "open_state": "closed"
+          },
+          "puerta_deposito": {
+            "name": "puerta del depósito",
+            "description": "Una puerta metálica con una cerradura robusta. Cerrada.",
+            "locked": {
+              "requires_item": "llave_deposito"
+            },
+            "open_state": "closed"
+          },
+          "banco_herramientas": {
+            "name": "banco de herramientas",
+            "description": "Un banco con varios cajones. Al abrirlos encontrás piezas sueltas.",
+            "container": true,
+            "contains": [
+              "nucleo_rojo",
+              "llave_deposito",
+              "destornillador"
+            ]
+          },
+          "nucleo_rojo": {
+            "name": "núcleo rojo",
+            "description": "Un núcleo de energía con carcasa roja. Encaja en el panel del vestíbulo.",
+            "takeable": true,
+            "hidden_by": "banco_herramientas"
+          },
+          "llave_deposito": {
+            "name": "llave del depósito",
+            "description": "Una llave robusta con una etiqueta que dice 'DEPÓSITO'.",
+            "takeable": true,
+            "hidden_by": "banco_herramientas"
+          },
+          "destornillador": {
+            "name": "destornillador",
+            "description": "Un destornillador común. No parece abrir nada importante.",
+            "takeable": true,
+            "hidden_by": "banco_herramientas"
+          },
+          "cajon_deposito": {
+            "name": "cajón de seguridad",
+            "description": "Un cajón metálico. Se abre con un tirón y dentro hay piezas.",
+            "container": true,
+            "contains": [
+              "nucleo_verde",
+              "llave_vitrina"
+            ]
+          },
+          "nucleo_verde": {
+            "name": "núcleo verde",
+            "description": "Un núcleo de energía con carcasa verde. Encaja en el panel del vestíbulo.",
+            "takeable": true,
+            "hidden_by": "cajon_deposito"
+          },
+          "llave_vitrina": {
+            "name": "llave de la vitrina",
+            "description": "Una llave pequeña y fina, de las de vitrina de exposición.",
+            "takeable": true,
+            "hidden_by": "cajon_deposito"
+          },
+          "vitrina": {
+            "name": "vitrina",
+            "description": "Una vitrina de cristal cerrada con llave. Dentro se ve un núcleo azul.",
+            "container": true,
+            "contains": [
+              "nucleo_azul"
+            ],
+            "locked": {
+              "requires_item": "llave_vitrina"
+            },
+            "open_state": "closed"
+          },
+          "nucleo_azul": {
+            "name": "núcleo azul",
+            "description": "Un núcleo de energía con carcasa azul. Encaja en el panel del vestíbulo.",
+            "takeable": true,
+            "hidden_by": "vitrina"
+          }
+        },
+        "goal": {
+          "type": "item_open",
+          "item": "puerta_principal"
+        }
+      }
+    },
+    {
+      "id": "backtracking-vault",
+      "source": "C:\\dev\\MIA_repos\\tp_mia_agentes_2026\\scenarios\\08-extreme-backtracking-vault.json",
+      "definition": {
+        "id": "backtracking-vault",
+        "difficulty": "extreme",
+        "description": "Cinco salas en línea con puertas que se abren progresivamente. La trampa es de backtracking: la puerta principal (en la PRIMERA sala) necesita una llave maestra encerrada en un cofre de esa misma sala, y ese cofre solo abre con una llave oxidada que está en la ÚLTIMA sala. Para llegar a la última sala hay que abrir dos puertas con llaves intermedias. Hay que avanzar hasta el fondo y volver hasta el principio.",
+        "user_message": "Te despiertas en la entrada de una bóveda. La puerta principal de salida tiene una cerradura que pide una 'llave maestra'. En la misma sala hay un cofre antiguo cerrado: sospechás que la llave maestra está dentro, pero el cofre necesita una llave oxidada que no está aquí. Hacia el norte se abre una sucesión de salas con puertas cerradas. Vas a tener que internarte hasta el fondo para conseguir lo que abre el cofre del principio, y después volver.",
+        "start_room": "entrada",
+        "rooms": {
+          "entrada": {
+            "name": "Entrada de la bóveda",
+            "description": "Una antesala con la puerta principal de salida y un cofre antiguo de hierro contra la pared. Al norte hay un corredor.",
+            "items": [
+              "cofre_antiguo",
+              "puerta_principal"
+            ],
+            "exits": {
+              "norte": "sala_a"
+            }
+          },
+          "sala_a": {
+            "name": "Sala A",
+            "description": "Una sala con un escritorio cubierto de papeles. Al norte hay una puerta blindada cerrada.",
+            "items": [
+              "escritorio",
+              "puerta_blindada"
+            ],
+            "exits": {
+              "sur": "entrada",
+              "norte": "sala_b"
+            },
+            "locked_exits": {
+              "norte": "puerta_blindada"
+            }
+          },
+          "sala_b": {
+            "name": "Sala B",
+            "description": "Una sala intermedia con un armario metálico y, al norte, una reja cerrada que da al fondo.",
+            "items": [
+              "armario",
+              "cofre_vacio",
+              "reja"
+            ],
+            "exits": {
+              "sur": "sala_a",
+              "norte": "boveda"
+            },
+            "locked_exits": {
+              "norte": "reja"
+            }
+          },
+          "boveda": {
+            "name": "Bóveda interior",
+            "description": "La sala más profunda. Una caja de seguridad empotrada en la pared, sin cerradura visible.",
+            "items": [
+              "caja_seguridad"
+            ],
+            "exits": {
+              "sur": "sala_b"
+            }
+          }
+        },
+        "items": {
+          "puerta_principal": {
+            "name": "puerta principal",
+            "description": "La puerta de salida. Su cerradura pide una llave maestra.",
+            "locked": {
+              "requires_item": "llave_maestra"
+            },
+            "open_state": "closed"
+          },
+          "cofre_antiguo": {
+            "name": "cofre antiguo",
+            "description": "Un cofre de hierro con una cerradura corroída. Necesita una llave oxidada que encaje en su mecanismo viejo.",
+            "container": true,
+            "contains": [
+              "llave_maestra"
+            ],
+            "locked": {
+              "requires_item": "llave_oxidada"
+            },
+            "open_state": "closed"
+          },
+          "llave_maestra": {
+            "name": "llave maestra",
+            "description": "Una llave maestra pesada. Abre la puerta principal.",
+            "takeable": true,
+            "hidden_by": "cofre_antiguo"
+          },
+          "escritorio": {
+            "name": "escritorio",
+            "description": "Un escritorio con cajones. Dentro hay una llave y papeles inútiles.",
+            "container": true,
+            "contains": [
+              "llave_intermedia"
+            ]
+          },
+          "llave_intermedia": {
+            "name": "llave intermedia",
+            "description": "Una llave de acero con la etiqueta 'B-1'. Parece de una puerta blindada.",
+            "takeable": true,
+            "hidden_by": "escritorio"
+          },
+          "puerta_blindada": {
+            "name": "puerta blindada",
+            "description": "Una puerta blindada entre la sala A y la sala B. Cerrada.",
+            "locked": {
+              "requires_item": "llave_intermedia"
+            },
+            "open_state": "closed"
+          },
+          "armario": {
+            "name": "armario metálico",
+            "description": "Un armario alto. Dentro cuelga una llave grande.",
+            "container": true,
+            "contains": [
+              "llave_boveda"
+            ]
+          },
+          "llave_boveda": {
+            "name": "llave de la reja",
+            "description": "Una llave grande y dentada, del tipo de una reja pesada.",
+            "takeable": true,
+            "hidden_by": "armario"
+          },
+          "cofre_vacio": {
+            "name": "cofre pequeño",
+            "description": "Un cofre pequeño sin cerradura. Está completamente vacío.",
+            "container": true,
+            "contains": []
+          },
+          "reja": {
+            "name": "reja",
+            "description": "Una reja de barrotes entre la sala B y la bóveda. Cerrada con llave.",
+            "locked": {
+              "requires_item": "llave_boveda"
+            },
+            "open_state": "closed"
+          },
+          "caja_seguridad": {
+            "name": "caja de seguridad",
+            "description": "Una caja empotrada. Se abre sin llave y dentro hay una única llave muy vieja.",
+            "container": true,
+            "contains": [
+              "llave_oxidada"
+            ]
+          },
+          "llave_oxidada": {
+            "name": "llave oxidada",
+            "description": "Una llave antigua y oxidada. Parece encajar en una cerradura corroída.",
+            "takeable": true,
+            "hidden_by": "caja_seguridad"
+          }
+        },
+        "goal": {
+          "type": "item_open",
+          "item": "puerta_principal"
+        }
+      }
+    }
+  ],
+  "code": {
+    "commit": "0fbac8eccac07dc011f0374050a51f29aedbe51b",
+    "dirty": true,
+    "source_sha256": {
+      "eval/__init__.py": "f7683d968b01582ca3c503947dd723dd542412e86e203e61e5bc70bacfc8d02c",
+      "eval/config.py": "ebb89d858f9ff02ae6374b8c009a20a0ea6866829028a4316318db8001431e9f",
+      "eval/metrics.py": "c693f7a7d01999f82762e45fd32fd5cf36264f0ea6bde54233771f7ab93eccba",
+      "eval/qualitative.py": "f2f793b311c48011808fd230eccb7456623362ec53ce0879a83855b7efd0a3eb",
+      "eval/reporting.py": "fd6f00eec1e892dd4f1c94a455636773ea9cd8e69c3373d643d188516f34c740",
+      "eval/run.py": "5d796df3d7e8594c5aed081f6ad72bd77ad493052c6084aae6211605c5e38e56",
+      "student_framework/__init__.py": "fa01e5f27f638bc3be3d595ef76efc538511107c07034fb5785e7a610df80e89",
+      "student_framework/agent.py": "e1ddf47b8ebc6fe40e00a37de7f5f55f9bd1dd69ff2de277c0e5389f0a09efc9",
+      "student_framework/tools/__init__.py": "3440421ecf4ab5c7e2707c272a6a709d7e0d5f87140fe0590207729818901a4f",
+      "student_framework/tools/_sandbox.py": "549cef1fbd01e8b4113c67c0d48e7916c86310ca44809107519bfa0c8a9779cc",
+      "student_framework/tools/calculator.py": "14c74cf1f5fda47bf58c62d48828f50407b40469e008801c0bd95b167f997ed4",
+      "student_framework/tools/example.py": "8a731f2938129a8f66806d8facf622333c11e56905154717f6c4fbd8993238b1",
+      "student_framework/tools/file_reader.py": "d9a4dc09a61e6bcb2dee73403dc4eabf3f6c6079d34661105cd681e029bd789e",
+      "student_framework/tools/text_search.py": "e542d495fe4f150b1b01a97d5eb1d2610d99feb1ae6ea39ea05265ba1dfe9f88",
+      "student_framework/world_memory.py": "7e7a527e7c3f11ac447ebedaf9e2f37444031319df5798ff219701743e081536",
+      "mia_agents/__init__.py": "97154b3bfeaf1feaa3e154691a6682c327ab124e1da5e30a30473bea4f8748a1",
+      "mia_agents/_env.py": "7ee132da7368832f9429ee3737075eb30b33f7a61f69b38efe55ba76329137c8",
+      "mia_agents/cli.py": "ac9d4771feeb28710dadb2c5f728849278847f1c70de9422771fb6c466d9bf18",
+      "mia_agents/llm_client.py": "c4e921fc62fab10bec8449a87f8288fb4a76aad1b59aeaba0c5bbf52af6ac7bb",
+      "mia_agents/protocols.py": "71ee20258d7c04d8dd334d3d1a59626ac2cdc2f072252251e89ff8c5cc2e73ec",
+      "mia_agents/testing/__init__.py": "954a6960f159151c93409f2de963cd36bc7d110bf0a6f2967269de3bf758d275",
+      "mia_agents/testing/mock_llm.py": "5b7950d3089b9091f8b87fd973bdc44e70d6d0c488f635c37104baec73c0af7d",
+      "mia_agents/testing/tools.py": "aeab542d5057cb65efb4ce3264d6b0a620a4eec6bc5de8253ca1cd6e5e14c562",
+      "mia_agents/tool_schema.py": "8018d5ff49de42ae2949aace7eb186a70689a38fbbe7e0ecde41752c40146215",
+      "mia_agents/types.py": "06c96226dba6050117f42de0a3b356dc403e07e28ff298a3bd5d7f1cb2488c74",
+      "mia_world/__init__.py": "03470489a7e597927732b47a826493713fe11da3e3d0f4b83a69445419d7f645",
+      "mia_world/cli.py": "9932057cc8d8179220d93865b62c1f7823cf23d1581f099cdec26e74ee49df80",
+      "mia_world/goals.py": "48da551b1c6ae20d9d8add311ec3ffaf0f2725eb3f9588ded0c45bbf389191e5",
+      "mia_world/scenarios.py": "32d0a7228936f3654eca711ec4a238ffb533a370bf9916d33933637185fdb643",
+      "mia_world/state.py": "ccef23b147d154bd1598ae9a15846d374300c1bf35074c791564082938ccdf58",
+      "mia_world/tools.py": "d3652daaccd59e5e0bfab805a89c6c7546edbd74306018b4cd5484a9705da464"
+    }
+  },
+  "llm": {
+    "provider": "bedrock",
+    "model": "amazon.nova-lite-v1:0",
+    "region": "us-east-1",
+    "temperature": 0.2
+  },
+  "finished_at": "2026-09-09T03:16:49.958089+00:00"
+}

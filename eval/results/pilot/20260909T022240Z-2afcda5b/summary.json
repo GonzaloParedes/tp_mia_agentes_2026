@@ -1,0 +1,214 @@
+{
+  "status": "completed",
+  "completed_cases": 6,
+  "expected_cases": 6,
+  "variants": [
+    {
+      "id": "current_agent",
+      "description": "",
+      "runs": 3,
+      "use_structured_memory": true,
+      "summary": {
+        "total": 6,
+        "passed": 6,
+        "failed": 0,
+        "success_rate": 1.0,
+        "by_difficulty": {
+          "medium": {
+            "total": 3,
+            "passed": 3,
+            "failed": 0,
+            "success_rate": 1.0
+          },
+          "hard": {
+            "total": 3,
+            "passed": 3,
+            "failed": 0,
+            "success_rate": 1.0
+          }
+        },
+        "total_tool_calls": 180,
+        "avg_tool_calls": 30.0,
+        "total_duration_seconds": 190.253,
+        "avg_duration_seconds": 31.709,
+        "input_tokens": 882874,
+        "output_tokens": 9242,
+        "error_categories": {
+          "consecutive_repeated_action": 1,
+          "max_iterations": 3,
+          "navigation_error": 3,
+          "post_goal_overrun": 3,
+          "repeated_action": 6,
+          "target_not_visible": 3,
+          "tool_error": 6
+        },
+        "failed_scenarios": [],
+        "by_scenario": {
+          "color-locks": {
+            "total": 3,
+            "passed": 3,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "medium": {
+                "total": 3,
+                "passed": 3,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 43,
+            "avg_tool_calls": 14.33,
+            "total_duration_seconds": 44.788,
+            "avg_duration_seconds": 14.929,
+            "input_tokens": 173821,
+            "output_tokens": 2477,
+            "error_categories": {
+              "repeated_action": 3,
+              "tool_error": 3
+            },
+            "failed_scenarios": []
+          },
+          "office-sequence": {
+            "total": 3,
+            "passed": 3,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "hard": {
+                "total": 3,
+                "passed": 3,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 137,
+            "avg_tool_calls": 45.67,
+            "total_duration_seconds": 145.465,
+            "avg_duration_seconds": 48.488,
+            "input_tokens": 709053,
+            "output_tokens": 6765,
+            "error_categories": {
+              "consecutive_repeated_action": 1,
+              "max_iterations": 3,
+              "navigation_error": 3,
+              "post_goal_overrun": 3,
+              "repeated_action": 3,
+              "target_not_visible": 3,
+              "tool_error": 3
+            },
+            "failed_scenarios": []
+          }
+        },
+        "by_repetition": {
+          "1": {
+            "total": 2,
+            "passed": 2,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "medium": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              },
+              "hard": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 58,
+            "avg_tool_calls": 29.0,
+            "total_duration_seconds": 64.742,
+            "avg_duration_seconds": 32.371,
+            "input_tokens": 293869,
+            "output_tokens": 3197,
+            "error_categories": {
+              "max_iterations": 1,
+              "navigation_error": 1,
+              "post_goal_overrun": 1,
+              "repeated_action": 2,
+              "target_not_visible": 1,
+              "tool_error": 2
+            },
+            "failed_scenarios": []
+          },
+          "2": {
+            "total": 2,
+            "passed": 2,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "medium": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              },
+              "hard": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 60,
+            "avg_tool_calls": 30.0,
+            "total_duration_seconds": 61.811,
+            "avg_duration_seconds": 30.906,
+            "input_tokens": 287959,
+            "output_tokens": 3001,
+            "error_categories": {
+              "max_iterations": 1,
+              "navigation_error": 1,
+              "post_goal_overrun": 1,
+              "repeated_action": 2,
+              "target_not_visible": 1,
+              "tool_error": 2
+            },
+            "failed_scenarios": []
+          },
+          "3": {
+            "total": 2,
+            "passed": 2,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "medium": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              },
+              "hard": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 62,
+            "avg_tool_calls": 31.0,
+            "total_duration_seconds": 63.7,
+            "avg_duration_seconds": 31.85,
+            "input_tokens": 301046,
+            "output_tokens": 3044,
+            "error_categories": {
+              "consecutive_repeated_action": 1,
+              "max_iterations": 1,
+              "navigation_error": 1,
+              "post_goal_overrun": 1,
+              "repeated_action": 2,
+              "target_not_visible": 1,
+              "tool_error": 2
+            },
+            "failed_scenarios": []
+          }
+        }
+      }
+    }
+  ]
+}

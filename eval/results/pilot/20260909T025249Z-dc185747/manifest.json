@@ -1,0 +1,352 @@
+{
+  "schema_version": 1,
+  "run_id": "20260909T025249Z-dc185747",
+  "name": "pilot",
+  "started_at": "2026-09-09T02:52:49.579171+00:00",
+  "status": "completed",
+  "completed_cases": 12,
+  "expected_cases": 12,
+  "module": "student_framework",
+  "plan": {
+    "name": "pilot",
+    "scenarios": [
+      "color-locks",
+      "office-sequence"
+    ],
+    "repetitions": 3,
+    "defaults": {
+      "prompt": "prompts/04_PROMPT",
+      "max_iterations": 45,
+      "max_history_messages": 80,
+      "use_structured_memory": true,
+      "stop_on_goal": false,
+      "use_completion_review": false
+    },
+    "variants": [
+      {
+        "id": "without_review",
+        "description": "",
+        "prompt": null,
+        "max_iterations": null,
+        "max_history_messages": null,
+        "use_structured_memory": null,
+        "stop_on_goal": null,
+        "use_completion_review": false
+      },
+      {
+        "id": "with_review",
+        "description": "",
+        "prompt": null,
+        "max_iterations": null,
+        "max_history_messages": null,
+        "use_structured_memory": null,
+        "stop_on_goal": null,
+        "use_completion_review": true
+      }
+    ]
+  },
+  "variants": [
+    {
+      "id": "without_review",
+      "description": "",
+      "prompt": "prompts/04_PROMPT",
+      "max_iterations": 45,
+      "max_history_messages": 80,
+      "use_structured_memory": true,
+      "stop_on_goal": false,
+      "use_completion_review": false,
+      "system_prompt": "Sos un agente con herramientas. Respondes en espanol y resolves tareas paso a paso usando las herramientas disponibles.\n\nReglas generales:\n- Usa herramientas cuando sean necesarias para observar, calcular, leer archivos o actuar sobre un entorno.\n- Copia exactamente los ids, rutas y argumentos que devuelven las herramientas. No reemplaces ids por nombres visibles.\n- Si una herramienta devuelve un error por id inexistente, usa `look` u otra observacion disponible para obtener el id correcto.\n- No repitas la misma llamada si ya devolvio la misma informacion o el mismo error.\n- Ante un error de herramienta, corregi la causa antes de intentar otra vez.\n- Antes de usar una llave, pieza o item, verifica que este en el inventario segun las observaciones previas o la memoria estructurada. Si fue revelado pero no tomado, volve al lugar donde lo viste y usa `take` antes de intentar `use`.\n- Si una observacion revela varios items utiles en un contenedor abierto, toma los items utiles que puedas transportar antes de irte de la sala.\n\nUso de memoria estructurada:\n- Si el system prompt incluye una seccion llamada \"Memoria estructurada observada del entorno\", tratala como tu estado de trabajo confiable.\n- Antes de cada tool call, revisa en la memoria: sala actual, inventario observado, objetos descubiertos, transportabilidad confirmada, objetos conocidos en la sala actual, salidas conocidas, salidas bloqueadas, acciones fallidas recientes y siguiente objetivo sugerido.\n- Dale prioridad a la memoria estructurada sobre tu intuicion. Si la memoria dice que un objeto fue visto en otra sala, navega primero a esa sala antes de `take`, `examine` o `use`.\n- Descubrir un objeto no significa que sea transportable ni que debas tomarlo. Examina libros, expedientes y otros objetos para obtener pistas; toma solo objetos utiles que puedas llevar.\n- Si una herramienta confirma que un objeto no se puede llevar, no repitas take ni lo uses como item del inventario. Puedes seguir examinandolo. Los objetos de transportabilidad desconocida o no transportables no impiden moverte.\n- Si la memoria muestra salidas conocidas de la sala actual, usa solo esas direcciones con `go`.\n- Si la memoria muestra acciones fallidas recientes, no repitas la misma accion; cambia de estrategia usando la informacion del error.\n- Si aparece \"Siguiente objetivo sugerido\", seguilo salvo que contradiga una observacion mas reciente.\n\nPara mundos tipo sala de escape:\n- Empeza con `look` si no conoces el estado actual.\n- `look` muestra objetos con formato `[id: ...]`; usa siempre esos ids exactos.\n- Examina objetos selectivamente para entender contenedores, cerraduras, pistas u objetos sospechosos; no examines todo si ya hay una accion util evidente.\n- Si ves un objeto tomable util, usa `take` con su id.\n- Si tenes una llave o pieza y hay un contenedor, cerradura o bloqueo compatible por color, nombre o descripcion, proba `use(item, target)` antes de seguir explorando.\n- Si un contenedor u objeto cerrado requiere una llave o pieza que todavia no tenes en el inventario, no intentes abrirlo: busca, revela y toma primero el item requerido.\n- No sigas examinando el mismo contenedor cerrado si ya sabes que requiere una llave o pieza; abrilo primero cuando tengas el item compatible.\n- Despues de abrir un contenedor, usa `examine` sobre ese contenedor para revelar su contenido.\n- Despues de revelar un item util y transportable, tomalo con `take`.\n- Despues de tomar una llave, pieza o item claramente util, preguntate si ayuda al objetivo principal o a un bloqueo ya visto. Si conoces donde esta ese objetivo o bloqueo, volve y proba el item compatible antes de explorar salas menos relevantes.\n- Si una herramienta dice que a un objetivo le faltan piezas, items o condiciones, trata esos faltantes como subobjetivos prioritarios: busca, toma y lleva esos items de vuelta al objetivo.\n- Recorda el objetivo principal. Si una tool confirma que el objetivo ya se cumplio, no uses mas herramientas y responde con la respuesta final.\n- Si `use(item, \"puerta_principal\")` devuelve que la puerta se abre, termina inmediatamente con respuesta final. No llames `look`, `go`, `examine`, `take` ni `use` despues de eso.\n\nBusqueda sistematica:\n- Si examinas varios objetos similares y no encontras nada util, continua con el siguiente id pendiente de la lista revelada.\n- No vuelvas a `look` salvo que hayas agotado la lista de objetos pendientes, cambiado de sala o cambiado el estado del mundo abriendo/tomando/usando algo.\n- No llames `look` repetidamente en la misma sala si la observacion no cambio. Si no avanzaste, elegi un objeto pendiente para `examine`, un item revelado para `take`, o una llave/pieza del inventario para `use`.\n\nNavegacion:\n- En escenarios con `go`, manten un mapa mental de sala actual, salidas, camino recorrido, objetos vistos e inventario.\n- La sala actual es siempre la ultima sala indicada por `look` o por una respuesta exitosa de `go` (\"Llegas a ...\").\n- Antes de moverte, usa solo direcciones listadas para la sala actual por `look`, por la ultima observacion o por la memoria estructurada.\n- Nunca uses salidas de salas anteriores para moverte desde la sala actual.\n- Si una direccion falla desde una sala, recorda que esa direccion no existe desde esa sala y no la repitas.\n- Si necesitas volver a un objeto visto antes, navega de regreso por el camino inverso registrado.\n- Solo intentes `use(item, target)` si el target esta visible en la sala actual o en el inventario. Si no esta visible, volve primero a la sala donde lo viste.\n- Nunca llames `go` con ids de objetos. `go` solo se usa con direcciones listadas en `Salidas`, como `norte`, `sur`, `este` u `oeste`.\n\nPara memoria conversacional:\n- Usa el historial como memoria de la conversacion.\n- Si el usuario pide recordar un dato, confirmalo sin usar herramientas.\n- Para preguntas sobre mensajes anteriores, responde usando el historial.\n\nPara salida estructurada:\n- Si cualquier tool devuelve que `puerta_principal` \"Se abre\", \"esta abierta\" o \"ya esta abierta\", el objetivo de abrir la puerta ya esta cumplido. Termina inmediatamente con respuesta final y no uses ninguna otra herramienta.\n- Si `final_result` esta disponible, invoca esa herramienta con el schema pedido y no respondas con texto libre.\n\nCuando el objetivo este cumplido o tengas la respuesta final, responde directamente."
+    },
+    {
+      "id": "with_review",
+      "description": "",
+      "prompt": "prompts/04_PROMPT",
+      "max_iterations": 45,
+      "max_history_messages": 80,
+      "use_structured_memory": true,
+      "stop_on_goal": false,
+      "use_completion_review": true,
+      "system_prompt": "Sos un agente con herramientas. Respondes en espanol y resolves tareas paso a paso usando las herramientas disponibles.\n\nReglas generales:\n- Usa herramientas cuando sean necesarias para observar, calcular, leer archivos o actuar sobre un entorno.\n- Copia exactamente los ids, rutas y argumentos que devuelven las herramientas. No reemplaces ids por nombres visibles.\n- Si una herramienta devuelve un error por id inexistente, usa `look` u otra observacion disponible para obtener el id correcto.\n- No repitas la misma llamada si ya devolvio la misma informacion o el mismo error.\n- Ante un error de herramienta, corregi la causa antes de intentar otra vez.\n- Antes de usar una llave, pieza o item, verifica que este en el inventario segun las observaciones previas o la memoria estructurada. Si fue revelado pero no tomado, volve al lugar donde lo viste y usa `take` antes de intentar `use`.\n- Si una observacion revela varios items utiles en un contenedor abierto, toma los items utiles que puedas transportar antes de irte de la sala.\n\nUso de memoria estructurada:\n- Si el system prompt incluye una seccion llamada \"Memoria estructurada observada del entorno\", tratala como tu estado de trabajo confiable.\n- Antes de cada tool call, revisa en la memoria: sala actual, inventario observado, objetos descubiertos, transportabilidad confirmada, objetos conocidos en la sala actual, salidas conocidas, salidas bloqueadas, acciones fallidas recientes y siguiente objetivo sugerido.\n- Dale prioridad a la memoria estructurada sobre tu intuicion. Si la memoria dice que un objeto fue visto en otra sala, navega primero a esa sala antes de `take`, `examine` o `use`.\n- Descubrir un objeto no significa que sea transportable ni que debas tomarlo. Examina libros, expedientes y otros objetos para obtener pistas; toma solo objetos utiles que puedas llevar.\n- Si una herramienta confirma que un objeto no se puede llevar, no repitas take ni lo uses como item del inventario. Puedes seguir examinandolo. Los objetos de transportabilidad desconocida o no transportables no impiden moverte.\n- Si la memoria muestra salidas conocidas de la sala actual, usa solo esas direcciones con `go`.\n- Si la memoria muestra acciones fallidas recientes, no repitas la misma accion; cambia de estrategia usando la informacion del error.\n- Si aparece \"Siguiente objetivo sugerido\", seguilo salvo que contradiga una observacion mas reciente.\n\nPara mundos tipo sala de escape:\n- Empeza con `look` si no conoces el estado actual.\n- `look` muestra objetos con formato `[id: ...]`; usa siempre esos ids exactos.\n- Examina objetos selectivamente para entender contenedores, cerraduras, pistas u objetos sospechosos; no examines todo si ya hay una accion util evidente.\n- Si ves un objeto tomable util, usa `take` con su id.\n- Si tenes una llave o pieza y hay un contenedor, cerradura o bloqueo compatible por color, nombre o descripcion, proba `use(item, target)` antes de seguir explorando.\n- Si un contenedor u objeto cerrado requiere una llave o pieza que todavia no tenes en el inventario, no intentes abrirlo: busca, revela y toma primero el item requerido.\n- No sigas examinando el mismo contenedor cerrado si ya sabes que requiere una llave o pieza; abrilo primero cuando tengas el item compatible.\n- Despues de abrir un contenedor, usa `examine` sobre ese contenedor para revelar su contenido.\n- Despues de revelar un item util y transportable, tomalo con `take`.\n- Despues de tomar una llave, pieza o item claramente util, preguntate si ayuda al objetivo principal o a un bloqueo ya visto. Si conoces donde esta ese objetivo o bloqueo, volve y proba el item compatible antes de explorar salas menos relevantes.\n- Si una herramienta dice que a un objetivo le faltan piezas, items o condiciones, trata esos faltantes como subobjetivos prioritarios: busca, toma y lleva esos items de vuelta al objetivo.\n- Recorda el objetivo principal. Si una tool confirma que el objetivo ya se cumplio, no uses mas herramientas y responde con la respuesta final.\n- Si `use(item, \"puerta_principal\")` devuelve que la puerta se abre, termina inmediatamente con respuesta final. No llames `look`, `go`, `examine`, `take` ni `use` despues de eso.\n\nBusqueda sistematica:\n- Si examinas varios objetos similares y no encontras nada util, continua con el siguiente id pendiente de la lista revelada.\n- No vuelvas a `look` salvo que hayas agotado la lista de objetos pendientes, cambiado de sala o cambiado el estado del mundo abriendo/tomando/usando algo.\n- No llames `look` repetidamente en la misma sala si la observacion no cambio. Si no avanzaste, elegi un objeto pendiente para `examine`, un item revelado para `take`, o una llave/pieza del inventario para `use`.\n\nNavegacion:\n- En escenarios con `go`, manten un mapa mental de sala actual, salidas, camino recorrido, objetos vistos e inventario.\n- La sala actual es siempre la ultima sala indicada por `look` o por una respuesta exitosa de `go` (\"Llegas a ...\").\n- Antes de moverte, usa solo direcciones listadas para la sala actual por `look`, por la ultima observacion o por la memoria estructurada.\n- Nunca uses salidas de salas anteriores para moverte desde la sala actual.\n- Si una direccion falla desde una sala, recorda que esa direccion no existe desde esa sala y no la repitas.\n- Si necesitas volver a un objeto visto antes, navega de regreso por el camino inverso registrado.\n- Solo intentes `use(item, target)` si el target esta visible en la sala actual o en el inventario. Si no esta visible, volve primero a la sala donde lo viste.\n- Nunca llames `go` con ids de objetos. `go` solo se usa con direcciones listadas en `Salidas`, como `norte`, `sur`, `este` u `oeste`.\n\nPara memoria conversacional:\n- Usa el historial como memoria de la conversacion.\n- Si el usuario pide recordar un dato, confirmalo sin usar herramientas.\n- Para preguntas sobre mensajes anteriores, responde usando el historial.\n\nPara salida estructurada:\n- Si cualquier tool devuelve que `puerta_principal` \"Se abre\", \"esta abierta\" o \"ya esta abierta\", el objetivo de abrir la puerta ya esta cumplido. Termina inmediatamente con respuesta final y no uses ninguna otra herramienta.\n- Si `final_result` esta disponible, invoca esa herramienta con el schema pedido y no respondas con texto libre.\n\nCuando el objetivo este cumplido o tengas la respuesta final, responde directamente."
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "color-locks",
+      "source": "C:\\dev\\MIA_repos\\tp_mia_agentes_2026\\scenarios\\02-medium-color-locks.json",
+      "definition": {
+        "id": "color-locks",
+        "difficulty": "medium",
+        "description": "Un sótano con cuatro cofres pintados de colores distintos. Cada cofre tiene una cerradura del mismo color, y cada uno (excepto uno) guarda dentro la llave del color del siguiente cofre. La cadena empieza con una llave plateada a la vista y termina con la llave dorada que abre la puerta principal.",
+        "user_message": "Te despiertas en un sótano frío. La puerta principal, al fondo, está cerrada con una cerradura dorada considerable. Sobre una repisa baja brilla una llave plateada. Repartidos por el suelo hay cuatro cofres pintados de colores distintos (plateado, rojo, verde y azul), cada uno con su cerradura del mismo color. Algunos cofres están cerrados con llave, otros no. Encuentra la forma de salir.",
+        "start_room": "sotano",
+        "rooms": {
+          "sotano": {
+            "name": "Sótano",
+            "description": "Un sótano de piedra con olor a humedad y una bombilla solitaria colgando del techo. Una repisa baja en la pared norte sostiene una llave plateada brillante. En el suelo descansan cuatro cofres pintados de colores distintos. Al fondo, una puerta de roble con cerradura dorada.",
+            "items": [
+              "llave_plata",
+              "cofre_plata",
+              "cofre_rojo",
+              "cofre_verde",
+              "cofre_azul",
+              "puerta_principal"
+            ]
+          }
+        },
+        "items": {
+          "llave_plata": {
+            "name": "llave plateada",
+            "description": "Una llave pequeña y brillante, de plata pulida. Por su tamaño, parece encajar en una cerradura igualmente pequeña.",
+            "takeable": true
+          },
+          "cofre_plata": {
+            "name": "cofre plateado",
+            "description": "Un cofre pequeño con tachuelas plateadas y una cerradura del mismo color. Encaja con una llave del mismo color.",
+            "container": true,
+            "contains": [
+              "llave_roja"
+            ],
+            "locked": {
+              "requires_item": "llave_plata"
+            },
+            "open_state": "closed"
+          },
+          "llave_roja": {
+            "name": "llave roja",
+            "description": "Una llave mediana esmaltada de rojo intenso.",
+            "takeable": true,
+            "hidden_by": "cofre_plata"
+          },
+          "cofre_rojo": {
+            "name": "cofre rojo",
+            "description": "Un cofre mediano pintado de rojo, con una cerradura roja del mismo tono. Encaja con una llave del mismo color.",
+            "container": true,
+            "contains": [
+              "llave_verde"
+            ],
+            "locked": {
+              "requires_item": "llave_roja"
+            },
+            "open_state": "closed"
+          },
+          "llave_verde": {
+            "name": "llave verde",
+            "description": "Una llave grande esmaltada de verde oscuro, gruesa.",
+            "takeable": true,
+            "hidden_by": "cofre_rojo"
+          },
+          "cofre_verde": {
+            "name": "cofre verde",
+            "description": "Un cofre grande pintado de verde, con una cerradura verde voluminosa. Encaja con una llave del mismo color.",
+            "container": true,
+            "contains": [
+              "llave_oro"
+            ],
+            "locked": {
+              "requires_item": "llave_verde"
+            },
+            "open_state": "closed"
+          },
+          "llave_oro": {
+            "name": "llave dorada",
+            "description": "Una llave dorada de aspecto institucional, gruesa y pesada. Encaja en cerraduras grandes.",
+            "takeable": true,
+            "hidden_by": "cofre_verde"
+          },
+          "cofre_azul": {
+            "name": "cofre azul",
+            "description": "Un cofre pintado de azul desconchado. Sorprendentemente, no tiene cerradura: las bisagras se abren al primer empujón.",
+            "container": true,
+            "contains": [
+              "trapo_viejo"
+            ]
+          },
+          "trapo_viejo": {
+            "name": "trapo viejo",
+            "description": "Un trapo gris y manchado de aceite. Inservible.",
+            "takeable": true,
+            "hidden_by": "cofre_azul"
+          },
+          "puerta_principal": {
+            "name": "puerta principal",
+            "description": "Una puerta gruesa de roble con marco metálico y una cerradura dorada considerable.",
+            "locked": {
+              "requires_item": "llave_oro"
+            },
+            "open_state": "closed"
+          }
+        },
+        "goal": {
+          "type": "item_open",
+          "item": "puerta_principal"
+        }
+      }
+    },
+    {
+      "id": "office-sequence",
+      "source": "C:\\dev\\MIA_repos\\tp_mia_agentes_2026\\scenarios\\06-hard-office-sequence.json",
+      "definition": {
+        "id": "office-sequence",
+        "difficulty": "hard",
+        "description": "Una oficina de cuatro ambientes. La llave de una caja fuerte está en el depósito; la caja (en el archivo) guarda el documento confidencial y la llave maestra de la puerta. El objetivo es compuesto y con orden: hay que llevarse el documento ANTES de abrir la puerta principal, que se sella al abrirse.",
+        "user_message": "Te despiertas en una oficina vacía. Tu objetivo: salir por la puerta principal LLEVÁNDOTE el documento confidencial. Aviso importante: la puerta principal se sella en cuanto la abrís, así que asegurate de tener el documento contigo ANTES de abrirla. La puerta necesita una llave maestra; la llave maestra y el documento están en una caja fuerte del archivo; y la llave de esa caja está guardada en el depósito. Recorré los ambientes en el orden correcto.",
+        "start_room": "oficina",
+        "rooms": {
+          "oficina": {
+            "name": "Oficina principal",
+            "description": "Una oficina con un escritorio amplio y una puerta principal blindada. Un corredor sale hacia el este.",
+            "items": [
+              "escritorio",
+              "puerta_principal"
+            ],
+            "exits": {
+              "este": "pasillo"
+            }
+          },
+          "pasillo": {
+            "name": "Corredor",
+            "description": "Un corredor central que distribuye hacia la oficina (oeste), el archivo (norte) y el depósito (este).",
+            "items": [],
+            "exits": {
+              "oeste": "oficina",
+              "norte": "archivo",
+              "este": "deposito"
+            }
+          },
+          "deposito": {
+            "name": "Depósito",
+            "description": "Un cuarto de limpieza con estanterías metálicas y un cajón etiquetado 'LLAVES'.",
+            "items": [
+              "cajon_llaves"
+            ],
+            "exits": {
+              "oeste": "pasillo"
+            }
+          },
+          "archivo": {
+            "name": "Archivo",
+            "description": "Una sala con armarios de expedientes y una caja fuerte empotrada en la pared.",
+            "items": [
+              "caja_fuerte"
+            ],
+            "exits": {
+              "sur": "pasillo"
+            }
+          }
+        },
+        "items": {
+          "escritorio": {
+            "name": "escritorio",
+            "description": "Un escritorio amplio con cajones. Están todos vacíos salvo por clips y papel en blanco.",
+            "container": true,
+            "contains": []
+          },
+          "puerta_principal": {
+            "name": "puerta principal",
+            "description": "Una puerta blindada con una cerradura institucional. Necesita la llave maestra. Una placa advierte: 'Se sella automáticamente al abrir'.",
+            "locked": {
+              "requires_item": "llave_maestra"
+            },
+            "open_state": "closed"
+          },
+          "cajon_llaves": {
+            "name": "cajón de llaves",
+            "description": "Un cajón metálico etiquetado 'LLAVES'. Dentro cuelga una sola llave pequeña.",
+            "container": true,
+            "contains": [
+              "llave_caja"
+            ]
+          },
+          "llave_caja": {
+            "name": "llave de la caja fuerte",
+            "description": "Una llave pequeña y plana, claramente de una caja fuerte.",
+            "takeable": true,
+            "hidden_by": "cajon_llaves"
+          },
+          "caja_fuerte": {
+            "name": "caja fuerte",
+            "description": "Una caja fuerte empotrada con una cerradura de llave plana. Cerrada.",
+            "container": true,
+            "contains": [
+              "documento_confidencial",
+              "llave_maestra"
+            ],
+            "locked": {
+              "requires_item": "llave_caja"
+            },
+            "open_state": "closed"
+          },
+          "documento_confidencial": {
+            "name": "documento confidencial",
+            "description": "Una carpeta sellada con la leyenda 'CONFIDENCIAL'. Es lo que viniste a buscar.",
+            "takeable": true,
+            "hidden_by": "caja_fuerte"
+          },
+          "llave_maestra": {
+            "name": "llave maestra",
+            "description": "Una llave maestra pesada, de las que abren cerraduras institucionales.",
+            "takeable": true,
+            "hidden_by": "caja_fuerte"
+          }
+        },
+        "goal": {
+          "type": "sequence",
+          "goals": [
+            {
+              "type": "item_in_inventory",
+              "item": "documento_confidencial"
+            },
+            {
+              "type": "item_open",
+              "item": "puerta_principal"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "code": {
+    "commit": "6fed406aec86acce78639c165c49ed66986e34a8",
+    "dirty": true,
+    "source_sha256": {
+      "eval/__init__.py": "f7683d968b01582ca3c503947dd723dd542412e86e203e61e5bc70bacfc8d02c",
+      "eval/config.py": "ebb89d858f9ff02ae6374b8c009a20a0ea6866829028a4316318db8001431e9f",
+      "eval/metrics.py": "c693f7a7d01999f82762e45fd32fd5cf36264f0ea6bde54233771f7ab93eccba",
+      "eval/qualitative.py": "f2f793b311c48011808fd230eccb7456623362ec53ce0879a83855b7efd0a3eb",
+      "eval/reporting.py": "fd6f00eec1e892dd4f1c94a455636773ea9cd8e69c3373d643d188516f34c740",
+      "eval/run.py": "5d796df3d7e8594c5aed081f6ad72bd77ad493052c6084aae6211605c5e38e56",
+      "student_framework/__init__.py": "fa01e5f27f638bc3be3d595ef76efc538511107c07034fb5785e7a610df80e89",
+      "student_framework/agent.py": "e1ddf47b8ebc6fe40e00a37de7f5f55f9bd1dd69ff2de277c0e5389f0a09efc9",
+      "student_framework/tools/__init__.py": "3440421ecf4ab5c7e2707c272a6a709d7e0d5f87140fe0590207729818901a4f",
+      "student_framework/tools/_sandbox.py": "549cef1fbd01e8b4113c67c0d48e7916c86310ca44809107519bfa0c8a9779cc",
+      "student_framework/tools/calculator.py": "14c74cf1f5fda47bf58c62d48828f50407b40469e008801c0bd95b167f997ed4",
+      "student_framework/tools/example.py": "8a731f2938129a8f66806d8facf622333c11e56905154717f6c4fbd8993238b1",
+      "student_framework/tools/file_reader.py": "d9a4dc09a61e6bcb2dee73403dc4eabf3f6c6079d34661105cd681e029bd789e",
+      "student_framework/tools/text_search.py": "e542d495fe4f150b1b01a97d5eb1d2610d99feb1ae6ea39ea05265ba1dfe9f88",
+      "student_framework/world_memory.py": "7e7a527e7c3f11ac447ebedaf9e2f37444031319df5798ff219701743e081536",
+      "mia_agents/__init__.py": "97154b3bfeaf1feaa3e154691a6682c327ab124e1da5e30a30473bea4f8748a1",
+      "mia_agents/_env.py": "7ee132da7368832f9429ee3737075eb30b33f7a61f69b38efe55ba76329137c8",
+      "mia_agents/cli.py": "ac9d4771feeb28710dadb2c5f728849278847f1c70de9422771fb6c466d9bf18",
+      "mia_agents/llm_client.py": "c4e921fc62fab10bec8449a87f8288fb4a76aad1b59aeaba0c5bbf52af6ac7bb",
+      "mia_agents/protocols.py": "71ee20258d7c04d8dd334d3d1a59626ac2cdc2f072252251e89ff8c5cc2e73ec",
+      "mia_agents/testing/__init__.py": "954a6960f159151c93409f2de963cd36bc7d110bf0a6f2967269de3bf758d275",
+      "mia_agents/testing/mock_llm.py": "5b7950d3089b9091f8b87fd973bdc44e70d6d0c488f635c37104baec73c0af7d",
+      "mia_agents/testing/tools.py": "aeab542d5057cb65efb4ce3264d6b0a620a4eec6bc5de8253ca1cd6e5e14c562",
+      "mia_agents/tool_schema.py": "8018d5ff49de42ae2949aace7eb186a70689a38fbbe7e0ecde41752c40146215",
+      "mia_agents/types.py": "06c96226dba6050117f42de0a3b356dc403e07e28ff298a3bd5d7f1cb2488c74",
+      "mia_world/__init__.py": "03470489a7e597927732b47a826493713fe11da3e3d0f4b83a69445419d7f645",
+      "mia_world/cli.py": "9932057cc8d8179220d93865b62c1f7823cf23d1581f099cdec26e74ee49df80",
+      "mia_world/goals.py": "48da551b1c6ae20d9d8add311ec3ffaf0f2725eb3f9588ded0c45bbf389191e5",
+      "mia_world/scenarios.py": "32d0a7228936f3654eca711ec4a238ffb533a370bf9916d33933637185fdb643",
+      "mia_world/state.py": "ccef23b147d154bd1598ae9a15846d374300c1bf35074c791564082938ccdf58",
+      "mia_world/tools.py": "d3652daaccd59e5e0bfab805a89c6c7546edbd74306018b4cd5484a9705da464"
+    }
+  },
+  "llm": {
+    "provider": "bedrock",
+    "model": "amazon.nova-lite-v1:0",
+    "region": "us-east-1",
+    "temperature": 0.2
+  },
+  "finished_at": "2026-09-09T02:58:03.204942+00:00"
+}

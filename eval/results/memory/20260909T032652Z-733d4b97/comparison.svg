@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="840" viewBox="0 0 1280 840">
+<style>
+text{font-family:Arial,Helvetica,sans-serif;fill:#172033}
+.page-title{font-size:26px;font-weight:700}
+.page-subtitle{font-size:14px;fill:#64748b}
+.panel{fill:#ffffff;stroke:#d7dee8;stroke-width:1}
+.title{font-size:18px;font-weight:700}
+.hint,.legend{font-size:11px;fill:#64748b}
+.axis{stroke:#94a3b8;stroke-width:1}
+.value{font-size:12px;font-weight:700}
+.label{font-size:10px;fill:#334155}
+.empty{font-size:14px;fill:#64748b}
+</style>
+<rect x="0" y="0" width="1280" height="840" fill="#f8fafc" />
+<text x="42" y="45" class="page-title">Comparacion de experimentos M3</text>
+<text x="42" y="70" class="page-subtitle">Metricas principales para elegir la variante mas robusta y eficiente.</text>
+<rect x="40" y="100" width="570" height="320" rx="8" class="panel" />
+<rect x="670" y="100" width="570" height="320" rx="8" class="panel" />
+<rect x="40" y="480" width="570" height="320" rx="8" class="panel" />
+<rect x="670" y="480" width="570" height="320" rx="8" class="panel" />
+<text x="66" y="144" class="title">Tasa de exito</text>
+<line x1="118" y1="352" x2="554" y2="352" class="axis" />
+<line x1="118" y1="166" x2="118" y2="352" class="axis" />
+<text x="488" y="144" class="hint">mayor es mejor</text>
+<rect x="118" y="194" width="212" height="158" rx="3" fill="#16a34a" />
+<text x="224.0" y="187" class="value" text-anchor="middle">70.8%</text>
+<text x="224.0" y="374" class="label" text-anchor="middle">without_memory</text>
+<rect x="342" y="166" width="212" height="186" rx="3" fill="#16a34a" />
+<text x="448.0" y="159" class="value" text-anchor="middle">83.3%</text>
+<text x="448.0" y="374" class="label" text-anchor="middle">with_memory</text>
+<text x="696" y="144" class="title">Promedio de tool calls</text>
+<line x1="748" y1="352" x2="1184" y2="352" class="axis" />
+<line x1="748" y1="166" x2="748" y2="352" class="axis" />
+<text x="1118" y="144" class="hint">menor es mejor</text>
+<rect x="748" y="166" width="212" height="186" rx="3" fill="#2563eb" />
+<text x="854.0" y="159" class="value" text-anchor="middle">29.17</text>
+<text x="854.0" y="374" class="label" text-anchor="middle">without_memory</text>
+<rect x="972" y="193" width="212" height="159" rx="3" fill="#2563eb" />
+<text x="1078.0" y="186" class="value" text-anchor="middle">25.08</text>
+<text x="1078.0" y="374" class="label" text-anchor="middle">with_memory</text>
+<text x="66" y="524" class="title">Tokens totales</text>
+<line x1="118" y1="732" x2="554" y2="732" class="axis" />
+<line x1="118" y1="546" x2="118" y2="732" class="axis" />
+<text x="488" y="524" class="hint">menor es mejor</text>
+<rect x="118" y="546" width="212" height="186" rx="3" fill="#0f766e" />
+<text x="224.0" y="539" class="value" text-anchor="middle">4.24084e+06</text>
+<text x="224.0" y="754" class="label" text-anchor="middle">without_memory</text>
+<rect x="342" y="581" width="212" height="151" rx="3" fill="#0f766e" />
+<text x="448.0" y="574" class="value" text-anchor="middle">3.45013e+06</text>
+<text x="448.0" y="754" class="label" text-anchor="middle">with_memory</text>
+<text x="696" y="524" class="title">Errores por categoria</text>
+<text x="1118" y="524" class="hint">menor es mejor</text>
+<line x1="748" y1="720" x2="1184" y2="720" class="axis" />
+<line x1="748" y1="546" x2="748" y2="720" class="axis" />
+<rect x="748" y="668" width="212" height="52" rx="2" fill="#ef4444" />
+<rect x="748" y="621" width="212" height="47" rx="2" fill="#f97316" />
+<rect x="748" y="593" width="212" height="28" rx="2" fill="#eab308" />
+<rect x="748" y="567" width="212" height="26" rx="2" fill="#8b5cf6" />
+<rect x="748" y="548" width="212" height="19" rx="2" fill="#64748b" />
+<text x="854.0" y="539" class="value" text-anchor="middle">73</text>
+<text x="854.0" y="742" class="label" text-anchor="middle">without_memory</text>
+<rect x="972" y="680" width="212" height="40" rx="2" fill="#ef4444" />
+<rect x="972" y="642" width="212" height="38" rx="2" fill="#f97316" />
+<rect x="972" y="616" width="212" height="26" rx="2" fill="#eab308" />
+<rect x="972" y="600" width="212" height="16" rx="2" fill="#8b5cf6" />
+<rect x="972" y="584" width="212" height="16" rx="2" fill="#64748b" />
+<text x="1078.0" y="575" class="value" text-anchor="middle">58</text>
+<text x="1078.0" y="742" class="label" text-anchor="middle">with_memory</text>
+<rect x="714" y="752" width="10" height="10" fill="#ef4444" />
+<text x="729" y="761" class="legend">repeated_action</text>
+<rect x="840" y="752" width="10" height="10" fill="#f97316" />
+<text x="855" y="761" class="legend">tool_error</text>
+<rect x="966" y="752" width="10" height="10" fill="#eab308" />
+<text x="981" y="761" class="legend">navigation_error</text>
+<rect x="1092" y="752" width="10" height="10" fill="#8b5cf6" />
+<text x="1107" y="761" class="legend">max_iterations</text>
+<rect x="1218" y="752" width="10" height="10" fill="#64748b" />
+<text x="1233" y="761" class="legend">target_not_visible</text>
+</svg>

@@ -1,0 +1,2103 @@
+{
+  "rubric_version": "1.0",
+  "rubric": {
+    "0": "No progresa o no hay trayectoria evaluable.",
+    "1": "Progresa poco, se atasca o repite errores.",
+    "2": "Progresa parcialmente o resuelve con ruido importante.",
+    "3": "Resuelve con trayectoria coherente y sin repeticiones graves."
+  },
+  "total": 96,
+  "average_qualitative_score": 2.24,
+  "score_distribution": {
+    "1": 6,
+    "2": 61,
+    "3": 29
+  },
+  "by_variant": {
+    "iterations_15": {
+      "total": 24,
+      "average_qualitative_score": 2.083,
+      "by_repetition": {
+        "1": 2.0,
+        "2": 2.125,
+        "3": 2.125
+      }
+    },
+    "iterations_30": {
+      "total": 24,
+      "average_qualitative_score": 2.375,
+      "by_repetition": {
+        "1": 2.375,
+        "2": 2.5,
+        "3": 2.25
+      }
+    },
+    "iterations_45": {
+      "total": 24,
+      "average_qualitative_score": 2.125,
+      "by_repetition": {
+        "1": 2.25,
+        "2": 2.0,
+        "3": 2.125
+      }
+    },
+    "iterations_60": {
+      "total": 24,
+      "average_qualitative_score": 2.375,
+      "by_repetition": {
+        "1": 2.375,
+        "2": 2.375,
+        "3": 2.375
+      }
+    }
+  },
+  "reviews": [
+    {
+      "variant": "iterations_15",
+      "repetition": 1,
+      "scenario": "study-with-key",
+      "difficulty": "easy",
+      "goal_achieved": true,
+      "tool_calls": 4,
+      "error_categories": [],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 0,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_15",
+      "repetition": 1,
+      "scenario": "color-locks",
+      "difficulty": "medium",
+      "goal_achieved": false,
+      "tool_calls": 15,
+      "error_categories": [
+        "max_iterations",
+        "repeated_action",
+        "tool_error",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 4,
+        "repeated_calls": 3,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_15",
+      "repetition": 1,
+      "scenario": "library-search",
+      "difficulty": "hard",
+      "goal_achieved": true,
+      "tool_calls": 28,
+      "error_categories": [
+        "consecutive_repeated_action",
+        "max_iterations",
+        "post_goal_overrun",
+        "repeated_action",
+        "repeated_look",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 1,
+        "repeated_calls": 12,
+        "consecutive_repeats": 3,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_15",
+      "repetition": 1,
+      "scenario": "extreme-archive",
+      "difficulty": "extreme",
+      "goal_achieved": false,
+      "tool_calls": 15,
+      "error_categories": [
+        "max_iterations",
+        "unsolved"
+      ],
+      "qualitative_score": 1,
+      "qualitative_reason": "Explora parcialmente, pero se atasca en repeticiones o errores.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 0,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_15",
+      "repetition": 1,
+      "scenario": "apartment-keys",
+      "difficulty": "medium",
+      "goal_achieved": true,
+      "tool_calls": 12,
+      "error_categories": [
+        "navigation_error",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, aunque requiere varias correcciones de errores locales.",
+      "evidence": {
+        "tool_errors": 2,
+        "repeated_calls": 4,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_15",
+      "repetition": 1,
+      "scenario": "office-sequence",
+      "difficulty": "hard",
+      "goal_achieved": false,
+      "tool_calls": 15,
+      "error_categories": [
+        "max_iterations",
+        "navigation_error",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 1,
+        "repeated_calls": 6,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_15",
+      "repetition": 1,
+      "scenario": "vault-combination",
+      "difficulty": "extreme",
+      "goal_achieved": false,
+      "tool_calls": 15,
+      "error_categories": [
+        "max_iterations",
+        "repeated_action",
+        "tool_error",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 2,
+        "repeated_calls": 7,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_15",
+      "repetition": 1,
+      "scenario": "backtracking-vault",
+      "difficulty": "extreme",
+      "goal_achieved": false,
+      "tool_calls": 15,
+      "error_categories": [
+        "max_iterations",
+        "navigation_error",
+        "repeated_action",
+        "tool_error",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 5,
+        "repeated_calls": 8,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 1,
+      "scenario": "study-with-key",
+      "difficulty": "easy",
+      "goal_achieved": true,
+      "tool_calls": 6,
+      "error_categories": [
+        "consecutive_repeated_action",
+        "post_goal_overrun",
+        "repeated_action",
+        "repeated_look"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 2,
+        "consecutive_repeats": 1,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 1,
+      "scenario": "color-locks",
+      "difficulty": "medium",
+      "goal_achieved": true,
+      "tool_calls": 16,
+      "error_categories": [
+        "post_goal_overrun",
+        "repeated_action",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 3,
+        "repeated_calls": 4,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 1,
+      "scenario": "library-search",
+      "difficulty": "hard",
+      "goal_achieved": true,
+      "tool_calls": 17,
+      "error_categories": [
+        "repeated_action"
+      ],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 1,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 1,
+      "scenario": "extreme-archive",
+      "difficulty": "extreme",
+      "goal_achieved": true,
+      "tool_calls": 23,
+      "error_categories": [],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 0,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 1,
+      "scenario": "apartment-keys",
+      "difficulty": "medium",
+      "goal_achieved": true,
+      "tool_calls": 10,
+      "error_categories": [
+        "repeated_action",
+        "target_not_visible"
+      ],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 2,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 1,
+      "scenario": "office-sequence",
+      "difficulty": "hard",
+      "goal_achieved": true,
+      "tool_calls": 30,
+      "error_categories": [
+        "max_iterations",
+        "navigation_error",
+        "post_goal_overrun",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 9,
+        "repeated_calls": 16,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 1,
+      "scenario": "vault-combination",
+      "difficulty": "extreme",
+      "goal_achieved": false,
+      "tool_calls": 31,
+      "error_categories": [
+        "consecutive_repeated_action",
+        "max_iterations",
+        "navigation_error",
+        "repeated_action",
+        "tool_error",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 5,
+        "repeated_calls": 16,
+        "consecutive_repeats": 1,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 1,
+      "scenario": "backtracking-vault",
+      "difficulty": "extreme",
+      "goal_achieved": false,
+      "tool_calls": 30,
+      "error_categories": [
+        "consecutive_repeated_action",
+        "max_iterations",
+        "navigation_error",
+        "repeated_action",
+        "tool_error",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 5,
+        "repeated_calls": 15,
+        "consecutive_repeats": 1,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 1,
+      "scenario": "study-with-key",
+      "difficulty": "easy",
+      "goal_achieved": true,
+      "tool_calls": 7,
+      "error_categories": [
+        "consecutive_repeated_action",
+        "post_goal_overrun",
+        "repeated_action",
+        "repeated_look",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 1,
+        "repeated_calls": 3,
+        "consecutive_repeats": 1,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 1,
+      "scenario": "color-locks",
+      "difficulty": "medium",
+      "goal_achieved": true,
+      "tool_calls": 15,
+      "error_categories": [
+        "repeated_action"
+      ],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 3,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 1,
+      "scenario": "library-search",
+      "difficulty": "hard",
+      "goal_achieved": false,
+      "tool_calls": 45,
+      "error_categories": [
+        "max_iterations",
+        "repeated_action",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 33,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 1,
+      "scenario": "extreme-archive",
+      "difficulty": "extreme",
+      "goal_achieved": true,
+      "tool_calls": 23,
+      "error_categories": [],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 0,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 1,
+      "scenario": "apartment-keys",
+      "difficulty": "medium",
+      "goal_achieved": true,
+      "tool_calls": 12,
+      "error_categories": [
+        "navigation_error",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, aunque requiere varias correcciones de errores locales.",
+      "evidence": {
+        "tool_errors": 2,
+        "repeated_calls": 4,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 1,
+      "scenario": "office-sequence",
+      "difficulty": "hard",
+      "goal_achieved": true,
+      "tool_calls": 46,
+      "error_categories": [
+        "consecutive_repeated_action",
+        "max_iterations",
+        "navigation_error",
+        "post_goal_overrun",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 17,
+        "repeated_calls": 32,
+        "consecutive_repeats": 6,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 1,
+      "scenario": "vault-combination",
+      "difficulty": "extreme",
+      "goal_achieved": true,
+      "tool_calls": 38,
+      "error_categories": [
+        "navigation_error",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 7,
+        "repeated_calls": 20,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 1,
+      "scenario": "backtracking-vault",
+      "difficulty": "extreme",
+      "goal_achieved": true,
+      "tool_calls": 35,
+      "error_categories": [
+        "navigation_error",
+        "repeated_action",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 10,
+        "repeated_calls": 19,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 1,
+      "scenario": "study-with-key",
+      "difficulty": "easy",
+      "goal_achieved": true,
+      "tool_calls": 7,
+      "error_categories": [
+        "consecutive_repeated_action",
+        "post_goal_overrun",
+        "repeated_action",
+        "repeated_look"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 2,
+        "consecutive_repeats": 1,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 1,
+      "scenario": "color-locks",
+      "difficulty": "medium",
+      "goal_achieved": true,
+      "tool_calls": 13,
+      "error_categories": [
+        "repeated_action",
+        "tool_error"
+      ],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 1,
+        "repeated_calls": 1,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 1,
+      "scenario": "library-search",
+      "difficulty": "hard",
+      "goal_achieved": true,
+      "tool_calls": 19,
+      "error_categories": [
+        "repeated_action",
+        "tool_error"
+      ],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 2,
+        "repeated_calls": 3,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 1,
+      "scenario": "extreme-archive",
+      "difficulty": "extreme",
+      "goal_achieved": true,
+      "tool_calls": 25,
+      "error_categories": [
+        "repeated_action",
+        "tool_error"
+      ],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 1,
+        "repeated_calls": 1,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 1,
+      "scenario": "apartment-keys",
+      "difficulty": "medium",
+      "goal_achieved": true,
+      "tool_calls": 12,
+      "error_categories": [
+        "navigation_error",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, aunque requiere varias correcciones de errores locales.",
+      "evidence": {
+        "tool_errors": 2,
+        "repeated_calls": 4,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 1,
+      "scenario": "office-sequence",
+      "difficulty": "hard",
+      "goal_achieved": true,
+      "tool_calls": 60,
+      "error_categories": [
+        "max_iterations",
+        "navigation_error",
+        "post_goal_overrun",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 17,
+        "repeated_calls": 45,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 1,
+      "scenario": "vault-combination",
+      "difficulty": "extreme",
+      "goal_achieved": true,
+      "tool_calls": 40,
+      "error_categories": [
+        "consecutive_repeated_action",
+        "navigation_error",
+        "repeated_action",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 5,
+        "repeated_calls": 22,
+        "consecutive_repeats": 1,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 1,
+      "scenario": "backtracking-vault",
+      "difficulty": "extreme",
+      "goal_achieved": true,
+      "tool_calls": 29,
+      "error_categories": [
+        "repeated_action",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 4,
+        "repeated_calls": 13,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_15",
+      "repetition": 2,
+      "scenario": "study-with-key",
+      "difficulty": "easy",
+      "goal_achieved": true,
+      "tool_calls": 4,
+      "error_categories": [],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 0,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_15",
+      "repetition": 2,
+      "scenario": "color-locks",
+      "difficulty": "medium",
+      "goal_achieved": false,
+      "tool_calls": 15,
+      "error_categories": [
+        "max_iterations",
+        "repeated_action",
+        "tool_error",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 1,
+        "repeated_calls": 4,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_15",
+      "repetition": 2,
+      "scenario": "library-search",
+      "difficulty": "hard",
+      "goal_achieved": false,
+      "tool_calls": 15,
+      "error_categories": [
+        "max_iterations",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 0,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_15",
+      "repetition": 2,
+      "scenario": "extreme-archive",
+      "difficulty": "extreme",
+      "goal_achieved": false,
+      "tool_calls": 15,
+      "error_categories": [
+        "max_iterations",
+        "unsolved"
+      ],
+      "qualitative_score": 1,
+      "qualitative_reason": "Explora parcialmente, pero se atasca en repeticiones o errores.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 0,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_15",
+      "repetition": 2,
+      "scenario": "apartment-keys",
+      "difficulty": "medium",
+      "goal_achieved": true,
+      "tool_calls": 11,
+      "error_categories": [
+        "navigation_error",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error"
+      ],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 1,
+        "repeated_calls": 3,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_15",
+      "repetition": 2,
+      "scenario": "office-sequence",
+      "difficulty": "hard",
+      "goal_achieved": false,
+      "tool_calls": 15,
+      "error_categories": [
+        "max_iterations",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 1,
+        "repeated_calls": 4,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_15",
+      "repetition": 2,
+      "scenario": "vault-combination",
+      "difficulty": "extreme",
+      "goal_achieved": false,
+      "tool_calls": 17,
+      "error_categories": [
+        "max_iterations",
+        "navigation_error",
+        "repeated_action",
+        "tool_error",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 1,
+        "repeated_calls": 5,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_15",
+      "repetition": 2,
+      "scenario": "backtracking-vault",
+      "difficulty": "extreme",
+      "goal_achieved": false,
+      "tool_calls": 15,
+      "error_categories": [
+        "max_iterations",
+        "navigation_error",
+        "repeated_action",
+        "tool_error",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 3,
+        "repeated_calls": 8,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 2,
+      "scenario": "study-with-key",
+      "difficulty": "easy",
+      "goal_achieved": true,
+      "tool_calls": 5,
+      "error_categories": [],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 0,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 2,
+      "scenario": "color-locks",
+      "difficulty": "medium",
+      "goal_achieved": true,
+      "tool_calls": 14,
+      "error_categories": [
+        "repeated_action",
+        "tool_error"
+      ],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 1,
+        "repeated_calls": 1,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 2,
+      "scenario": "library-search",
+      "difficulty": "hard",
+      "goal_achieved": true,
+      "tool_calls": 15,
+      "error_categories": [],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 0,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 2,
+      "scenario": "extreme-archive",
+      "difficulty": "extreme",
+      "goal_achieved": true,
+      "tool_calls": 23,
+      "error_categories": [],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 0,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 2,
+      "scenario": "apartment-keys",
+      "difficulty": "medium",
+      "goal_achieved": true,
+      "tool_calls": 12,
+      "error_categories": [
+        "navigation_error",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, aunque requiere varias correcciones de errores locales.",
+      "evidence": {
+        "tool_errors": 2,
+        "repeated_calls": 4,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 2,
+      "scenario": "office-sequence",
+      "difficulty": "hard",
+      "goal_achieved": true,
+      "tool_calls": 31,
+      "error_categories": [
+        "consecutive_repeated_action",
+        "max_iterations",
+        "navigation_error",
+        "post_goal_overrun",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 7,
+        "repeated_calls": 17,
+        "consecutive_repeats": 4,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 2,
+      "scenario": "vault-combination",
+      "difficulty": "extreme",
+      "goal_achieved": false,
+      "tool_calls": 31,
+      "error_categories": [
+        "max_iterations",
+        "navigation_error",
+        "repeated_action",
+        "tool_error",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 8,
+        "repeated_calls": 18,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 2,
+      "scenario": "backtracking-vault",
+      "difficulty": "extreme",
+      "goal_achieved": true,
+      "tool_calls": 27,
+      "error_categories": [
+        "repeated_action",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 4,
+        "repeated_calls": 12,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 2,
+      "scenario": "study-with-key",
+      "difficulty": "easy",
+      "goal_achieved": true,
+      "tool_calls": 45,
+      "error_categories": [
+        "consecutive_repeated_action",
+        "max_iterations",
+        "post_goal_overrun",
+        "repeated_action",
+        "repeated_look",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 1,
+        "repeated_calls": 40,
+        "consecutive_repeats": 38,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 2,
+      "scenario": "color-locks",
+      "difficulty": "medium",
+      "goal_achieved": false,
+      "tool_calls": 45,
+      "error_categories": [
+        "max_iterations",
+        "repeated_action",
+        "tool_error",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 1,
+        "repeated_calls": 28,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 2,
+      "scenario": "library-search",
+      "difficulty": "hard",
+      "goal_achieved": true,
+      "tool_calls": 17,
+      "error_categories": [
+        "repeated_action"
+      ],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 1,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 2,
+      "scenario": "extreme-archive",
+      "difficulty": "extreme",
+      "goal_achieved": true,
+      "tool_calls": 24,
+      "error_categories": [
+        "post_goal_overrun",
+        "repeated_action"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 1,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 2,
+      "scenario": "apartment-keys",
+      "difficulty": "medium",
+      "goal_achieved": true,
+      "tool_calls": 12,
+      "error_categories": [
+        "navigation_error",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, aunque requiere varias correcciones de errores locales.",
+      "evidence": {
+        "tool_errors": 2,
+        "repeated_calls": 4,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 2,
+      "scenario": "office-sequence",
+      "difficulty": "hard",
+      "goal_achieved": true,
+      "tool_calls": 45,
+      "error_categories": [
+        "max_iterations",
+        "navigation_error",
+        "post_goal_overrun",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 16,
+        "repeated_calls": 30,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 2,
+      "scenario": "vault-combination",
+      "difficulty": "extreme",
+      "goal_achieved": true,
+      "tool_calls": 43,
+      "error_categories": [
+        "consecutive_repeated_action",
+        "navigation_error",
+        "repeated_action",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 7,
+        "repeated_calls": 25,
+        "consecutive_repeats": 2,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 2,
+      "scenario": "backtracking-vault",
+      "difficulty": "extreme",
+      "goal_achieved": false,
+      "tool_calls": 45,
+      "error_categories": [
+        "max_iterations",
+        "repeated_action",
+        "unsolved"
+      ],
+      "qualitative_score": 1,
+      "qualitative_reason": "Explora parcialmente, pero se atasca en repeticiones o errores.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 38,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 2,
+      "scenario": "study-with-key",
+      "difficulty": "easy",
+      "goal_achieved": true,
+      "tool_calls": 7,
+      "error_categories": [
+        "post_goal_overrun",
+        "repeated_action",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 1,
+        "repeated_calls": 2,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 2,
+      "scenario": "color-locks",
+      "difficulty": "medium",
+      "goal_achieved": true,
+      "tool_calls": 15,
+      "error_categories": [
+        "repeated_action",
+        "tool_error"
+      ],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 1,
+        "repeated_calls": 2,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 2,
+      "scenario": "library-search",
+      "difficulty": "hard",
+      "goal_achieved": true,
+      "tool_calls": 22,
+      "error_categories": [
+        "repeated_action",
+        "tool_error"
+      ],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 2,
+        "repeated_calls": 3,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 2,
+      "scenario": "extreme-archive",
+      "difficulty": "extreme",
+      "goal_achieved": true,
+      "tool_calls": 23,
+      "error_categories": [],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 0,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 2,
+      "scenario": "apartment-keys",
+      "difficulty": "medium",
+      "goal_achieved": true,
+      "tool_calls": 11,
+      "error_categories": [
+        "navigation_error",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error"
+      ],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 1,
+        "repeated_calls": 3,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 2,
+      "scenario": "office-sequence",
+      "difficulty": "hard",
+      "goal_achieved": true,
+      "tool_calls": 61,
+      "error_categories": [
+        "consecutive_repeated_action",
+        "max_iterations",
+        "navigation_error",
+        "post_goal_overrun",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 13,
+        "repeated_calls": 47,
+        "consecutive_repeats": 5,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 2,
+      "scenario": "vault-combination",
+      "difficulty": "extreme",
+      "goal_achieved": false,
+      "tool_calls": 60,
+      "error_categories": [
+        "max_iterations",
+        "navigation_error",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 8,
+        "repeated_calls": 46,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 2,
+      "scenario": "backtracking-vault",
+      "difficulty": "extreme",
+      "goal_achieved": false,
+      "tool_calls": 60,
+      "error_categories": [
+        "consecutive_repeated_action",
+        "max_iterations",
+        "navigation_error",
+        "repeated_action",
+        "tool_error",
+        "unsolved"
+      ],
+      "qualitative_score": 1,
+      "qualitative_reason": "Explora parcialmente, pero se atasca en repeticiones o errores.",
+      "evidence": {
+        "tool_errors": 19,
+        "repeated_calls": 54,
+        "consecutive_repeats": 1,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_15",
+      "repetition": 3,
+      "scenario": "study-with-key",
+      "difficulty": "easy",
+      "goal_achieved": true,
+      "tool_calls": 5,
+      "error_categories": [],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 0,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_15",
+      "repetition": 3,
+      "scenario": "color-locks",
+      "difficulty": "medium",
+      "goal_achieved": true,
+      "tool_calls": 12,
+      "error_categories": [],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 0,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_15",
+      "repetition": 3,
+      "scenario": "library-search",
+      "difficulty": "hard",
+      "goal_achieved": false,
+      "tool_calls": 15,
+      "error_categories": [
+        "max_iterations",
+        "repeated_action",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 2,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_15",
+      "repetition": 3,
+      "scenario": "extreme-archive",
+      "difficulty": "extreme",
+      "goal_achieved": false,
+      "tool_calls": 15,
+      "error_categories": [
+        "max_iterations",
+        "unsolved"
+      ],
+      "qualitative_score": 1,
+      "qualitative_reason": "Explora parcialmente, pero se atasca en repeticiones o errores.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 0,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_15",
+      "repetition": 3,
+      "scenario": "apartment-keys",
+      "difficulty": "medium",
+      "goal_achieved": false,
+      "tool_calls": 15,
+      "error_categories": [
+        "consecutive_repeated_action",
+        "max_iterations",
+        "navigation_error",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 3,
+        "repeated_calls": 7,
+        "consecutive_repeats": 1,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_15",
+      "repetition": 3,
+      "scenario": "office-sequence",
+      "difficulty": "hard",
+      "goal_achieved": false,
+      "tool_calls": 15,
+      "error_categories": [
+        "max_iterations",
+        "navigation_error",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 2,
+        "repeated_calls": 4,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_15",
+      "repetition": 3,
+      "scenario": "vault-combination",
+      "difficulty": "extreme",
+      "goal_achieved": false,
+      "tool_calls": 15,
+      "error_categories": [
+        "max_iterations",
+        "navigation_error",
+        "repeated_action",
+        "tool_error",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 2,
+        "repeated_calls": 6,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_15",
+      "repetition": 3,
+      "scenario": "backtracking-vault",
+      "difficulty": "extreme",
+      "goal_achieved": false,
+      "tool_calls": 15,
+      "error_categories": [
+        "max_iterations",
+        "navigation_error",
+        "repeated_action",
+        "tool_error",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 4,
+        "repeated_calls": 7,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 3,
+      "scenario": "study-with-key",
+      "difficulty": "easy",
+      "goal_achieved": true,
+      "tool_calls": 4,
+      "error_categories": [],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 0,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 3,
+      "scenario": "color-locks",
+      "difficulty": "medium",
+      "goal_achieved": true,
+      "tool_calls": 19,
+      "error_categories": [
+        "repeated_action",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, aunque requiere varias correcciones de errores locales.",
+      "evidence": {
+        "tool_errors": 3,
+        "repeated_calls": 4,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 3,
+      "scenario": "library-search",
+      "difficulty": "hard",
+      "goal_achieved": false,
+      "tool_calls": 30,
+      "error_categories": [
+        "max_iterations",
+        "repeated_action",
+        "tool_error",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 4,
+        "repeated_calls": 16,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 3,
+      "scenario": "extreme-archive",
+      "difficulty": "extreme",
+      "goal_achieved": true,
+      "tool_calls": 23,
+      "error_categories": [],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 0,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 3,
+      "scenario": "apartment-keys",
+      "difficulty": "medium",
+      "goal_achieved": true,
+      "tool_calls": 12,
+      "error_categories": [
+        "navigation_error",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, aunque requiere varias correcciones de errores locales.",
+      "evidence": {
+        "tool_errors": 2,
+        "repeated_calls": 4,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 3,
+      "scenario": "office-sequence",
+      "difficulty": "hard",
+      "goal_achieved": true,
+      "tool_calls": 31,
+      "error_categories": [
+        "consecutive_repeated_action",
+        "max_iterations",
+        "navigation_error",
+        "post_goal_overrun",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 6,
+        "repeated_calls": 17,
+        "consecutive_repeats": 6,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 3,
+      "scenario": "vault-combination",
+      "difficulty": "extreme",
+      "goal_achieved": false,
+      "tool_calls": 30,
+      "error_categories": [
+        "max_iterations",
+        "navigation_error",
+        "repeated_action",
+        "tool_error",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 7,
+        "repeated_calls": 17,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_30",
+      "repetition": 3,
+      "scenario": "backtracking-vault",
+      "difficulty": "extreme",
+      "goal_achieved": false,
+      "tool_calls": 30,
+      "error_categories": [
+        "max_iterations",
+        "navigation_error",
+        "repeated_action",
+        "tool_error",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 4,
+        "repeated_calls": 19,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 3,
+      "scenario": "study-with-key",
+      "difficulty": "easy",
+      "goal_achieved": true,
+      "tool_calls": 6,
+      "error_categories": [
+        "consecutive_repeated_action",
+        "post_goal_overrun",
+        "repeated_action",
+        "repeated_look"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 2,
+        "consecutive_repeats": 1,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 3,
+      "scenario": "color-locks",
+      "difficulty": "medium",
+      "goal_achieved": true,
+      "tool_calls": 18,
+      "error_categories": [
+        "consecutive_repeated_action",
+        "post_goal_overrun",
+        "repeated_action",
+        "repeated_look",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 1,
+        "repeated_calls": 5,
+        "consecutive_repeats": 3,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 3,
+      "scenario": "library-search",
+      "difficulty": "hard",
+      "goal_achieved": true,
+      "tool_calls": 17,
+      "error_categories": [
+        "repeated_action"
+      ],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 2,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 3,
+      "scenario": "extreme-archive",
+      "difficulty": "extreme",
+      "goal_achieved": true,
+      "tool_calls": 23,
+      "error_categories": [],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 0,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 3,
+      "scenario": "apartment-keys",
+      "difficulty": "medium",
+      "goal_achieved": true,
+      "tool_calls": 12,
+      "error_categories": [
+        "navigation_error",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, aunque requiere varias correcciones de errores locales.",
+      "evidence": {
+        "tool_errors": 2,
+        "repeated_calls": 4,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 3,
+      "scenario": "office-sequence",
+      "difficulty": "hard",
+      "goal_achieved": true,
+      "tool_calls": 19,
+      "error_categories": [
+        "navigation_error",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, aunque requiere varias correcciones de errores locales.",
+      "evidence": {
+        "tool_errors": 2,
+        "repeated_calls": 6,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 3,
+      "scenario": "vault-combination",
+      "difficulty": "extreme",
+      "goal_achieved": true,
+      "tool_calls": 32,
+      "error_categories": [
+        "consecutive_repeated_action",
+        "navigation_error",
+        "repeated_action",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 4,
+        "repeated_calls": 14,
+        "consecutive_repeats": 1,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_45",
+      "repetition": 3,
+      "scenario": "backtracking-vault",
+      "difficulty": "extreme",
+      "goal_achieved": false,
+      "tool_calls": 45,
+      "error_categories": [
+        "max_iterations",
+        "navigation_error",
+        "repeated_action",
+        "tool_error",
+        "unsolved"
+      ],
+      "qualitative_score": 1,
+      "qualitative_reason": "Explora parcialmente, pero se atasca en repeticiones o errores.",
+      "evidence": {
+        "tool_errors": 5,
+        "repeated_calls": 38,
+        "consecutive_repeats": 0,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 3,
+      "scenario": "study-with-key",
+      "difficulty": "easy",
+      "goal_achieved": true,
+      "tool_calls": 7,
+      "error_categories": [
+        "consecutive_repeated_action",
+        "post_goal_overrun",
+        "repeated_action",
+        "repeated_look"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 3,
+        "consecutive_repeats": 2,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 3,
+      "scenario": "color-locks",
+      "difficulty": "medium",
+      "goal_achieved": true,
+      "tool_calls": 14,
+      "error_categories": [
+        "repeated_action",
+        "tool_error"
+      ],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 1,
+        "repeated_calls": 1,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 3,
+      "scenario": "library-search",
+      "difficulty": "hard",
+      "goal_achieved": true,
+      "tool_calls": 18,
+      "error_categories": [
+        "repeated_action"
+      ],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 2,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 3,
+      "scenario": "extreme-archive",
+      "difficulty": "extreme",
+      "goal_achieved": true,
+      "tool_calls": 23,
+      "error_categories": [],
+      "qualitative_score": 3,
+      "qualitative_reason": "Resuelve con trayectoria coherente y sin repeticiones graves.",
+      "evidence": {
+        "tool_errors": 0,
+        "repeated_calls": 0,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 3,
+      "scenario": "apartment-keys",
+      "difficulty": "medium",
+      "goal_achieved": true,
+      "tool_calls": 12,
+      "error_categories": [
+        "navigation_error",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, aunque requiere varias correcciones de errores locales.",
+      "evidence": {
+        "tool_errors": 2,
+        "repeated_calls": 4,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 3,
+      "scenario": "office-sequence",
+      "difficulty": "hard",
+      "goal_achieved": true,
+      "tool_calls": 60,
+      "error_categories": [
+        "consecutive_repeated_action",
+        "max_iterations",
+        "navigation_error",
+        "post_goal_overrun",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 12,
+        "repeated_calls": 46,
+        "consecutive_repeats": 22,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 3,
+      "scenario": "vault-combination",
+      "difficulty": "extreme",
+      "goal_achieved": false,
+      "tool_calls": 229,
+      "error_categories": [
+        "consecutive_repeated_action",
+        "max_iterations",
+        "navigation_error",
+        "repeated_action",
+        "target_not_visible",
+        "tool_error",
+        "unsolved"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Progresa en subobjetivos, pero falla por limite de iteraciones, orden o memoria.",
+      "evidence": {
+        "tool_errors": 128,
+        "repeated_calls": 211,
+        "consecutive_repeats": 38,
+        "termination_reason": "max_iterations"
+      }
+    },
+    {
+      "variant": "iterations_60",
+      "repetition": 3,
+      "scenario": "backtracking-vault",
+      "difficulty": "extreme",
+      "goal_achieved": true,
+      "tool_calls": 31,
+      "error_categories": [
+        "navigation_error",
+        "repeated_action",
+        "tool_error"
+      ],
+      "qualitative_score": 2,
+      "qualitative_reason": "Resuelve el objetivo, pero con repeticiones importantes o acciones posteriores al cumplimiento.",
+      "evidence": {
+        "tool_errors": 6,
+        "repeated_calls": 16,
+        "consecutive_repeats": 0,
+        "termination_reason": "model_response"
+      }
+    }
+  ],
+  "source": {
+    "results_file": "eval\\results\\iterations\\20260909T035926Z-38168abc\\results.jsonl",
+    "sha256": "a066a989f8d977eab0e0cab28173ca80f444f73b819165df31d5e40ff19a4153"
+  }
+}

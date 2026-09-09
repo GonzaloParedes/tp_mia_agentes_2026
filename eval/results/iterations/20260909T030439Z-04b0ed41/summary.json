@@ -1,0 +1,1702 @@
+{
+  "status": "completed",
+  "completed_cases": 32,
+  "expected_cases": 32,
+  "variants": [
+    {
+      "id": "iterations_15",
+      "description": "",
+      "runs": 1,
+      "stop_on_goal": false,
+      "use_completion_review": false,
+      "use_structured_memory": true,
+      "summary": {
+        "total": 8,
+        "passed": 3,
+        "failed": 5,
+        "success_rate": 0.375,
+        "by_difficulty": {
+          "easy": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0
+          },
+          "medium": {
+            "total": 2,
+            "passed": 2,
+            "failed": 0,
+            "success_rate": 1.0
+          },
+          "hard": {
+            "total": 2,
+            "passed": 0,
+            "failed": 2,
+            "success_rate": 0.0
+          },
+          "extreme": {
+            "total": 3,
+            "passed": 0,
+            "failed": 3,
+            "success_rate": 0.0
+          }
+        },
+        "total_tool_calls": 103,
+        "avg_tool_calls": 12.88,
+        "total_duration_seconds": 95.878,
+        "avg_duration_seconds": 11.985,
+        "input_tokens": 454178,
+        "output_tokens": 6192,
+        "error_categories": {
+          "consecutive_repeated_action": 1,
+          "max_iterations": 5,
+          "navigation_error": 4,
+          "repeated_action": 6,
+          "target_not_visible": 2,
+          "tool_error": 5,
+          "unsolved": 5
+        },
+        "failed_scenarios": [
+          {
+            "scenario": "library-search",
+            "difficulty": "hard",
+            "goal_reason": "puerta principal está cerrada",
+            "error": null,
+            "error_categories": [
+              "repeated_action",
+              "unsolved"
+            ]
+          },
+          {
+            "scenario": "extreme-archive",
+            "difficulty": "extreme",
+            "goal_reason": "puerta principal está cerrada",
+            "error": null,
+            "error_categories": [
+              "max_iterations",
+              "unsolved"
+            ]
+          },
+          {
+            "scenario": "office-sequence",
+            "difficulty": "hard",
+            "goal_reason": "faltan condiciones: documento confidencial no está en el inventario; puerta principal está cerrada",
+            "error": null,
+            "error_categories": [
+              "max_iterations",
+              "navigation_error",
+              "repeated_action",
+              "target_not_visible",
+              "tool_error",
+              "unsolved"
+            ]
+          },
+          {
+            "scenario": "vault-combination",
+            "difficulty": "extreme",
+            "goal_reason": "puerta principal está cerrada",
+            "error": null,
+            "error_categories": [
+              "consecutive_repeated_action",
+              "max_iterations",
+              "navigation_error",
+              "repeated_action",
+              "tool_error",
+              "unsolved"
+            ]
+          },
+          {
+            "scenario": "backtracking-vault",
+            "difficulty": "extreme",
+            "goal_reason": "puerta principal está cerrada",
+            "error": null,
+            "error_categories": [
+              "max_iterations",
+              "navigation_error",
+              "repeated_action",
+              "tool_error",
+              "unsolved"
+            ]
+          }
+        ],
+        "termination_reasons": {
+          "max_iterations": 5,
+          "model_response": 3
+        },
+        "by_scenario": {
+          "study-with-key": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "easy": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 4,
+            "avg_tool_calls": 4.0,
+            "total_duration_seconds": 4.551,
+            "avg_duration_seconds": 4.551,
+            "input_tokens": 14781,
+            "output_tokens": 253,
+            "error_categories": {},
+            "failed_scenarios": []
+          },
+          "color-locks": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "medium": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 15,
+            "avg_tool_calls": 15.0,
+            "total_duration_seconds": 13.243,
+            "avg_duration_seconds": 13.243,
+            "input_tokens": 56634,
+            "output_tokens": 877,
+            "error_categories": {
+              "max_iterations": 1,
+              "repeated_action": 1,
+              "tool_error": 1
+            },
+            "failed_scenarios": []
+          },
+          "library-search": {
+            "total": 1,
+            "passed": 0,
+            "failed": 1,
+            "success_rate": 0.0,
+            "by_difficulty": {
+              "hard": {
+                "total": 1,
+                "passed": 0,
+                "failed": 1,
+                "success_rate": 0.0
+              }
+            },
+            "total_tool_calls": 12,
+            "avg_tool_calls": 12.0,
+            "total_duration_seconds": 13.801,
+            "avg_duration_seconds": 13.801,
+            "input_tokens": 60316,
+            "output_tokens": 1122,
+            "error_categories": {
+              "repeated_action": 1,
+              "unsolved": 1
+            },
+            "failed_scenarios": [
+              {
+                "scenario": "library-search",
+                "difficulty": "hard",
+                "goal_reason": "puerta principal está cerrada",
+                "error": null,
+                "error_categories": [
+                  "repeated_action",
+                  "unsolved"
+                ]
+              }
+            ]
+          },
+          "extreme-archive": {
+            "total": 1,
+            "passed": 0,
+            "failed": 1,
+            "success_rate": 0.0,
+            "by_difficulty": {
+              "extreme": {
+                "total": 1,
+                "passed": 0,
+                "failed": 1,
+                "success_rate": 0.0
+              }
+            },
+            "total_tool_calls": 15,
+            "avg_tool_calls": 15.0,
+            "total_duration_seconds": 13.551,
+            "avg_duration_seconds": 13.551,
+            "input_tokens": 109772,
+            "output_tokens": 848,
+            "error_categories": {
+              "max_iterations": 1,
+              "unsolved": 1
+            },
+            "failed_scenarios": [
+              {
+                "scenario": "extreme-archive",
+                "difficulty": "extreme",
+                "goal_reason": "puerta principal está cerrada",
+                "error": null,
+                "error_categories": [
+                  "max_iterations",
+                  "unsolved"
+                ]
+              }
+            ]
+          },
+          "apartment-keys": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "medium": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 12,
+            "avg_tool_calls": 12.0,
+            "total_duration_seconds": 11.838,
+            "avg_duration_seconds": 11.838,
+            "input_tokens": 46194,
+            "output_tokens": 698,
+            "error_categories": {
+              "navigation_error": 1,
+              "repeated_action": 1,
+              "target_not_visible": 1,
+              "tool_error": 1
+            },
+            "failed_scenarios": []
+          },
+          "office-sequence": {
+            "total": 1,
+            "passed": 0,
+            "failed": 1,
+            "success_rate": 0.0,
+            "by_difficulty": {
+              "hard": {
+                "total": 1,
+                "passed": 0,
+                "failed": 1,
+                "success_rate": 0.0
+              }
+            },
+            "total_tool_calls": 15,
+            "avg_tool_calls": 15.0,
+            "total_duration_seconds": 13.163,
+            "avg_duration_seconds": 13.163,
+            "input_tokens": 55135,
+            "output_tokens": 769,
+            "error_categories": {
+              "max_iterations": 1,
+              "navigation_error": 1,
+              "repeated_action": 1,
+              "target_not_visible": 1,
+              "tool_error": 1,
+              "unsolved": 1
+            },
+            "failed_scenarios": [
+              {
+                "scenario": "office-sequence",
+                "difficulty": "hard",
+                "goal_reason": "faltan condiciones: documento confidencial no está en el inventario; puerta principal está cerrada",
+                "error": null,
+                "error_categories": [
+                  "max_iterations",
+                  "navigation_error",
+                  "repeated_action",
+                  "target_not_visible",
+                  "tool_error",
+                  "unsolved"
+                ]
+              }
+            ]
+          },
+          "vault-combination": {
+            "total": 1,
+            "passed": 0,
+            "failed": 1,
+            "success_rate": 0.0,
+            "by_difficulty": {
+              "extreme": {
+                "total": 1,
+                "passed": 0,
+                "failed": 1,
+                "success_rate": 0.0
+              }
+            },
+            "total_tool_calls": 15,
+            "avg_tool_calls": 15.0,
+            "total_duration_seconds": 13.071,
+            "avg_duration_seconds": 13.071,
+            "input_tokens": 55051,
+            "output_tokens": 809,
+            "error_categories": {
+              "consecutive_repeated_action": 1,
+              "max_iterations": 1,
+              "navigation_error": 1,
+              "repeated_action": 1,
+              "tool_error": 1,
+              "unsolved": 1
+            },
+            "failed_scenarios": [
+              {
+                "scenario": "vault-combination",
+                "difficulty": "extreme",
+                "goal_reason": "puerta principal está cerrada",
+                "error": null,
+                "error_categories": [
+                  "consecutive_repeated_action",
+                  "max_iterations",
+                  "navigation_error",
+                  "repeated_action",
+                  "tool_error",
+                  "unsolved"
+                ]
+              }
+            ]
+          },
+          "backtracking-vault": {
+            "total": 1,
+            "passed": 0,
+            "failed": 1,
+            "success_rate": 0.0,
+            "by_difficulty": {
+              "extreme": {
+                "total": 1,
+                "passed": 0,
+                "failed": 1,
+                "success_rate": 0.0
+              }
+            },
+            "total_tool_calls": 15,
+            "avg_tool_calls": 15.0,
+            "total_duration_seconds": 12.66,
+            "avg_duration_seconds": 12.66,
+            "input_tokens": 56295,
+            "output_tokens": 816,
+            "error_categories": {
+              "max_iterations": 1,
+              "navigation_error": 1,
+              "repeated_action": 1,
+              "tool_error": 1,
+              "unsolved": 1
+            },
+            "failed_scenarios": [
+              {
+                "scenario": "backtracking-vault",
+                "difficulty": "extreme",
+                "goal_reason": "puerta principal está cerrada",
+                "error": null,
+                "error_categories": [
+                  "max_iterations",
+                  "navigation_error",
+                  "repeated_action",
+                  "tool_error",
+                  "unsolved"
+                ]
+              }
+            ]
+          }
+        },
+        "by_repetition": {
+          "1": {
+            "total": 8,
+            "passed": 3,
+            "failed": 5,
+            "success_rate": 0.375,
+            "by_difficulty": {
+              "easy": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              },
+              "medium": {
+                "total": 2,
+                "passed": 2,
+                "failed": 0,
+                "success_rate": 1.0
+              },
+              "hard": {
+                "total": 2,
+                "passed": 0,
+                "failed": 2,
+                "success_rate": 0.0
+              },
+              "extreme": {
+                "total": 3,
+                "passed": 0,
+                "failed": 3,
+                "success_rate": 0.0
+              }
+            },
+            "total_tool_calls": 103,
+            "avg_tool_calls": 12.88,
+            "total_duration_seconds": 95.878,
+            "avg_duration_seconds": 11.985,
+            "input_tokens": 454178,
+            "output_tokens": 6192,
+            "error_categories": {
+              "consecutive_repeated_action": 1,
+              "max_iterations": 5,
+              "navigation_error": 4,
+              "repeated_action": 6,
+              "target_not_visible": 2,
+              "tool_error": 5,
+              "unsolved": 5
+            },
+            "failed_scenarios": [
+              {
+                "scenario": "library-search",
+                "difficulty": "hard",
+                "goal_reason": "puerta principal está cerrada",
+                "error": null,
+                "error_categories": [
+                  "repeated_action",
+                  "unsolved"
+                ]
+              },
+              {
+                "scenario": "extreme-archive",
+                "difficulty": "extreme",
+                "goal_reason": "puerta principal está cerrada",
+                "error": null,
+                "error_categories": [
+                  "max_iterations",
+                  "unsolved"
+                ]
+              },
+              {
+                "scenario": "office-sequence",
+                "difficulty": "hard",
+                "goal_reason": "faltan condiciones: documento confidencial no está en el inventario; puerta principal está cerrada",
+                "error": null,
+                "error_categories": [
+                  "max_iterations",
+                  "navigation_error",
+                  "repeated_action",
+                  "target_not_visible",
+                  "tool_error",
+                  "unsolved"
+                ]
+              },
+              {
+                "scenario": "vault-combination",
+                "difficulty": "extreme",
+                "goal_reason": "puerta principal está cerrada",
+                "error": null,
+                "error_categories": [
+                  "consecutive_repeated_action",
+                  "max_iterations",
+                  "navigation_error",
+                  "repeated_action",
+                  "tool_error",
+                  "unsolved"
+                ]
+              },
+              {
+                "scenario": "backtracking-vault",
+                "difficulty": "extreme",
+                "goal_reason": "puerta principal está cerrada",
+                "error": null,
+                "error_categories": [
+                  "max_iterations",
+                  "navigation_error",
+                  "repeated_action",
+                  "tool_error",
+                  "unsolved"
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "iterations_30",
+      "description": "",
+      "runs": 1,
+      "stop_on_goal": false,
+      "use_completion_review": false,
+      "use_structured_memory": true,
+      "summary": {
+        "total": 8,
+        "passed": 6,
+        "failed": 2,
+        "success_rate": 0.75,
+        "by_difficulty": {
+          "easy": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0
+          },
+          "medium": {
+            "total": 2,
+            "passed": 2,
+            "failed": 0,
+            "success_rate": 1.0
+          },
+          "hard": {
+            "total": 2,
+            "passed": 2,
+            "failed": 0,
+            "success_rate": 1.0
+          },
+          "extreme": {
+            "total": 3,
+            "passed": 1,
+            "failed": 2,
+            "success_rate": 0.333
+          }
+        },
+        "total_tool_calls": 161,
+        "avg_tool_calls": 20.12,
+        "total_duration_seconds": 158.36,
+        "avg_duration_seconds": 19.795,
+        "input_tokens": 861611,
+        "output_tokens": 9216,
+        "error_categories": {
+          "consecutive_repeated_action": 1,
+          "max_iterations": 3,
+          "navigation_error": 4,
+          "post_goal_overrun": 2,
+          "repeated_action": 7,
+          "target_not_visible": 2,
+          "tool_error": 5,
+          "unsolved": 2
+        },
+        "failed_scenarios": [
+          {
+            "scenario": "vault-combination",
+            "difficulty": "extreme",
+            "goal_reason": "puerta principal está cerrada",
+            "error": null,
+            "error_categories": [
+              "max_iterations",
+              "navigation_error",
+              "repeated_action",
+              "tool_error",
+              "unsolved"
+            ]
+          },
+          {
+            "scenario": "backtracking-vault",
+            "difficulty": "extreme",
+            "goal_reason": "puerta principal está cerrada",
+            "error": null,
+            "error_categories": [
+              "max_iterations",
+              "navigation_error",
+              "repeated_action",
+              "tool_error",
+              "unsolved"
+            ]
+          }
+        ],
+        "termination_reasons": {
+          "max_iterations": 3,
+          "model_response": 5
+        },
+        "by_scenario": {
+          "study-with-key": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "easy": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 6,
+            "avg_tool_calls": 6.0,
+            "total_duration_seconds": 5.944,
+            "avg_duration_seconds": 5.944,
+            "input_tokens": 21290,
+            "output_tokens": 333,
+            "error_categories": {
+              "consecutive_repeated_action": 1,
+              "post_goal_overrun": 1,
+              "repeated_action": 1
+            },
+            "failed_scenarios": []
+          },
+          "color-locks": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "medium": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 15,
+            "avg_tool_calls": 15.0,
+            "total_duration_seconds": 15.263,
+            "avg_duration_seconds": 15.263,
+            "input_tokens": 61976,
+            "output_tokens": 1069,
+            "error_categories": {
+              "repeated_action": 1
+            },
+            "failed_scenarios": []
+          },
+          "library-search": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "hard": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 14,
+            "avg_tool_calls": 14.0,
+            "total_duration_seconds": 14.832,
+            "avg_duration_seconds": 14.832,
+            "input_tokens": 69219,
+            "output_tokens": 1031,
+            "error_categories": {
+              "repeated_action": 1,
+              "tool_error": 1
+            },
+            "failed_scenarios": []
+          },
+          "extreme-archive": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "extreme": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 23,
+            "avg_tool_calls": 23.0,
+            "total_duration_seconds": 26.993,
+            "avg_duration_seconds": 26.993,
+            "input_tokens": 250922,
+            "output_tokens": 1649,
+            "error_categories": {},
+            "failed_scenarios": []
+          },
+          "apartment-keys": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "medium": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 12,
+            "avg_tool_calls": 12.0,
+            "total_duration_seconds": 10.79,
+            "avg_duration_seconds": 10.79,
+            "input_tokens": 45739,
+            "output_tokens": 654,
+            "error_categories": {
+              "navigation_error": 1,
+              "repeated_action": 1,
+              "target_not_visible": 1,
+              "tool_error": 1
+            },
+            "failed_scenarios": []
+          },
+          "office-sequence": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "hard": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 31,
+            "avg_tool_calls": 31.0,
+            "total_duration_seconds": 28.458,
+            "avg_duration_seconds": 28.458,
+            "input_tokens": 133620,
+            "output_tokens": 1453,
+            "error_categories": {
+              "max_iterations": 1,
+              "navigation_error": 1,
+              "post_goal_overrun": 1,
+              "repeated_action": 1,
+              "target_not_visible": 1,
+              "tool_error": 1
+            },
+            "failed_scenarios": []
+          },
+          "vault-combination": {
+            "total": 1,
+            "passed": 0,
+            "failed": 1,
+            "success_rate": 0.0,
+            "by_difficulty": {
+              "extreme": {
+                "total": 1,
+                "passed": 0,
+                "failed": 1,
+                "success_rate": 0.0
+              }
+            },
+            "total_tool_calls": 30,
+            "avg_tool_calls": 30.0,
+            "total_duration_seconds": 28.874,
+            "avg_duration_seconds": 28.874,
+            "input_tokens": 137617,
+            "output_tokens": 1523,
+            "error_categories": {
+              "max_iterations": 1,
+              "navigation_error": 1,
+              "repeated_action": 1,
+              "tool_error": 1,
+              "unsolved": 1
+            },
+            "failed_scenarios": [
+              {
+                "scenario": "vault-combination",
+                "difficulty": "extreme",
+                "goal_reason": "puerta principal está cerrada",
+                "error": null,
+                "error_categories": [
+                  "max_iterations",
+                  "navigation_error",
+                  "repeated_action",
+                  "tool_error",
+                  "unsolved"
+                ]
+              }
+            ]
+          },
+          "backtracking-vault": {
+            "total": 1,
+            "passed": 0,
+            "failed": 1,
+            "success_rate": 0.0,
+            "by_difficulty": {
+              "extreme": {
+                "total": 1,
+                "passed": 0,
+                "failed": 1,
+                "success_rate": 0.0
+              }
+            },
+            "total_tool_calls": 30,
+            "avg_tool_calls": 30.0,
+            "total_duration_seconds": 27.206,
+            "avg_duration_seconds": 27.206,
+            "input_tokens": 141228,
+            "output_tokens": 1504,
+            "error_categories": {
+              "max_iterations": 1,
+              "navigation_error": 1,
+              "repeated_action": 1,
+              "tool_error": 1,
+              "unsolved": 1
+            },
+            "failed_scenarios": [
+              {
+                "scenario": "backtracking-vault",
+                "difficulty": "extreme",
+                "goal_reason": "puerta principal está cerrada",
+                "error": null,
+                "error_categories": [
+                  "max_iterations",
+                  "navigation_error",
+                  "repeated_action",
+                  "tool_error",
+                  "unsolved"
+                ]
+              }
+            ]
+          }
+        },
+        "by_repetition": {
+          "1": {
+            "total": 8,
+            "passed": 6,
+            "failed": 2,
+            "success_rate": 0.75,
+            "by_difficulty": {
+              "easy": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              },
+              "medium": {
+                "total": 2,
+                "passed": 2,
+                "failed": 0,
+                "success_rate": 1.0
+              },
+              "hard": {
+                "total": 2,
+                "passed": 2,
+                "failed": 0,
+                "success_rate": 1.0
+              },
+              "extreme": {
+                "total": 3,
+                "passed": 1,
+                "failed": 2,
+                "success_rate": 0.333
+              }
+            },
+            "total_tool_calls": 161,
+            "avg_tool_calls": 20.12,
+            "total_duration_seconds": 158.36,
+            "avg_duration_seconds": 19.795,
+            "input_tokens": 861611,
+            "output_tokens": 9216,
+            "error_categories": {
+              "consecutive_repeated_action": 1,
+              "max_iterations": 3,
+              "navigation_error": 4,
+              "post_goal_overrun": 2,
+              "repeated_action": 7,
+              "target_not_visible": 2,
+              "tool_error": 5,
+              "unsolved": 2
+            },
+            "failed_scenarios": [
+              {
+                "scenario": "vault-combination",
+                "difficulty": "extreme",
+                "goal_reason": "puerta principal está cerrada",
+                "error": null,
+                "error_categories": [
+                  "max_iterations",
+                  "navigation_error",
+                  "repeated_action",
+                  "tool_error",
+                  "unsolved"
+                ]
+              },
+              {
+                "scenario": "backtracking-vault",
+                "difficulty": "extreme",
+                "goal_reason": "puerta principal está cerrada",
+                "error": null,
+                "error_categories": [
+                  "max_iterations",
+                  "navigation_error",
+                  "repeated_action",
+                  "tool_error",
+                  "unsolved"
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "iterations_45",
+      "description": "",
+      "runs": 1,
+      "stop_on_goal": false,
+      "use_completion_review": false,
+      "use_structured_memory": true,
+      "summary": {
+        "total": 8,
+        "passed": 6,
+        "failed": 2,
+        "success_rate": 0.75,
+        "by_difficulty": {
+          "easy": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0
+          },
+          "medium": {
+            "total": 2,
+            "passed": 2,
+            "failed": 0,
+            "success_rate": 1.0
+          },
+          "hard": {
+            "total": 2,
+            "passed": 1,
+            "failed": 1,
+            "success_rate": 0.5
+          },
+          "extreme": {
+            "total": 3,
+            "passed": 2,
+            "failed": 1,
+            "success_rate": 0.667
+          }
+        },
+        "total_tool_calls": 225,
+        "avg_tool_calls": 28.12,
+        "total_duration_seconds": 229.349,
+        "avg_duration_seconds": 28.669,
+        "input_tokens": 1411095,
+        "output_tokens": 12742,
+        "error_categories": {
+          "consecutive_repeated_action": 1,
+          "max_iterations": 3,
+          "navigation_error": 4,
+          "post_goal_overrun": 1,
+          "repeated_action": 7,
+          "target_not_visible": 3,
+          "tool_error": 7,
+          "unsolved": 2
+        },
+        "failed_scenarios": [
+          {
+            "scenario": "library-search",
+            "difficulty": "hard",
+            "goal_reason": "puerta principal está cerrada",
+            "error": null,
+            "error_categories": [
+              "max_iterations",
+              "repeated_action",
+              "tool_error",
+              "unsolved"
+            ]
+          },
+          {
+            "scenario": "vault-combination",
+            "difficulty": "extreme",
+            "goal_reason": "puerta principal está cerrada",
+            "error": null,
+            "error_categories": [
+              "consecutive_repeated_action",
+              "max_iterations",
+              "navigation_error",
+              "repeated_action",
+              "target_not_visible",
+              "tool_error",
+              "unsolved"
+            ]
+          }
+        ],
+        "termination_reasons": {
+          "max_iterations": 3,
+          "model_response": 5
+        },
+        "by_scenario": {
+          "study-with-key": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "easy": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 6,
+            "avg_tool_calls": 6.0,
+            "total_duration_seconds": 5.889,
+            "avg_duration_seconds": 5.889,
+            "input_tokens": 21685,
+            "output_tokens": 359,
+            "error_categories": {
+              "repeated_action": 1,
+              "tool_error": 1
+            },
+            "failed_scenarios": []
+          },
+          "color-locks": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "medium": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 14,
+            "avg_tool_calls": 14.0,
+            "total_duration_seconds": 13.06,
+            "avg_duration_seconds": 13.06,
+            "input_tokens": 56214,
+            "output_tokens": 831,
+            "error_categories": {
+              "repeated_action": 1,
+              "tool_error": 1
+            },
+            "failed_scenarios": []
+          },
+          "library-search": {
+            "total": 1,
+            "passed": 0,
+            "failed": 1,
+            "success_rate": 0.0,
+            "by_difficulty": {
+              "hard": {
+                "total": 1,
+                "passed": 0,
+                "failed": 1,
+                "success_rate": 0.0
+              }
+            },
+            "total_tool_calls": 45,
+            "avg_tool_calls": 45.0,
+            "total_duration_seconds": 53.767,
+            "avg_duration_seconds": 53.767,
+            "input_tokens": 405016,
+            "output_tokens": 3375,
+            "error_categories": {
+              "max_iterations": 1,
+              "repeated_action": 1,
+              "tool_error": 1,
+              "unsolved": 1
+            },
+            "failed_scenarios": [
+              {
+                "scenario": "library-search",
+                "difficulty": "hard",
+                "goal_reason": "puerta principal está cerrada",
+                "error": null,
+                "error_categories": [
+                  "max_iterations",
+                  "repeated_action",
+                  "tool_error",
+                  "unsolved"
+                ]
+              }
+            ]
+          },
+          "extreme-archive": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "extreme": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 23,
+            "avg_tool_calls": 23.0,
+            "total_duration_seconds": 24.759,
+            "avg_duration_seconds": 24.759,
+            "input_tokens": 247319,
+            "output_tokens": 1326,
+            "error_categories": {},
+            "failed_scenarios": []
+          },
+          "apartment-keys": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "medium": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 12,
+            "avg_tool_calls": 12.0,
+            "total_duration_seconds": 10.696,
+            "avg_duration_seconds": 10.696,
+            "input_tokens": 45667,
+            "output_tokens": 643,
+            "error_categories": {
+              "navigation_error": 1,
+              "repeated_action": 1,
+              "target_not_visible": 1,
+              "tool_error": 1
+            },
+            "failed_scenarios": []
+          },
+          "office-sequence": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "hard": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 46,
+            "avg_tool_calls": 46.0,
+            "total_duration_seconds": 42.321,
+            "avg_duration_seconds": 42.321,
+            "input_tokens": 229327,
+            "output_tokens": 1919,
+            "error_categories": {
+              "max_iterations": 1,
+              "navigation_error": 1,
+              "post_goal_overrun": 1,
+              "repeated_action": 1,
+              "target_not_visible": 1,
+              "tool_error": 1
+            },
+            "failed_scenarios": []
+          },
+          "vault-combination": {
+            "total": 1,
+            "passed": 0,
+            "failed": 1,
+            "success_rate": 0.0,
+            "by_difficulty": {
+              "extreme": {
+                "total": 1,
+                "passed": 0,
+                "failed": 1,
+                "success_rate": 0.0
+              }
+            },
+            "total_tool_calls": 48,
+            "avg_tool_calls": 48.0,
+            "total_duration_seconds": 47.872,
+            "avg_duration_seconds": 47.872,
+            "input_tokens": 250737,
+            "output_tokens": 2571,
+            "error_categories": {
+              "consecutive_repeated_action": 1,
+              "max_iterations": 1,
+              "navigation_error": 1,
+              "repeated_action": 1,
+              "target_not_visible": 1,
+              "tool_error": 1,
+              "unsolved": 1
+            },
+            "failed_scenarios": [
+              {
+                "scenario": "vault-combination",
+                "difficulty": "extreme",
+                "goal_reason": "puerta principal está cerrada",
+                "error": null,
+                "error_categories": [
+                  "consecutive_repeated_action",
+                  "max_iterations",
+                  "navigation_error",
+                  "repeated_action",
+                  "target_not_visible",
+                  "tool_error",
+                  "unsolved"
+                ]
+              }
+            ]
+          },
+          "backtracking-vault": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "extreme": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 31,
+            "avg_tool_calls": 31.0,
+            "total_duration_seconds": 30.985,
+            "avg_duration_seconds": 30.985,
+            "input_tokens": 155130,
+            "output_tokens": 1718,
+            "error_categories": {
+              "navigation_error": 1,
+              "repeated_action": 1,
+              "tool_error": 1
+            },
+            "failed_scenarios": []
+          }
+        },
+        "by_repetition": {
+          "1": {
+            "total": 8,
+            "passed": 6,
+            "failed": 2,
+            "success_rate": 0.75,
+            "by_difficulty": {
+              "easy": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              },
+              "medium": {
+                "total": 2,
+                "passed": 2,
+                "failed": 0,
+                "success_rate": 1.0
+              },
+              "hard": {
+                "total": 2,
+                "passed": 1,
+                "failed": 1,
+                "success_rate": 0.5
+              },
+              "extreme": {
+                "total": 3,
+                "passed": 2,
+                "failed": 1,
+                "success_rate": 0.667
+              }
+            },
+            "total_tool_calls": 225,
+            "avg_tool_calls": 28.12,
+            "total_duration_seconds": 229.349,
+            "avg_duration_seconds": 28.669,
+            "input_tokens": 1411095,
+            "output_tokens": 12742,
+            "error_categories": {
+              "consecutive_repeated_action": 1,
+              "max_iterations": 3,
+              "navigation_error": 4,
+              "post_goal_overrun": 1,
+              "repeated_action": 7,
+              "target_not_visible": 3,
+              "tool_error": 7,
+              "unsolved": 2
+            },
+            "failed_scenarios": [
+              {
+                "scenario": "library-search",
+                "difficulty": "hard",
+                "goal_reason": "puerta principal está cerrada",
+                "error": null,
+                "error_categories": [
+                  "max_iterations",
+                  "repeated_action",
+                  "tool_error",
+                  "unsolved"
+                ]
+              },
+              {
+                "scenario": "vault-combination",
+                "difficulty": "extreme",
+                "goal_reason": "puerta principal está cerrada",
+                "error": null,
+                "error_categories": [
+                  "consecutive_repeated_action",
+                  "max_iterations",
+                  "navigation_error",
+                  "repeated_action",
+                  "target_not_visible",
+                  "tool_error",
+                  "unsolved"
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "iterations_60",
+      "description": "",
+      "runs": 1,
+      "stop_on_goal": false,
+      "use_completion_review": false,
+      "use_structured_memory": true,
+      "summary": {
+        "total": 8,
+        "passed": 7,
+        "failed": 1,
+        "success_rate": 0.875,
+        "by_difficulty": {
+          "easy": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0
+          },
+          "medium": {
+            "total": 2,
+            "passed": 2,
+            "failed": 0,
+            "success_rate": 1.0
+          },
+          "hard": {
+            "total": 2,
+            "passed": 1,
+            "failed": 1,
+            "success_rate": 0.5
+          },
+          "extreme": {
+            "total": 3,
+            "passed": 3,
+            "failed": 0,
+            "success_rate": 1.0
+          }
+        },
+        "total_tool_calls": 230,
+        "avg_tool_calls": 28.75,
+        "total_duration_seconds": 245.669,
+        "avg_duration_seconds": 30.709,
+        "input_tokens": 1470816,
+        "output_tokens": 13928,
+        "error_categories": {
+          "consecutive_repeated_action": 3,
+          "max_iterations": 1,
+          "navigation_error": 4,
+          "post_goal_overrun": 2,
+          "repeated_action": 8,
+          "repeated_look": 1,
+          "target_not_visible": 2,
+          "tool_error": 6,
+          "unsolved": 1
+        },
+        "failed_scenarios": [
+          {
+            "scenario": "library-search",
+            "difficulty": "hard",
+            "goal_reason": "puerta principal está cerrada",
+            "error": null,
+            "error_categories": [
+              "max_iterations",
+              "repeated_action",
+              "tool_error",
+              "unsolved"
+            ]
+          }
+        ],
+        "termination_reasons": {
+          "max_iterations": 1,
+          "model_response": 7
+        },
+        "by_scenario": {
+          "study-with-key": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "easy": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 6,
+            "avg_tool_calls": 6.0,
+            "total_duration_seconds": 6.175,
+            "avg_duration_seconds": 6.175,
+            "input_tokens": 21647,
+            "output_tokens": 321,
+            "error_categories": {
+              "consecutive_repeated_action": 1,
+              "post_goal_overrun": 1,
+              "repeated_action": 1,
+              "repeated_look": 1
+            },
+            "failed_scenarios": []
+          },
+          "color-locks": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "medium": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 19,
+            "avg_tool_calls": 19.0,
+            "total_duration_seconds": 18.733,
+            "avg_duration_seconds": 18.733,
+            "input_tokens": 80583,
+            "output_tokens": 1134,
+            "error_categories": {
+              "repeated_action": 1
+            },
+            "failed_scenarios": []
+          },
+          "library-search": {
+            "total": 1,
+            "passed": 0,
+            "failed": 1,
+            "success_rate": 0.0,
+            "by_difficulty": {
+              "hard": {
+                "total": 1,
+                "passed": 0,
+                "failed": 1,
+                "success_rate": 0.0
+              }
+            },
+            "total_tool_calls": 66,
+            "avg_tool_calls": 66.0,
+            "total_duration_seconds": 72.472,
+            "avg_duration_seconds": 72.472,
+            "input_tokens": 521367,
+            "output_tokens": 4280,
+            "error_categories": {
+              "max_iterations": 1,
+              "repeated_action": 1,
+              "tool_error": 1,
+              "unsolved": 1
+            },
+            "failed_scenarios": [
+              {
+                "scenario": "library-search",
+                "difficulty": "hard",
+                "goal_reason": "puerta principal está cerrada",
+                "error": null,
+                "error_categories": [
+                  "max_iterations",
+                  "repeated_action",
+                  "tool_error",
+                  "unsolved"
+                ]
+              }
+            ]
+          },
+          "extreme-archive": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "extreme": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 24,
+            "avg_tool_calls": 24.0,
+            "total_duration_seconds": 28.408,
+            "avg_duration_seconds": 28.408,
+            "input_tokens": 270558,
+            "output_tokens": 1851,
+            "error_categories": {
+              "repeated_action": 1,
+              "tool_error": 1
+            },
+            "failed_scenarios": []
+          },
+          "apartment-keys": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "medium": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 12,
+            "avg_tool_calls": 12.0,
+            "total_duration_seconds": 12.05,
+            "avg_duration_seconds": 12.05,
+            "input_tokens": 46015,
+            "output_tokens": 671,
+            "error_categories": {
+              "navigation_error": 1,
+              "repeated_action": 1,
+              "target_not_visible": 1,
+              "tool_error": 1
+            },
+            "failed_scenarios": []
+          },
+          "office-sequence": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "hard": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 20,
+            "avg_tool_calls": 20.0,
+            "total_duration_seconds": 18.177,
+            "avg_duration_seconds": 18.177,
+            "input_tokens": 79574,
+            "output_tokens": 1029,
+            "error_categories": {
+              "navigation_error": 1,
+              "repeated_action": 1,
+              "target_not_visible": 1,
+              "tool_error": 1
+            },
+            "failed_scenarios": []
+          },
+          "vault-combination": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "extreme": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 48,
+            "avg_tool_calls": 48.0,
+            "total_duration_seconds": 52.419,
+            "avg_duration_seconds": 52.419,
+            "input_tokens": 266992,
+            "output_tokens": 2574,
+            "error_categories": {
+              "consecutive_repeated_action": 1,
+              "navigation_error": 1,
+              "repeated_action": 1,
+              "tool_error": 1
+            },
+            "failed_scenarios": []
+          },
+          "backtracking-vault": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "extreme": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 35,
+            "avg_tool_calls": 35.0,
+            "total_duration_seconds": 37.235,
+            "avg_duration_seconds": 37.235,
+            "input_tokens": 184080,
+            "output_tokens": 2068,
+            "error_categories": {
+              "consecutive_repeated_action": 1,
+              "navigation_error": 1,
+              "post_goal_overrun": 1,
+              "repeated_action": 1,
+              "tool_error": 1
+            },
+            "failed_scenarios": []
+          }
+        },
+        "by_repetition": {
+          "1": {
+            "total": 8,
+            "passed": 7,
+            "failed": 1,
+            "success_rate": 0.875,
+            "by_difficulty": {
+              "easy": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              },
+              "medium": {
+                "total": 2,
+                "passed": 2,
+                "failed": 0,
+                "success_rate": 1.0
+              },
+              "hard": {
+                "total": 2,
+                "passed": 1,
+                "failed": 1,
+                "success_rate": 0.5
+              },
+              "extreme": {
+                "total": 3,
+                "passed": 3,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 230,
+            "avg_tool_calls": 28.75,
+            "total_duration_seconds": 245.669,
+            "avg_duration_seconds": 30.709,
+            "input_tokens": 1470816,
+            "output_tokens": 13928,
+            "error_categories": {
+              "consecutive_repeated_action": 3,
+              "max_iterations": 1,
+              "navigation_error": 4,
+              "post_goal_overrun": 2,
+              "repeated_action": 8,
+              "repeated_look": 1,
+              "target_not_visible": 2,
+              "tool_error": 6,
+              "unsolved": 1
+            },
+            "failed_scenarios": [
+              {
+                "scenario": "library-search",
+                "difficulty": "hard",
+                "goal_reason": "puerta principal está cerrada",
+                "error": null,
+                "error_categories": [
+                  "max_iterations",
+                  "repeated_action",
+                  "tool_error",
+                  "unsolved"
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

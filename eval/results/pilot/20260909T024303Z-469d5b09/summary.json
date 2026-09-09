@@ -1,0 +1,432 @@
+{
+  "status": "completed",
+  "completed_cases": 12,
+  "expected_cases": 12,
+  "variants": [
+    {
+      "id": "without_review",
+      "description": "",
+      "runs": 3,
+      "stop_on_goal": false,
+      "use_completion_review": false,
+      "use_structured_memory": true,
+      "summary": {
+        "total": 6,
+        "passed": 6,
+        "failed": 0,
+        "success_rate": 1.0,
+        "by_difficulty": {
+          "medium": {
+            "total": 3,
+            "passed": 3,
+            "failed": 0,
+            "success_rate": 1.0
+          },
+          "hard": {
+            "total": 3,
+            "passed": 3,
+            "failed": 0,
+            "success_rate": 1.0
+          }
+        },
+        "total_tool_calls": 178,
+        "avg_tool_calls": 29.67,
+        "total_duration_seconds": 184.54,
+        "avg_duration_seconds": 30.757,
+        "input_tokens": 879611,
+        "output_tokens": 9436,
+        "error_categories": {
+          "consecutive_repeated_action": 2,
+          "max_iterations": 3,
+          "navigation_error": 3,
+          "post_goal_overrun": 3,
+          "repeated_action": 5,
+          "target_not_visible": 3,
+          "tool_error": 5
+        },
+        "failed_scenarios": [],
+        "termination_reasons": {
+          "max_iterations": 3,
+          "model_response": 3
+        },
+        "by_scenario": {
+          "color-locks": {
+            "total": 3,
+            "passed": 3,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "medium": {
+                "total": 3,
+                "passed": 3,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 43,
+            "avg_tool_calls": 14.33,
+            "total_duration_seconds": 46.32,
+            "avg_duration_seconds": 15.44,
+            "input_tokens": 175604,
+            "output_tokens": 2722,
+            "error_categories": {
+              "repeated_action": 2,
+              "tool_error": 2
+            },
+            "failed_scenarios": []
+          },
+          "office-sequence": {
+            "total": 3,
+            "passed": 3,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "hard": {
+                "total": 3,
+                "passed": 3,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 135,
+            "avg_tool_calls": 45.0,
+            "total_duration_seconds": 138.22,
+            "avg_duration_seconds": 46.073,
+            "input_tokens": 704007,
+            "output_tokens": 6714,
+            "error_categories": {
+              "consecutive_repeated_action": 2,
+              "max_iterations": 3,
+              "navigation_error": 3,
+              "post_goal_overrun": 3,
+              "repeated_action": 3,
+              "target_not_visible": 3,
+              "tool_error": 3
+            },
+            "failed_scenarios": []
+          }
+        },
+        "by_repetition": {
+          "1": {
+            "total": 2,
+            "passed": 2,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "medium": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              },
+              "hard": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 61,
+            "avg_tool_calls": 30.5,
+            "total_duration_seconds": 60.2,
+            "avg_duration_seconds": 30.1,
+            "input_tokens": 297276,
+            "output_tokens": 3127,
+            "error_categories": {
+              "consecutive_repeated_action": 1,
+              "max_iterations": 1,
+              "navigation_error": 1,
+              "post_goal_overrun": 1,
+              "repeated_action": 2,
+              "target_not_visible": 1,
+              "tool_error": 2
+            },
+            "failed_scenarios": []
+          },
+          "2": {
+            "total": 2,
+            "passed": 2,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "medium": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              },
+              "hard": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 60,
+            "avg_tool_calls": 30.0,
+            "total_duration_seconds": 62.806,
+            "avg_duration_seconds": 31.403,
+            "input_tokens": 296699,
+            "output_tokens": 3187,
+            "error_categories": {
+              "consecutive_repeated_action": 1,
+              "max_iterations": 1,
+              "navigation_error": 1,
+              "post_goal_overrun": 1,
+              "repeated_action": 2,
+              "target_not_visible": 1,
+              "tool_error": 2
+            },
+            "failed_scenarios": []
+          },
+          "3": {
+            "total": 2,
+            "passed": 2,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "medium": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              },
+              "hard": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 57,
+            "avg_tool_calls": 28.5,
+            "total_duration_seconds": 61.534,
+            "avg_duration_seconds": 30.767,
+            "input_tokens": 285636,
+            "output_tokens": 3122,
+            "error_categories": {
+              "max_iterations": 1,
+              "navigation_error": 1,
+              "post_goal_overrun": 1,
+              "repeated_action": 1,
+              "target_not_visible": 1,
+              "tool_error": 1
+            },
+            "failed_scenarios": []
+          }
+        }
+      }
+    },
+    {
+      "id": "with_review",
+      "description": "",
+      "runs": 3,
+      "stop_on_goal": false,
+      "use_completion_review": true,
+      "use_structured_memory": true,
+      "summary": {
+        "total": 6,
+        "passed": 6,
+        "failed": 0,
+        "success_rate": 1.0,
+        "by_difficulty": {
+          "medium": {
+            "total": 3,
+            "passed": 3,
+            "failed": 0,
+            "success_rate": 1.0
+          },
+          "hard": {
+            "total": 3,
+            "passed": 3,
+            "failed": 0,
+            "success_rate": 1.0
+          }
+        },
+        "total_tool_calls": 138,
+        "avg_tool_calls": 23.0,
+        "total_duration_seconds": 142.785,
+        "avg_duration_seconds": 23.797,
+        "input_tokens": 704251,
+        "output_tokens": 7371,
+        "error_categories": {
+          "consecutive_repeated_action": 1,
+          "max_iterations": 1,
+          "navigation_error": 3,
+          "post_goal_overrun": 3,
+          "repeated_action": 6,
+          "target_not_visible": 3,
+          "tool_error": 6
+        },
+        "failed_scenarios": [],
+        "termination_reasons": {
+          "max_iterations": 1,
+          "model_response": 5
+        },
+        "by_scenario": {
+          "color-locks": {
+            "total": 3,
+            "passed": 3,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "medium": {
+                "total": 3,
+                "passed": 3,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 42,
+            "avg_tool_calls": 14.0,
+            "total_duration_seconds": 42.271,
+            "avg_duration_seconds": 14.09,
+            "input_tokens": 206149,
+            "output_tokens": 2517,
+            "error_categories": {
+              "repeated_action": 3,
+              "tool_error": 3
+            },
+            "failed_scenarios": []
+          },
+          "office-sequence": {
+            "total": 3,
+            "passed": 3,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "hard": {
+                "total": 3,
+                "passed": 3,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 96,
+            "avg_tool_calls": 32.0,
+            "total_duration_seconds": 100.514,
+            "avg_duration_seconds": 33.505,
+            "input_tokens": 498102,
+            "output_tokens": 4854,
+            "error_categories": {
+              "consecutive_repeated_action": 1,
+              "max_iterations": 1,
+              "navigation_error": 3,
+              "post_goal_overrun": 3,
+              "repeated_action": 3,
+              "target_not_visible": 3,
+              "tool_error": 3
+            },
+            "failed_scenarios": []
+          }
+        },
+        "by_repetition": {
+          "1": {
+            "total": 2,
+            "passed": 2,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "medium": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              },
+              "hard": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 39,
+            "avg_tool_calls": 19.5,
+            "total_duration_seconds": 39.649,
+            "avg_duration_seconds": 19.825,
+            "input_tokens": 188401,
+            "output_tokens": 2127,
+            "error_categories": {
+              "navigation_error": 1,
+              "post_goal_overrun": 1,
+              "repeated_action": 2,
+              "target_not_visible": 1,
+              "tool_error": 2
+            },
+            "failed_scenarios": []
+          },
+          "2": {
+            "total": 2,
+            "passed": 2,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "medium": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              },
+              "hard": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 40,
+            "avg_tool_calls": 20.0,
+            "total_duration_seconds": 41.603,
+            "avg_duration_seconds": 20.802,
+            "input_tokens": 197691,
+            "output_tokens": 2276,
+            "error_categories": {
+              "navigation_error": 1,
+              "post_goal_overrun": 1,
+              "repeated_action": 2,
+              "target_not_visible": 1,
+              "tool_error": 2
+            },
+            "failed_scenarios": []
+          },
+          "3": {
+            "total": 2,
+            "passed": 2,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "medium": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              },
+              "hard": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 59,
+            "avg_tool_calls": 29.5,
+            "total_duration_seconds": 61.533,
+            "avg_duration_seconds": 30.766,
+            "input_tokens": 318159,
+            "output_tokens": 2968,
+            "error_categories": {
+              "consecutive_repeated_action": 1,
+              "max_iterations": 1,
+              "navigation_error": 1,
+              "post_goal_overrun": 1,
+              "repeated_action": 2,
+              "target_not_visible": 1,
+              "tool_error": 2
+            },
+            "failed_scenarios": []
+          }
+        }
+      }
+    }
+  ]
+}

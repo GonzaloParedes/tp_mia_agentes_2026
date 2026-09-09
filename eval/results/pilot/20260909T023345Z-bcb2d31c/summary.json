@@ -1,0 +1,242 @@
+{
+  "status": "completed",
+  "completed_cases": 6,
+  "expected_cases": 6,
+  "variants": [
+    {
+      "id": "current_agent",
+      "description": "",
+      "runs": 3,
+      "stop_on_goal": true,
+      "use_structured_memory": true,
+      "summary": {
+        "total": 6,
+        "passed": 5,
+        "failed": 1,
+        "success_rate": 0.833,
+        "by_difficulty": {
+          "medium": {
+            "total": 3,
+            "passed": 2,
+            "failed": 1,
+            "success_rate": 0.667
+          },
+          "hard": {
+            "total": 3,
+            "passed": 3,
+            "failed": 0,
+            "success_rate": 1.0
+          }
+        },
+        "total_tool_calls": 111,
+        "avg_tool_calls": 18.5,
+        "total_duration_seconds": 107.996,
+        "avg_duration_seconds": 17.999,
+        "input_tokens": 453072,
+        "output_tokens": 6195,
+        "error_categories": {
+          "navigation_error": 3,
+          "repeated_action": 6,
+          "target_not_visible": 3,
+          "tool_error": 5,
+          "unsolved": 1
+        },
+        "failed_scenarios": [
+          {
+            "scenario": "color-locks",
+            "difficulty": "medium",
+            "goal_reason": "puerta principal está cerrada",
+            "error": null,
+            "error_categories": [
+              "repeated_action",
+              "unsolved"
+            ]
+          }
+        ],
+        "termination_reasons": {
+          "goal_achieved": 5,
+          "model_response": 1
+        },
+        "by_scenario": {
+          "color-locks": {
+            "total": 3,
+            "passed": 2,
+            "failed": 1,
+            "success_rate": 0.667,
+            "by_difficulty": {
+              "medium": {
+                "total": 3,
+                "passed": 2,
+                "failed": 1,
+                "success_rate": 0.667
+              }
+            },
+            "total_tool_calls": 46,
+            "avg_tool_calls": 15.33,
+            "total_duration_seconds": 47.52,
+            "avg_duration_seconds": 15.84,
+            "input_tokens": 190761,
+            "output_tokens": 3079,
+            "error_categories": {
+              "repeated_action": 3,
+              "tool_error": 2,
+              "unsolved": 1
+            },
+            "failed_scenarios": [
+              {
+                "scenario": "color-locks",
+                "difficulty": "medium",
+                "goal_reason": "puerta principal está cerrada",
+                "error": null,
+                "error_categories": [
+                  "repeated_action",
+                  "unsolved"
+                ]
+              }
+            ]
+          },
+          "office-sequence": {
+            "total": 3,
+            "passed": 3,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "hard": {
+                "total": 3,
+                "passed": 3,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 65,
+            "avg_tool_calls": 21.67,
+            "total_duration_seconds": 60.476,
+            "avg_duration_seconds": 20.159,
+            "input_tokens": 262311,
+            "output_tokens": 3116,
+            "error_categories": {
+              "navigation_error": 3,
+              "repeated_action": 3,
+              "target_not_visible": 3,
+              "tool_error": 3
+            },
+            "failed_scenarios": []
+          }
+        },
+        "by_repetition": {
+          "1": {
+            "total": 2,
+            "passed": 1,
+            "failed": 1,
+            "success_rate": 0.5,
+            "by_difficulty": {
+              "medium": {
+                "total": 1,
+                "passed": 0,
+                "failed": 1,
+                "success_rate": 0.0
+              },
+              "hard": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 34,
+            "avg_tool_calls": 17.0,
+            "total_duration_seconds": 33.025,
+            "avg_duration_seconds": 16.512,
+            "input_tokens": 142990,
+            "output_tokens": 1848,
+            "error_categories": {
+              "navigation_error": 1,
+              "repeated_action": 2,
+              "target_not_visible": 1,
+              "tool_error": 1,
+              "unsolved": 1
+            },
+            "failed_scenarios": [
+              {
+                "scenario": "color-locks",
+                "difficulty": "medium",
+                "goal_reason": "puerta principal está cerrada",
+                "error": null,
+                "error_categories": [
+                  "repeated_action",
+                  "unsolved"
+                ]
+              }
+            ]
+          },
+          "2": {
+            "total": 2,
+            "passed": 2,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "medium": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              },
+              "hard": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 35,
+            "avg_tool_calls": 17.5,
+            "total_duration_seconds": 32.285,
+            "avg_duration_seconds": 16.143,
+            "input_tokens": 133000,
+            "output_tokens": 1681,
+            "error_categories": {
+              "navigation_error": 1,
+              "repeated_action": 2,
+              "target_not_visible": 1,
+              "tool_error": 2
+            },
+            "failed_scenarios": []
+          },
+          "3": {
+            "total": 2,
+            "passed": 2,
+            "failed": 0,
+            "success_rate": 1.0,
+            "by_difficulty": {
+              "medium": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              },
+              "hard": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "success_rate": 1.0
+              }
+            },
+            "total_tool_calls": 42,
+            "avg_tool_calls": 21.0,
+            "total_duration_seconds": 42.686,
+            "avg_duration_seconds": 21.343,
+            "input_tokens": 177082,
+            "output_tokens": 2666,
+            "error_categories": {
+              "navigation_error": 1,
+              "repeated_action": 2,
+              "target_not_visible": 1,
+              "tool_error": 2
+            },
+            "failed_scenarios": []
+          }
+        }
+      }
+    }
+  ]
+}

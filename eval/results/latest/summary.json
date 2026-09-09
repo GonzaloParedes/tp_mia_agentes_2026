@@ -1,0 +1,67 @@
+{
+  "total": 8,
+  "passed": 7,
+  "failed": 1,
+  "success_rate": 0.875,
+  "by_difficulty": {
+    "easy": {
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "success_rate": 1.0
+    },
+    "medium": {
+      "total": 2,
+      "passed": 1,
+      "failed": 1,
+      "success_rate": 0.5
+    },
+    "hard": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "success_rate": 1.0
+    },
+    "extreme": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "success_rate": 1.0
+    }
+  },
+  "total_tool_calls": 214,
+  "avg_tool_calls": 26.75,
+  "total_duration_seconds": 209.833,
+  "avg_duration_seconds": 26.229,
+  "input_tokens": 1214838,
+  "output_tokens": 11286,
+  "error_categories": {
+    "consecutive_repeated_action": 4,
+    "max_iterations": 2,
+    "missing_inventory_item": 4,
+    "navigation_error": 4,
+    "post_goal_overrun": 3,
+    "repeated_action": 7,
+    "repeated_look": 1,
+    "target_not_visible": 3,
+    "tool_error": 7,
+    "unsolved": 1
+  },
+  "failed_scenarios": [
+    {
+      "scenario": "color-locks",
+      "difficulty": "medium",
+      "goal_reason": "puerta principal está cerrada",
+      "error": null,
+      "error_categories": [
+        "consecutive_repeated_action",
+        "max_iterations",
+        "missing_inventory_item",
+        "repeated_action",
+        "repeated_look",
+        "tool_error",
+        "unsolved"
+      ]
+    }
+  ]
+}

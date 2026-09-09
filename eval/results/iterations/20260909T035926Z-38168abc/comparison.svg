@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="840" viewBox="0 0 1280 840">
+<style>
+text{font-family:Arial,Helvetica,sans-serif;fill:#172033}
+.page-title{font-size:26px;font-weight:700}
+.page-subtitle{font-size:14px;fill:#64748b}
+.panel{fill:#ffffff;stroke:#d7dee8;stroke-width:1}
+.title{font-size:18px;font-weight:700}
+.hint,.legend{font-size:11px;fill:#64748b}
+.axis{stroke:#94a3b8;stroke-width:1}
+.value{font-size:12px;font-weight:700}
+.label{font-size:10px;fill:#334155}
+.empty{font-size:14px;fill:#64748b}
+</style>
+<rect x="0" y="0" width="1280" height="840" fill="#f8fafc" />
+<text x="42" y="45" class="page-title">Comparacion de experimentos M3</text>
+<text x="42" y="70" class="page-subtitle">Metricas principales para elegir la variante mas robusta y eficiente.</text>
+<rect x="40" y="100" width="570" height="320" rx="8" class="panel" />
+<rect x="670" y="100" width="570" height="320" rx="8" class="panel" />
+<rect x="40" y="480" width="570" height="320" rx="8" class="panel" />
+<rect x="670" y="480" width="570" height="320" rx="8" class="panel" />
+<text x="66" y="144" class="title">Tasa de exito</text>
+<line x1="118" y1="352" x2="554" y2="352" class="axis" />
+<line x1="118" y1="166" x2="118" y2="352" class="axis" />
+<text x="488" y="144" class="hint">mayor es mejor</text>
+<rect x="118" y="290" width="100" height="62" rx="3" fill="#16a34a" />
+<text x="168.0" y="283" class="value" text-anchor="middle">29.2%</text>
+<text x="168.0" y="374" class="label" text-anchor="middle">iterations_15</text>
+<rect x="230" y="193" width="100" height="159" rx="3" fill="#16a34a" />
+<text x="280.0" y="186" class="value" text-anchor="middle">75%</text>
+<text x="280.0" y="374" class="label" text-anchor="middle">iterations_30</text>
+<rect x="342" y="175" width="100" height="177" rx="3" fill="#16a34a" />
+<text x="392.0" y="168" class="value" text-anchor="middle">83.3%</text>
+<text x="392.0" y="374" class="label" text-anchor="middle">iterations_45</text>
+<rect x="454" y="166" width="100" height="186" rx="3" fill="#16a34a" />
+<text x="504.0" y="159" class="value" text-anchor="middle">87.5%</text>
+<text x="504.0" y="374" class="label" text-anchor="middle">iterations_60</text>
+<text x="696" y="144" class="title">Promedio de tool calls</text>
+<line x1="748" y1="352" x2="1184" y2="352" class="axis" />
+<line x1="748" y1="166" x2="748" y2="352" class="axis" />
+<text x="1118" y="144" class="hint">menor es mejor</text>
+<rect x="748" y="280" width="100" height="72" rx="3" fill="#2563eb" />
+<text x="798.0" y="273" class="value" text-anchor="middle">13.88</text>
+<text x="798.0" y="374" class="label" text-anchor="middle">iterations_15</text>
+<rect x="860" y="244" width="100" height="108" rx="3" fill="#2563eb" />
+<text x="910.0" y="237" class="value" text-anchor="middle">20.83</text>
+<text x="910.0" y="374" class="label" text-anchor="middle">iterations_30</text>
+<rect x="972" y="207" width="100" height="145" rx="3" fill="#2563eb" />
+<text x="1022.0" y="200" class="value" text-anchor="middle">27.88</text>
+<text x="1022.0" y="374" class="label" text-anchor="middle">iterations_45</text>
+<rect x="1084" y="166" width="100" height="186" rx="3" fill="#2563eb" />
+<text x="1134.0" y="159" class="value" text-anchor="middle">35.75</text>
+<text x="1134.0" y="374" class="label" text-anchor="middle">iterations_60</text>
+<text x="66" y="524" class="title">Tokens totales</text>
+<line x1="118" y1="732" x2="554" y2="732" class="axis" />
+<line x1="118" y1="546" x2="118" y2="732" class="axis" />
+<text x="488" y="524" class="hint">menor es mejor</text>
+<rect x="118" y="667" width="100" height="65" rx="3" fill="#0f766e" />
+<text x="168.0" y="660" class="value" text-anchor="middle">1.46058e+06</text>
+<text x="168.0" y="754" class="label" text-anchor="middle">iterations_15</text>
+<rect x="230" y="607" width="100" height="125" rx="3" fill="#0f766e" />
+<text x="280.0" y="600" class="value" text-anchor="middle">2.79757e+06</text>
+<text x="280.0" y="754" class="label" text-anchor="middle">iterations_30</text>
+<rect x="342" y="554" width="100" height="178" rx="3" fill="#0f766e" />
+<text x="392.0" y="547" class="value" text-anchor="middle">3.97846e+06</text>
+<text x="392.0" y="754" class="label" text-anchor="middle">iterations_45</text>
+<rect x="454" y="546" width="100" height="186" rx="3" fill="#0f766e" />
+<text x="504.0" y="539" class="value" text-anchor="middle">4.14999e+06</text>
+<text x="504.0" y="754" class="label" text-anchor="middle">iterations_60</text>
+<text x="696" y="524" class="title">Errores por categoria</text>
+<text x="1118" y="524" class="hint">menor es mejor</text>
+<line x1="748" y1="720" x2="1184" y2="720" class="axis" />
+<line x1="748" y1="546" x2="748" y2="720" class="axis" />
+<rect x="748" y="684" width="100" height="36" rx="2" fill="#ef4444" />
+<rect x="748" y="650" width="100" height="34" rx="2" fill="#f97316" />
+<rect x="748" y="628" width="100" height="22" rx="2" fill="#eab308" />
+<rect x="748" y="587" width="100" height="41" rx="2" fill="#8b5cf6" />
+<rect x="748" y="549" width="100" height="38" rx="2" fill="#64748b" />
+<text x="798.0" y="539" class="value" text-anchor="middle">76</text>
+<text x="798.0" y="742" class="label" text-anchor="middle">iterations_15</text>
+<rect x="860" y="679" width="100" height="41" rx="2" fill="#ef4444" />
+<rect x="860" y="645" width="100" height="34" rx="2" fill="#f97316" />
+<rect x="860" y="623" width="100" height="22" rx="2" fill="#eab308" />
+<rect x="860" y="603" width="100" height="20" rx="2" fill="#8b5cf6" />
+<rect x="860" y="590" width="100" height="13" rx="2" fill="#64748b" />
+<text x="910.0" y="581" class="value" text-anchor="middle">58</text>
+<text x="910.0" y="742" class="label" text-anchor="middle">iterations_30</text>
+<rect x="972" y="670" width="100" height="50" rx="2" fill="#ef4444" />
+<rect x="972" y="636" width="100" height="34" rx="2" fill="#f97316" />
+<rect x="972" y="611" width="100" height="25" rx="2" fill="#eab308" />
+<rect x="972" y="595" width="100" height="16" rx="2" fill="#8b5cf6" />
+<rect x="972" y="586" width="100" height="9" rx="2" fill="#64748b" />
+<text x="1022.0" y="578" class="value" text-anchor="middle">59</text>
+<text x="1022.0" y="742" class="label" text-anchor="middle">iterations_45</text>
+<rect x="1084" y="670" width="100" height="50" rx="2" fill="#ef4444" />
+<rect x="1084" y="627" width="100" height="43" rx="2" fill="#f97316" />
+<rect x="1084" y="602" width="100" height="25" rx="2" fill="#eab308" />
+<rect x="1084" y="589" width="100" height="13" rx="2" fill="#8b5cf6" />
+<rect x="1084" y="583" width="100" height="6" rx="2" fill="#64748b" />
+<text x="1134.0" y="574" class="value" text-anchor="middle">61</text>
+<text x="1134.0" y="742" class="label" text-anchor="middle">iterations_60</text>
+<rect x="714" y="752" width="10" height="10" fill="#ef4444" />
+<text x="729" y="761" class="legend">repeated_action</text>
+<rect x="840" y="752" width="10" height="10" fill="#f97316" />
+<text x="855" y="761" class="legend">tool_error</text>
+<rect x="966" y="752" width="10" height="10" fill="#eab308" />
+<text x="981" y="761" class="legend">navigation_error</text>
+<rect x="1092" y="752" width="10" height="10" fill="#8b5cf6" />
+<text x="1107" y="761" class="legend">max_iterations</text>
+<rect x="1218" y="752" width="10" height="10" fill="#64748b" />
+<text x="1233" y="761" class="legend">unsolved</text>
+</svg>
