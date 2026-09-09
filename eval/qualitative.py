@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import unicodedata
@@ -134,6 +135,8 @@ def _review_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
         score, reason = _score_row(row)
         reviews.append(
             {
+                "variant": row.get("variant", "legacy"),
+                "repetition": row.get("repetition", 1),
                 "scenario": row.get("scenario"),
                 "difficulty": row.get("difficulty"),
                 "goal_achieved": row.get("goal_achieved"),
@@ -141,6 +144,12 @@ def _review_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
                 "error_categories": row.get("error_categories", []),
                 "qualitative_score": score,
                 "qualitative_reason": reason,
+                "evidence": {
+                    "tool_errors": _count_tool_errors((row.get("agent_result") or {}).get("steps") or []),
+                    "repeated_calls": _count_repeated_calls((row.get("agent_result") or {}).get("steps") or []),
+                    "consecutive_repeats": _count_consecutive_repeats((row.get("agent_result") or {}).get("steps") or []),
+                    "termination_reason": row.get("termination_reason"),
+                },
             }
         )
 
@@ -151,7 +160,21 @@ def _review_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
         key = str(row["qualitative_score"])
         distribution[key] = distribution.get(key, 0) + 1
 
+    by_variant = {}
+    for variant in sorted({r["variant"] for r in reviews}):
+        selected = [r for r in reviews if r["variant"] == variant]
+        by_repetition = {}
+        for rep in sorted({r["repetition"] for r in selected}):
+            scores = [r["qualitative_score"] for r in selected if r["repetition"] == rep]
+            by_repetition[str(rep)] = round(sum(scores) / len(scores), 3)
+        by_variant[variant] = {
+            "total": len(selected),
+            "average_qualitative_score": round(sum(r["qualitative_score"] for r in selected) / len(selected), 3),
+            "by_repetition": by_repetition,
+        }
+
     return {
+        "rubric_version": "1.0",
         "rubric": {
             "0": "No progresa o no hay trayectoria evaluable.",
             "1": "Progresa poco, se atasca o repite errores.",
@@ -161,6 +184,7 @@ def _review_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "total": total,
         "average_qualitative_score": average,
         "score_distribution": dict(sorted(distribution.items())),
+        "by_variant": by_variant,
         "reviews": reviews,
     }
 
@@ -169,17 +193,23 @@ def _write_markdown(review: dict[str, Any], path: Path) -> None:
     lines = [
         "# Qualitative Review",
         "",
-        f"- Total scenarios: {review['total']}",
+        f"- Total casos: {review['total']}",
         f"- Average qualitative score: {review['average_qualitative_score']}",
         f"- Score distribution: {review['score_distribution']}",
         "",
-        "| Scenario | Difficulty | Goal | Score | Reason |",
-        "| --- | --- | --- | ---: | --- |",
+        "Los puntajes son heuristicas de trayectoria, no evaluan directamente la calidad de la respuesta final.",
+        "",
+        "| Variante | Promedio | Casos |",
+        "| --- | ---: | ---: |",
     ]
+    for variant, summary in review["by_variant"].items():
+        lines.append(f"| {variant} | {summary['average_qualitative_score']} | {summary['total']} |")
+    lines.extend(["", "| Variante | Repeticion | Scenario | Difficulty | Goal | Score | Reason |",
+                  "| --- | ---: | --- | --- | --- | ---: | --- |"])
     for row in review["reviews"]:
         reason = re.sub(r"\s+", " ", row["qualitative_reason"]).strip()
         lines.append(
-            f"| {row['scenario']} | {row['difficulty']} | {row['goal_achieved']} | "
+            f"| {row['variant']} | {row['repetition']} | {row['scenario']} | {row['difficulty']} | {row['goal_achieved']} | "
             f"{row['qualitative_score']} | {reason} |"
         )
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -197,6 +227,10 @@ def main() -> int:
     results_dir = Path(args.results_dir)
     rows = _load_results(results_dir / "results.jsonl")
     review = _review_rows(rows)
+    review["source"] = {
+        "results_file": str(results_dir / "results.jsonl"),
+        "sha256": hashlib.sha256((results_dir / "results.jsonl").read_bytes()).hexdigest(),
+    }
 
     json_path = results_dir / "qualitative_review.json"
     md_path = results_dir / "qualitative_review.md"

@@ -10,6 +10,8 @@ Cada JSON activo define una pregunta experimental, sus escenarios, repeticiones 
 
 Todos usan los ocho escenarios y tres repeticiones. Una iteracion es una llamada al LLM; puede incluir varias herramientas. Las metricas actuales cuentan herramientas, no iteraciones efectivamente consumidas.
 
+La base elegida mantiene `04_PROMPT`, memoria activa, historial de 80 mensajes y 45 iteraciones como referencia, sin revision ni parada asistida. La corrida completa de iteraciones `20260909T035926Z-38168abc` obtuvo 7/24, 18/24, 20/24 y 21/24 exitos para limites 15/30/45/60. Se conserva 45 para dar continuidad a la comparacion de memoria; no se afirma que sea el limite optimo. Ver resultados y limitaciones en `BITACORA.md`.
+
 `stop_on_goal` esta desactivado en todos los planes actuales y por defecto. La comprobacion externa queda disponible solo como variante asistida explicita. Los resultados anteriores se conservan con la configuracion que realmente utilizaron.
 
 El piloto compara `use_completion_review: false` y `true` en `color-locks` y `office-sequence`, con tres repeticiones: **12 casos**. Ambas variantes usan memoria y `stop_on_goal: false`. Para validarlo y ejecutarlo:
@@ -21,7 +23,7 @@ python -m eval.run --experiments experiments/pilot.json
 
 La revision observacional agrega al contexto el pedido original y las ultimas 12 acciones `take`/`use` con sus resultados (hasta 600 caracteres por resultado), en orden, incluyendo fallos. El modelo decide si seguir o terminar. La primera respuesta de texto puede reconsiderarse una sola vez, si queda presupuesto; esa llamada cuenta dentro de `max_iterations` y sus tokens se suman normalmente. No usa `check_goal`, ni obtiene datos privados del mundo, ni garantiza que el modelo reconozca el exito. El limite de mensajes sigue vigente; este contexto adicional en el system prompt tiene un coste que debe medirse.
 
-`use_completion_review` y `completion_reviews` quedan registrados en cada resultado. El manifest y el reporte identifican la variante; `termination_reason` sigue distinguiendo respuesta del modelo, agotamiento de iteraciones y parada asistida. No se activa todavia en los planes de iteraciones/memoria/prompts hasta evaluar el piloto.
+`use_completion_review` y `completion_reviews` quedan registrados en cada resultado. El manifest y el reporte identifican la variante; `termination_reason` sigue distinguiendo respuesta del modelo, agotamiento de iteraciones y parada asistida. Tras los pilotos, la revision se conserva como variante experimental y permanece desactivada en los planes de iteraciones/memoria/prompts, porque no mostro una ventaja consistente.
 
 ## Comandos
 

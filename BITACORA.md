@@ -1196,3 +1196,53 @@ Evidencia: piloto `20260909T025249Z-dc185747`, con Amazon Nova Lite (`amazon.nov
 El manejo de respuestas vacias funciono: los tres `color-locks` con revision conservaron el borrador mediante `review_empty_fallback`. Sin embargo, ambas variantes finalizaron normalmente solo en 1/3 casos de `office-sequence`; en los otros dos cumplieron el objetivo pero siguieron actuando y devolvieron un mensaje de fracaso por limite de iteraciones. La revision consumio aproximadamente 15 % mas tokens en esta corrida y no mostro una ventaja consistente respecto del piloto anterior. Son pocos casos: la decision es operativa, no una demostracion estadistica de superioridad.
 
 La revision queda disponible como variante experimental, no como comportamiento base. Se documenta como limitacion que cumplir el objetivo del mundo no garantiza finalizar correctamente. Proximo paso: mantener fija esta base y ejecutar los experimentos de iteraciones y memoria para la reentrega, conservando por separado las corridas historicas.
+
+### Primera evaluacion de iteraciones — 2026-09-09
+
+Corrida `20260909T030439Z-04b0ed41`: 32 casos completos, **una repeticion** por escenario y limite, con memoria activa, sin revision ni parada asistida.
+
+| Limite | Objetivos cumplidos | Tools promedio | Tokens totales |
+| ---: | ---: | ---: | ---: |
+| 15 | 3/8 (37.5 %) | 12.88 | 460370 |
+| 30 | 6/8 (75 %) | 20.12 | 870827 |
+| 45 | 6/8 (75 %) | 28.12 | 1423837 |
+| 60 | 7/8 (87.5 %) | 28.75 | 1484744 |
+
+Mas iteraciones permitieron resolver escenarios largos, pero tambien prolongaron atascos: `library-search` resolvio con 30 y fallo con 45/60 repitiendo inspecciones. En `office-sequence`, los limites 30/45 permitieron 11/28 acciones posteriores al objetivo. El mayor exito observado fue con 60, con aproximadamente 70 % mas tokens que 30. Son ejecuciones independientes y una sola repeticion: no se puede atribuir cada diferencia al limite ni elegir aun una configuracion definitiva. Proximo paso: completar repeticiones con la misma base para contrastar exito, variabilidad y consumo.
+
+### Evaluacion de memoria — 2026-09-09
+
+Corrida `20260909T032652Z-733d4b97`: **48 casos completos**, tres repeticiones por escenario y variante, sin errores de infraestructura. Se mantuvieron Nova Lite, temperatura 0.2, `04_PROMPT`, 45 iteraciones y 80 mensajes de historial; revision y parada asistida desactivadas.
+
+| Variante | Objetivos cumplidos | Tools promedio | Tokens totales | Casos con limite agotado |
+| --- | ---: | ---: | ---: | ---: |
+| Sin memoria | 17/24 (70.8 %) | 29.17 | 4240841 | 11 |
+| Con memoria | 20/24 (83.3 %) | 25.08 | 3450131 | 7 |
+
+La memoria obtuvo **12.5 puntos porcentuales mas de exito**, con 14 % menos herramientas y 18.6 % menos tokens. Mejoraron `library-search` (2/3 a 3/3), `office-sequence` (2/3 a 3/3), `vault-combination` (0/3 a 1/3) y `backtracking-vault` (1/3 a 2/3). `color-locks` bajo de 3/3 a 2/3: el caso fallido repitio inspecciones sin aplicar la llave plateada al cofre correspondiente. Los otros tres escenarios lograron 3/3 en ambas variantes.
+
+El resultado respalda mantener memoria activa como base, sin afirmar superioridad en todos los escenarios. La ablacion mide conjuntamente el contexto de memoria y sus controles previos a herramientas. Persisten limitaciones: con memoria, dos casos de `office-sequence` y uno de `vault-combination` cumplieron el objetivo pero agotaron iteraciones y devolvieron un mensaje de fracaso. La memoria mejora el rendimiento agregado, pero no garantiza salir de los bucles ni finalizar correctamente; las conclusiones se limitan a estas condiciones y tres repeticiones por escenario.
+
+### Evaluacion completa de iteraciones — 2026-09-09
+
+Corrida `20260909T035926Z-38168abc`: **96 casos completos**, tres repeticiones por escenario y limite, sin errores de infraestructura y con la misma base (memoria activa, sin revision ni parada asistida).
+
+| Limite | Objetivos cumplidos | Tools promedio | Tokens totales |
+| ---: | ---: | ---: | ---: |
+| 15 | 7/24 (29.2 %) | 13.88 | 1460578 |
+| 30 | 18/24 (75 %) | 20.83 | 2797568 |
+| 45 | 20/24 (83.3 %) | 27.88 | 3978457 |
+| 60 | 21/24 (87.5 %) | 35.75 | 4149990 |
+
+El mayor salto fue de 15 a 30. De 30 a 45 se sumaron dos exitos con 42 % mas tokens; de 45 a 60, uno con 4.3 % mas tokens y 28 % mas herramientas. Mas presupuesto tambien prolongo bucles: en `office-sequence`, con 60 se ejecutaron 38/41/38 acciones posteriores al objetivo. Un caso fallido de `vault-combination` registro 229 intentos de herramientas; no contradice el limite porque una iteracion puede solicitar varias herramientas y el conteo incluye intentos bloqueados por memoria. La variabilidad persiste: `vault-combination` logro 3/3 con 45 y 1/3 con 60, sin que esto demuestre una relacion causal inversa.
+
+**Decision:** conservar 45 como limite de referencia para memoria y comparaciones posteriores, no como optimo demostrado. 60 obtuvo el mayor exito observado y 30 ofrecio menor consumo con 75 % de exito. Los planes ya usan 45 como referencia y tres repeticiones; `iterations.json` conserva el barrido 15/30/45/60. No se modifica el agente ni se agrega un limite de herramientas despues de estas mediciones.
+
+
+### Evaluacion cualitativa para la reentrega ? 2026-09-09
+
+Se aplico la rubrica existente a las corridas completas de iteraciones (96 casos) y memoria (48), sin nuevas llamadas al modelo. Se agregaron identidad de variante/repeticion, contadores de evidencia, promedios agrupados y hash del archivo de resultados. Se verifico que los 144 puntajes y sus razones no cambiaron respecto de la implementacion anterior.
+
+Promedios 0?3: iteraciones 15/30/45/60 = 2.083/2.375/2.125/2.375; memoria desactivada/activada = 2.208/2.375. Se preparo `eval/analisis_cualitativo_reentrega.md` con procedimiento, reglas y tres trazas: resolucion eficiente, atasco y objetivo cumplido con finalizacion incorrecta. El borrador asistido requiere revision del grupo antes de presentarse como evaluacion humana.
+
+Se documento una discrepancia: la descripcion ?las bisagras se abren? provoca un falso positivo de apertura en la rubrica para `color-locks`; el automatico asigna 2 y la lectura razonada propone 1. Se conservaron los puntajes originales y se explicito que la rubrica no valida la respuesta final ni distingue todas las repeticiones necesarias. Validacion: **182 tests aprobados**. Proximo paso: incorporar y revisar este material en el informe de reentrega.
