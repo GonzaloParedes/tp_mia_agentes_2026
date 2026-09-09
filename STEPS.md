@@ -1,3 +1,5 @@
+> Documento historico de implementacion. Los comandos actuales de evaluacion estan en [experiments/README.md](experiments/README.md); los ejemplos de CLI de este plan fueron reemplazados.
+
 # STEPS - Milestone 3
 
 Este documento deja el paso a paso para completar M3 desde el estado actual del repositorio.

@@ -4,6 +4,63 @@ import json
 from pathlib import Path
 from typing import Any
 
+from eval.metrics import _build_summary
+
+
+def regenerate_reports(directory: Path) -> None:
+    """Recalcula todos los agregados desde los casos originales guardados."""
+    manifest = json.loads((directory / "manifest.json").read_text(encoding="utf-8"))
+    rows = []
+    lines = (directory / "results.jsonl").read_text(encoding="utf-8").splitlines(keepends=True)
+    for index, line in enumerate(lines):
+        if not line.strip():
+            continue
+        try:
+            rows.append(json.loads(line))
+        except json.JSONDecodeError:
+            # Un corte durante la escritura puede dejar solo la ultima linea incompleta.
+            if index != len(lines) - 1 or line.endswith("\n"):
+                raise
+    summaries = []
+    for variant in manifest["variants"]:
+        selected = [row for row in rows if row["variant"] == variant["id"]]
+        summary = _build_summary(selected)
+        summary["termination_reasons"] = {
+            reason: sum(row.get("termination_reason") == reason for row in selected)
+            for reason in sorted({row.get("termination_reason") for row in selected} - {None})
+        }
+        summary["by_scenario"] = {
+            scenario["id"]: _build_summary([row for row in selected if row["scenario"] == scenario["id"]])
+            for scenario in manifest["scenarios"]
+        }
+        summary["by_repetition"] = {
+            str(repetition): _build_summary([row for row in selected if row["repetition"] == repetition])
+            for repetition in range(1, manifest["plan"]["repetitions"] + 1)
+        }
+        summaries.append({"id": variant["id"], "description": variant["description"],
+                          "runs": manifest["plan"]["repetitions"],
+                          "stop_on_goal": variant.get("stop_on_goal", False),
+                          "use_completion_review": variant.get("use_completion_review", False),
+                          "use_structured_memory": variant["use_structured_memory"], "summary": summary})
+    result = {"status": manifest["status"], "completed_cases": len(rows),
+              "expected_cases": manifest["expected_cases"], "variants": summaries}
+    (directory / "summary.json").write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
+    comparison = _comparison_rows(summaries)
+    _write_experiment_plots(comparison, directory / "comparison.svg")
+    report = [f"# Evaluacion: {manifest['name']}", "",
+              f"Estado: {manifest['status']}. Casos guardados: {len(rows)}/{manifest['expected_cases']}.", "",
+              "El exito se verifica sobre el estado del mundo. Los errores de ejecucion cuentan como fallos en estas metricas.",
+              "Los promedios incluyen exitos y fallos; una corrida incompleta no representa el plan completo.", "",
+              "La parada por objetivo, cuando esta activa, usa una comprobacion del entorno despues de cada herramienta.", "",
+              "| Variante | Parada por objetivo | Revision observacional | Exitos / casos | Exito | Tools promedio | Segundos promedio | Tokens |",
+              "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: |"]
+    for row in comparison:
+        report.append(f"| {row['id']} | {'si' if row['stop_on_goal'] else 'no'} | {'si' if row['use_completion_review'] else 'no'} | {row['passed']}/{row['total']} | {row['success_rate']:.1%} | "
+                      f"{row['avg_tool_calls']} | {row['avg_duration_seconds']} | {row['total_tokens']} |")
+    report.extend(["", "Los tokens ausentes se contabilizan como cero en los agregados actuales.",
+                   "Consultar summary.json para el desglose por escenario, repeticion y categorias; results.jsonl contiene las trazas."])
+    (directory / "report.md").write_text("\n".join(report) + "\n", encoding="utf-8")
+
 
 def write_experiment_comparison(
     experiment_summaries: list[dict[str, Any]],
@@ -39,6 +96,8 @@ def _comparison_rows(experiment_summaries: list[dict[str, Any]]) -> list[dict[st
                 "output_tokens": summary["output_tokens"],
                 "total_tokens": summary["input_tokens"] + summary["output_tokens"],
                 "use_structured_memory": experiment.get("use_structured_memory", False),
+                "stop_on_goal": experiment.get("stop_on_goal", False),
+                "use_completion_review": experiment.get("use_completion_review", False),
                 "error_categories": summary.get("error_categories", {}),
                 "by_difficulty": summary.get("by_difficulty", {}),
             }

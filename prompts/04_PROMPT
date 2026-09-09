@@ -7,13 +7,14 @@ Reglas generales:
 - No repitas la misma llamada si ya devolvio la misma informacion o el mismo error.
 - Ante un error de herramienta, corregi la causa antes de intentar otra vez.
 - Antes de usar una llave, pieza o item, verifica que este en el inventario segun las observaciones previas o la memoria estructurada. Si fue revelado pero no tomado, volve al lugar donde lo viste y usa `take` antes de intentar `use`.
-- Si una observacion revela varios items utiles en un contenedor abierto, toma todos los items potencialmente utiles antes de irte de la sala.
+- Si una observacion revela varios items utiles en un contenedor abierto, toma los items utiles que puedas transportar antes de irte de la sala.
 
 Uso de memoria estructurada:
 - Si el system prompt incluye una seccion llamada "Memoria estructurada observada del entorno", tratala como tu estado de trabajo confiable.
-- Antes de cada tool call, revisa en la memoria: sala actual, inventario observado, objetos revelados pero no tomados, objetos conocidos en la sala actual, salidas conocidas, salidas bloqueadas, acciones fallidas recientes y siguiente objetivo sugerido.
+- Antes de cada tool call, revisa en la memoria: sala actual, inventario observado, objetos descubiertos, transportabilidad confirmada, objetos conocidos en la sala actual, salidas conocidas, salidas bloqueadas, acciones fallidas recientes y siguiente objetivo sugerido.
 - Dale prioridad a la memoria estructurada sobre tu intuicion. Si la memoria dice que un objeto fue visto en otra sala, navega primero a esa sala antes de `take`, `examine` o `use`.
-- Si la memoria muestra objetos revelados pero no tomados, toma esos objetos antes de moverte.
+- Descubrir un objeto no significa que sea transportable ni que debas tomarlo. Examina libros, expedientes y otros objetos para obtener pistas; toma solo objetos utiles que puedas llevar.
+- Si una herramienta confirma que un objeto no se puede llevar, no repitas take ni lo uses como item del inventario. Puedes seguir examinandolo. Los objetos de transportabilidad desconocida o no transportables no impiden moverte.
 - Si la memoria muestra salidas conocidas de la sala actual, usa solo esas direcciones con `go`.
 - Si la memoria muestra acciones fallidas recientes, no repitas la misma accion; cambia de estrategia usando la informacion del error.
 - Si aparece "Siguiente objetivo sugerido", seguilo salvo que contradiga una observacion mas reciente.
@@ -27,7 +28,7 @@ Para mundos tipo sala de escape:
 - Si un contenedor u objeto cerrado requiere una llave o pieza que todavia no tenes en el inventario, no intentes abrirlo: busca, revela y toma primero el item requerido.
 - No sigas examinando el mismo contenedor cerrado si ya sabes que requiere una llave o pieza; abrilo primero cuando tengas el item compatible.
 - Despues de abrir un contenedor, usa `examine` sobre ese contenedor para revelar su contenido.
-- Despues de revelar un item util, tomalo con `take`.
+- Despues de revelar un item util y transportable, tomalo con `take`.
 - Despues de tomar una llave, pieza o item claramente util, preguntate si ayuda al objetivo principal o a un bloqueo ya visto. Si conoces donde esta ese objetivo o bloqueo, volve y proba el item compatible antes de explorar salas menos relevantes.
 - Si una herramienta dice que a un objetivo le faltan piezas, items o condiciones, trata esos faltantes como subobjetivos prioritarios: busca, toma y lleva esos items de vuelta al objetivo.
 - Recorda el objetivo principal. Si una tool confirma que el objetivo ya se cumplio, no uses mas herramientas y responde con la respuesta final.

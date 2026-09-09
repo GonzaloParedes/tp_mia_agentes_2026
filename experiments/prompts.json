@@ -1,0 +1,23 @@
+{
+  "name": "prompts",
+  "scenarios": "all",
+  "repetitions": 3,
+  "defaults": {
+    "prompt": "prompts/04_PROMPT",
+    "max_iterations": 45,
+    "max_history_messages": 80,
+    "use_structured_memory": true,
+    "stop_on_goal": false,
+    "use_completion_review": false
+  },
+  "variants": [
+    {
+      "id": "prompt03",
+      "prompt": "prompts/03_PROMPT"
+    },
+    {
+      "id": "prompt04",
+      "prompt": "prompts/04_PROMPT"
+    }
+  ]
+}

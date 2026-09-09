@@ -1141,3 +1141,58 @@ Rubrica 0-3:
 La clasificacion usa senales observables de la traza: exito del goal, errores de runner, cantidad de steps, progreso observable (`take`, aperturas, navegacion), errores de tools, acciones repetidas y limite de iteraciones.
 
 Nota: si la corrida contiene `ExpiredTokenException` u otro `runner_error`, esos casos puntuan 0 porque no hay trayectoria del agente para evaluar. Para el informe final hay que correr esta rubrica sobre una evaluacion valida.
+
+---
+
+## Revision para la reentrega M3
+
+El profesor pidio ampliar la experimentacion sobre el limite de iteraciones y explicar mejor el proceso de evaluacion automatizada. Se realizaron estos cambios:
+
+- **Memoria:** se distinguieron objetos descubiertos, transportables y no transportables. Un rechazo explicito de `take` se recuerda para no insistir; el objeto sigue siendo examinable. Los objetos de transportabilidad desconocida ya no bloquean `go`. Se ajustaron el prompt interno y `04_PROMPT`.
+- **Navegacion:** cada `look` actualiza las salidas y elimina bloqueos que ya no existen, conservando los bloqueos vigentes y la informacion de otras salas.
+- **Configuracion:** se corrigio que `use_structured_memory=false` no llegaba al agente. Las comparaciones historicas que pretendian desactivar memoria deben repetirse.
+- **Evaluador:** se separaron configuracion (`eval/config.py`), ejecucion (`eval/run.py`), metricas (`eval/metrics.py`) y reportes (`eval/reporting.py`). Los planes se validan antes de ejecutar y `--dry-run` permite revisarlos sin consumir tokens.
+- **Persistencia:** cada corrida crea una carpeta unica con manifest, configuracion resuelta, prompts exactos, modelo, version/hashes del codigo y copias de escenarios. Cada caso se guarda inmediatamente en `results.jsonl`; los reportes se regeneran con `--report` sin volver a ejecutar el agente. Se agregaron desgloses por escenario y repeticion y soporte para reportar corridas incompletas.
+- **Experimentos:** se crearon `iterations.json` (96 casos), `memory.json` (48) y `prompts.json` (48). Los siete JSON anteriores quedaron en `experiments/archive/`, sin alterar resultados historicos. Se actualizaron README, STEPS y `experiments/README.md`; el detalle breve de correcciones queda en `correciones.md`.
+
+### Hallazgos y decisiones sobre la finalizacion
+
+La revision de `eval/results/latest` dio 7/8 objetivos cumplidos: `color-locks` termino con 33 llamadas identicas a `look`; `office-sequence` cumplio el objetivo en el paso 18 pero siguio hasta el 45. Los archivos de revision cualitativa de esa carpeta correspondian a otra corrida y no deben mezclarse con esos resultados.
+
+El primer intento de piloto fallo por credenciales AWS vencidas y no evaluo al agente. El piloto valido `20260909T022240Z-2afcda5b` resolvio los seis casos: `color-locks` uso 13/14/16 herramientas; `office-sequence` siguio hasta 45/46/46 y devolvio un mensaje de fracaso pese a cumplir el objetivo.
+
+Se implemento `stop_on_goal`: un callback opcional del entorno, no una herramienta, que usa `check_goal` y detiene la ejecucion al cumplir el objetivo completo, incluidas secuencias. Cancela acciones pendientes y registra `termination_reason`. El piloto asistido `20260909T023345Z-bcb2d31c` dio 5/6: elimino las acciones posteriores al objetivo en `office-sequence`, pero un caso de `color-locks` abandono prematuramente. Estos resultados no demuestran reconocimiento autonomo de finalizacion.
+
+**Decision actual:** `stop_on_goal` queda desactivado por defecto y en todos los planes activos para separar la evaluacion externa de las decisiones del agente. Se conserva como variante asistida opcional. Se agrego `use_completion_review`, que usa solo el pedido original y acciones observadas en orden (ultimas 12 acciones `take`/`use`, hasta 600 caracteres por resultado). Permite una unica reconsideracion de la primera respuesta final, si queda presupuesto; cuenta sus llamadas y tokens y no consulta `check_goal`.
+
+### Validacion y siguiente paso
+
+La suite paso de 139 a **172 tests aprobados**, con regresiones de memoria, configuracion, aislamiento y guardado de corridas, finalizacion y revision observacional. Esta ultima mejora aun requiere evaluacion con un modelo real.
+
+El piloto actual compara revision activada/desactivada en `color-locks` y `office-sequence`, tres repeticiones por variante: **12 casos**, con memoria activa y parada asistida desactivada.
+
+```powershell
+python -m eval.run --experiments experiments/pilot.json --dry-run
+python -m eval.run --experiments experiments/pilot.json
+```
+
+Despues de analizarlo, fijar la version del agente y ejecutar las comparaciones de iteraciones y memoria para el informe. Siguen pendientes mejoras metodologicas como separar errores de infraestructura de fallos del agente y conservar trazas parciales si el agente lanza una excepcion.
+
+### Ajuste del manejo de respuestas vacias
+
+El piloto `20260909T024303Z-469d5b09` completo 12/12 objetivos del mundo, pero la variante con revision devolvio cinco respuestas vacias y un agotamiento de iteraciones. Se corrigio el cierre: una revision vacia conserva su borrador inmediato con texto (`review_empty_fallback`); si no existe, informa `empty_response` sin afirmar exito. No recupera borradores de otros turnos ni anteriores a nuevas herramientas. La respuesta final queda en el historial y se mantienen presupuesto y tokens. Validacion: **180 tests aprobados**; pendiente repetir el piloto real. Conservar un borrador no valida semanticamente su contenido ni demuestra que el objetivo se haya cumplido.
+
+### Base elegida para los experimentos — 2026-09-09
+
+Se adopta la variante **sin revision de finalizacion** como base: `prompts/04_PROMPT`, memoria estructurada activa, historial de 80 mensajes, `use_completion_review=false` y `stop_on_goal=false`. Se conservan las correcciones de memoria y respuestas vacias. El limite de referencia es 45 iteraciones; en `iterations.json` se compara 15/30/45/60 manteniendo las demas condiciones. Los planes de iteraciones y memoria ya reflejan esta decision.
+
+Evidencia: piloto `20260909T025249Z-dc185747`, con Amazon Nova Lite (`amazon.nova-lite-v1:0`), temperatura 0.2 y tres repeticiones por escenario y variante, sin errores de infraestructura:
+
+| Variante | Objetivos cumplidos | Tools promedio | Tokens totales | Casos con limite agotado |
+| --- | ---: | ---: | ---: | ---: |
+| Sin revision | 6/6 | 26.17 | 737638 | 2 |
+| Con revision | 6/6 | 27.50 | 846743 | 2 |
+
+El manejo de respuestas vacias funciono: los tres `color-locks` con revision conservaron el borrador mediante `review_empty_fallback`. Sin embargo, ambas variantes finalizaron normalmente solo en 1/3 casos de `office-sequence`; en los otros dos cumplieron el objetivo pero siguieron actuando y devolvieron un mensaje de fracaso por limite de iteraciones. La revision consumio aproximadamente 15 % mas tokens en esta corrida y no mostro una ventaja consistente respecto del piloto anterior. Son pocos casos: la decision es operativa, no una demostracion estadistica de superioridad.
+
+La revision queda disponible como variante experimental, no como comportamiento base. Se documenta como limitacion que cumplir el objetivo del mundo no garantiza finalizar correctamente. Proximo paso: mantener fija esta base y ejecutar los experimentos de iteraciones y memoria para la reentrega, conservando por separado las corridas historicas.

@@ -20,7 +20,7 @@ from pydantic import ValidationError
 
 from mia_agents.protocols import LLMClient
 from mia_agents.tool_schema import FINAL_RESULT_TOOL_NAME, final_result_tool_schema
-from mia_agents.types import AgentResult, AgentStep, ToolSchema
+from mia_agents.types import AgentResult, AgentStep, ToolCall, ToolSchema
 from student_framework.world_memory import WorldMemory
 
 # Códigos/status de ClientError (Bedrock/AWS) que sí vale la pena reintentar:
@@ -79,13 +79,14 @@ Reglas generales:
 - No repitas la misma llamada si ya devolvio la misma informacion o el mismo error.
 - Ante un error de herramienta, corregi la causa antes de intentar otra vez.
 - Antes de usar una llave, pieza o item, verifica que este en el inventario segun las observaciones previas o la memoria estructurada. Si fue revelado pero no tomado, volve al lugar donde lo viste y usa `take` antes de intentar `use`.
-- Si una observacion revela varios items utiles en un contenedor abierto, toma todos los items potencialmente utiles antes de irte de la sala.
+- Si una observacion revela varios items utiles en un contenedor abierto, toma los items utiles que puedas transportar antes de irte de la sala.
 
 Uso de memoria estructurada:
 - Si el system prompt incluye una seccion llamada "Memoria estructurada observada del entorno", tratala como tu estado de trabajo confiable.
-- Antes de cada tool call, revisa en la memoria: sala actual, inventario observado, objetos revelados pero no tomados, objetos conocidos en la sala actual, salidas conocidas, salidas bloqueadas, acciones fallidas recientes y siguiente objetivo sugerido.
+- Antes de cada tool call, revisa en la memoria: sala actual, inventario observado, objetos descubiertos, transportabilidad confirmada, objetos conocidos en la sala actual, salidas conocidas, salidas bloqueadas, acciones fallidas recientes y siguiente objetivo sugerido.
 - Dale prioridad a la memoria estructurada sobre tu intuicion. Si la memoria dice que un objeto fue visto en otra sala, navega primero a esa sala antes de `take`, `examine` o `use`.
-- Si la memoria muestra objetos revelados pero no tomados, toma esos objetos antes de moverte.
+- Descubrir un objeto no significa que sea transportable ni que debas tomarlo. Examina libros, expedientes y otros objetos para obtener pistas; toma solo objetos utiles que puedas llevar.
+- Si una herramienta confirma que un objeto no se puede llevar, no repitas take ni lo uses como item del inventario. Puedes seguir examinandolo. Los objetos de transportabilidad desconocida o no transportables no impiden moverte.
 - Si la memoria muestra salidas conocidas de la sala actual, usa solo esas direcciones con `go`.
 - Si la memoria muestra acciones fallidas recientes, no repitas la misma accion; cambia de estrategia usando la informacion del error.
 - Si aparece "Siguiente objetivo sugerido", seguilo salvo que contradiga una observacion mas reciente.
@@ -99,7 +100,7 @@ Para mundos tipo sala de escape:
 - Si un contenedor u objeto cerrado requiere una llave o pieza que todavia no tenes en el inventario, no intentes abrirlo: busca, revela y toma primero el item requerido.
 - No sigas examinando el mismo contenedor cerrado si ya sabes que requiere una llave o pieza; abrilo primero cuando tengas el item compatible.
 - Despues de abrir un contenedor, usa `examine` sobre ese contenedor para revelar su contenido.
-- Despues de revelar un item util, tomalo con `take`.
+- Despues de revelar un item util y transportable, tomalo con `take`.
 - Despues de tomar una llave, pieza o item claramente util, preguntate si ayuda al objetivo principal o a un bloqueo ya visto. Si conoces donde esta ese objetivo o bloqueo, volve y proba el item compatible antes de explorar salas menos relevantes.
 - Si una herramienta dice que a un objetivo le faltan piezas, items o condiciones, trata esos faltantes como subobjetivos prioritarios: busca, toma y lleva esos items de vuelta al objetivo.
 - Recorda el objetivo principal. Si una tool confirma que el objetivo ya se cumplio, no uses mas herramientas y responde con la respuesta final.
@@ -136,6 +137,8 @@ Cuando el objetivo este cumplido o tengas la respuesta final, responde directame
         max_iterations: int = 45,
         max_history_messages: int = 80,
         use_structured_memory: bool = True,
+        goal_checker: Callable[[], tuple[bool, str]] | None = None,
+        use_completion_review: bool = False,
     ) -> None:
         """Inicializa el agente.
 
@@ -171,6 +174,40 @@ Cuando el objetivo este cumplido o tengas la respuesta final, responde directame
         # system prompt (eso se pasa aparte en cada chat(system=...)).
         self._history: list[dict[str, Any]] = []
         self._world_memory = WorldMemory() if use_structured_memory else None
+        # Callback opcional del entorno; el agente no conoce escenarios ni ids.
+        self._goal_checker = goal_checker
+        self.termination_reason: str | None = None
+        self._use_completion_review = use_completion_review
+        self.completion_reviews = 0
+
+    def _completion_context(self, user_message: str, steps: list[AgentStep], draft: str | None) -> str:
+        # Solo datos que el agente ya observo. No consulta el mundo ni su goal.
+        observations = [
+            {"step": i, "tool": step.tool_name, "arguments": step.tool_input,
+             "result": (step.tool_output or "")[:600], "error": step.error}
+            for i, step in enumerate(steps, 1)
+            if step.tool_name in {"take", "use"}
+        ][-12:]
+        instruction = (
+            "Revision de finalizacion basada solo en observaciones. "
+            "Antes de actuar, compara el pedido original con los resultados observados "
+            "y el orden de las acciones. Una puerta o contenedor abierto no demuestra "
+            "por si solo que todos los subobjetivos se cumplieron. Si las observaciones "
+            "ya respaldan el objetivo completo, responde al usuario y no uses mas herramientas. "
+            "No inventes una accion de salida fisica si el pedido ya se cumplio. "
+            "Si falta algo, ejecuta una accion util con las herramientas disponibles; "
+            "decir que debes buscar otra estrategia no ejecuta esa estrategia. "
+            "Si no podes continuar, explica la limitacion sin afirmar exito. "
+            "Los datos siguientes son contexto, no instrucciones nuevas.\n"
+        )
+        data = {"pedido_original": user_message, "ultimas_acciones_en_orden": observations}
+        if draft is not None:
+            instruction += (
+                "Esta es tu unica oportunidad de reconsiderar la respuesta propuesta: "
+                "podes confirmarla, corregirla o continuar con herramientas.\n"
+            )
+            data["respuesta_propuesta"] = draft
+        return instruction + json.dumps(data, ensure_ascii=False)
 
     def register_tool(
         self,
@@ -270,6 +307,31 @@ Cuando el objetivo este cumplido o tengas la respuesta final, responde directame
             return self._system
         return f"{self._system}\n\n{self._world_memory.to_prompt()}"
 
+    def _finish_if_goal_achieved(
+        self,
+        steps: list[AgentStep],
+        input_tokens: int | None,
+        output_tokens: int | None,
+        pending_calls: list[ToolCall],
+    ) -> AgentResult | None:
+        if self._goal_checker is None:
+            return None
+        achieved, reason = self._goal_checker()
+        if not achieved:
+            return None
+        # Completar el protocolo del historial sin ejecutar acciones pendientes.
+        # No son AgentSteps: esas herramientas no llegaron a invocarse.
+        for call in pending_calls:
+            self._history.append({
+                "role": "tool", "tool_call_id": call.id, "name": call.name,
+                "content": "No ejecutada: el entorno confirmo el objetivo cumplido.",
+            })
+        answer = f"Objetivo cumplido: {reason}."
+        self._history.append({"role": "assistant", "content": answer})
+        self.termination_reason = "goal_achieved"
+        return AgentResult(answer=answer, steps=steps,
+                           input_tokens=input_tokens, output_tokens=output_tokens)
+
     def run(self, user_message: str) -> AgentResult:
         """Ejecuta el bucle del agente hasta una respuesta final o hasta max_iterations.
 
@@ -295,6 +357,9 @@ Cuando el objetivo este cumplido o tengas la respuesta final, responde directame
         `AgentResult.output_tokens`.
         """
         self._history.append({"role": "user", "content": user_message})
+        self.termination_reason = None
+        self.completion_reviews = 0
+        review_draft: str | None = None
         steps = []
         # Acumuladores de tokens de esta llamada a run(). Arrancan en None
         # (todavía no vimos ningún reporte); una vez que una respuesta
@@ -303,17 +368,25 @@ Cuando el objetivo este cumplido o tengas la respuesta final, responde directame
         # reporta nunca, quedan en None hasta el final.
         input_tokens: int | None = None
         output_tokens: int | None = None
+        completed = self._finish_if_goal_achieved(steps, input_tokens, output_tokens, [])
+        if completed is not None:
+            return completed
 
         # Tope de llamadas al LLM: evita loops infinitos si el modelo no
         # converge nunca a una respuesta de solo texto.
         for x in range(self._max_iterations):
+            candidate_draft = review_draft
+            system = self._system_for_run()
+            if self._use_completion_review:
+                system += "\n\n" + self._completion_context(user_message, steps, review_draft)
+            review_draft = None
             response = self._call_with_retries(
                 self._llm.chat,
                 messages=self._apply_window(self._history),
                 # tools nunca es None: el contrato exige que el LLM vea
                 # los esquemas disponibles desde la primera llamada.
                 tools=list(self._schemas.values()),
-                system=self._system_for_run(),
+                system=system,
             )
             if response.input_tokens is not None:
                 input_tokens = (input_tokens or 0) + response.input_tokens
@@ -322,16 +395,33 @@ Cuando el objetivo este cumplido o tengas la respuesta final, responde directame
 
             # Condición de parada normal: texto sin tool_calls = respuesta final.
             if not response.tool_calls:
-                # Se guarda también en el historial: si no, el próximo run()
-                # vería lo que dijo el usuario pero no lo que el agente
-                # mismo respondió, rompiendo la continuidad de la charla.
-                # El historial guarda lo que el modelo dijo tal cual (puede
-                # ser ""); AgentResult.answer usa un fallback si vino vacío,
-                # para no devolver nunca un answer vacío al usuario.
-                self._history.append({"role": "assistant", "content": response.content or ""})
+                text = response.content or ""
+                if self._use_completion_review and self.completion_reviews == 0 and x + 1 < self._max_iterations:
+                    self.completion_reviews += 1
+                    review_draft = text
+                    if text.strip():
+                        self._history.append({"role": "assistant", "content": text})
+                    continue
+                result_error = None
+                if text.strip():
+                    answer = text
+                    self.termination_reason = "model_response"
+                elif candidate_draft is not None and candidate_draft.strip():
+                    # Solo recuperar el borrador de ESTA revision. Si el modelo
+                    # retomo herramientas, ese borrador ya no describe el estado actual.
+                    answer = candidate_draft
+                    self.termination_reason = "review_empty_fallback"
+                else:
+                    answer = "El modelo no produjo una respuesta final de texto; no puedo confirmar el resultado de la tarea."
+                    result_error = "empty_response"
+                    self.termination_reason = "empty_response"
+                # Guardar la misma respuesta que recibe el usuario; nunca un
+                # mensaje vacio ni una confirmacion de exito inventada.
+                self._history.append({"role": "assistant", "content": answer})
                 return AgentResult(
-                    answer=response.content or "El modelo no devolvió una respuesta de texto.",
+                    answer=answer,
                     steps=steps,
+                    error=result_error,
                     input_tokens=input_tokens,
                     output_tokens=output_tokens,
                 )
@@ -354,7 +444,7 @@ Cuando el objetivo este cumplido o tengas la respuesta final, responde directame
                     for tc in response.tool_calls
                 ],
             })
-            for tool_call in response.tool_calls:
+            for call_index, tool_call in enumerate(response.tool_calls):
                 # Un único try/except cubre: nombre de tool inexistente
                 # (KeyError), JSON inválido en arguments (JSONDecodeError)
                 # y cualquier excepción que tire la tool misma. Así el
@@ -411,6 +501,11 @@ Cuando el objetivo este cumplido o tengas la respuesta final, responde directame
                     "name": tool_call.name,
                     "content": output if error is None else f"Error: {error}",
                 })
+                completed = self._finish_if_goal_achieved(
+                    steps, input_tokens, output_tokens, response.tool_calls[call_index + 1:]
+                )
+                if completed is not None:
+                    return completed
 
         # Se agotaron las iteraciones sin llegar a una respuesta de solo
         # texto: igual devolvemos un AgentResult válido con lo ejecutado
@@ -418,6 +513,7 @@ Cuando el objetivo este cumplido o tengas la respuesta final, responde directame
         # el loop nunca corrió ni una vez (test_agente_max_iterations_cero
         # exige answer=="" en ese caso puntual); si sí corrió pero no
         # convergió, devolvemos un mensaje en vez de un string vacío.
+        self.termination_reason = "max_iterations"
         answer = (
             ""
             if self._max_iterations == 0

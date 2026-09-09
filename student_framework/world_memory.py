@@ -68,6 +68,8 @@ class WorldMemory:
         self.item_labels: dict[str, str] = {}
         self.target_requirements: dict[str, set[str]] = {}
         self.revealed_not_taken: set[str] = set()
+        self.takeable: set[str] = set()
+        self.not_takeable: set[str] = set()
         self.opened: set[str] = set()
         self.failed_actions: list[FailedAction] = []
         self.recent_calls: list[tuple[str, str | None]] = []
@@ -87,7 +89,7 @@ class WorldMemory:
                 pending = ", ".join(sorted(pending_items))
                 return (
                     "Error: memoria estructurada: antes de moverte, toma los "
-                    f"objetos revelados en {self.current_room}: {pending}."
+                    f"objetos transportables confirmados en {self.current_room}: {pending}."
                 )
             if (
                 isinstance(direction, str)
@@ -115,6 +117,8 @@ class WorldMemory:
             item = args.get("item")
             target = args.get("target")
             if isinstance(item, str):
+                if item in self.not_takeable:
+                    return self._not_takeable_error(item)
                 if item in self.revealed_not_taken:
                     return (
                         f"Error: memoria estructurada: {item!r} fue revelado "
@@ -140,6 +144,8 @@ class WorldMemory:
         if tool_name == "take":
             item = args.get("item")
             if isinstance(item, str):
+                if item in self.not_takeable:
+                    return self._not_takeable_error(item)
                 return self._validate_target_visible(item)
             return None
 
@@ -170,6 +176,18 @@ class WorldMemory:
         self.recent_calls = self.recent_calls[-self._max_recent_calls :]
 
         if error is not None or output.startswith("Error:"):
+            # Solo la respuesta explicita del mundo confirma esta propiedad.
+            # Un error de visibilidad o de red no implica que sea intransportable.
+            item = args.get("item")
+            if (
+                tool_name == "take"
+                and error is None
+                and isinstance(item, str)
+                and "no es algo que puedas llevarte" in output_plain
+            ):
+                self.not_takeable.add(item)
+                self.takeable.discard(item)
+                self.revealed_not_taken.discard(item)
             self._remember_failed_action(tool_name, args, error or output)
             return
 
@@ -194,6 +212,8 @@ class WorldMemory:
             if isinstance(item, str):
                 self.inventory_known = True
                 self.inventory.add(item)
+                self.takeable.add(item)
+                self.not_takeable.discard(item)
                 self.revealed_not_taken.discard(item)
             return
 
@@ -218,10 +238,19 @@ class WorldMemory:
             lines.append(f"- Sala actual: {self.current_room}")
         if self.inventory:
             lines.append(f"- Inventario observado: {', '.join(sorted(self.inventory))}")
-        if self.revealed_not_taken:
+        unknown = self.revealed_not_taken - self.takeable
+        pending = self.revealed_not_taken & self.takeable
+        if unknown:
             lines.append(
-                "- Objetos revelados pero no tomados: "
-                + ", ".join(sorted(self.revealed_not_taken))
+                "- Objetos descubiertos de transportabilidad desconocida "
+                "(no es obligatorio tomarlos): " + ", ".join(sorted(unknown))
+            )
+        if pending:
+            lines.append("- Objetos transportables pendientes de tomar: " + ", ".join(sorted(pending)))
+        if self.not_takeable:
+            lines.append(
+                "- Objetos no transportables confirmados (no intentar take ni usarlos como item de use; se pueden examinar): "
+                + ", ".join(sorted(self.not_takeable))
             )
         if self.opened:
             lines.append(f"- Objetos abiertos: {', '.join(sorted(self.opened))}")
@@ -271,6 +300,14 @@ class WorldMemory:
             return None
         return self.rooms.setdefault(self.current_room, RoomMemory())
 
+    @staticmethod
+    def _not_takeable_error(item: str) -> str:
+        return (
+            f"Error: memoria estructurada: {item!r} no es transportable, "
+            "segun una respuesta anterior de take. Puedes examinarlo; "
+            "no intentes recogerlo ni usarlo como item del inventario."
+        )
+
     def _remember_failed_action(self, tool_name: str, args: dict[str, Any], reason: str) -> None:
         self.failed_actions.append(FailedAction(tool=tool_name, args=args, reason=reason))
         self.failed_actions = self.failed_actions[-self._max_failed_actions :]
@@ -307,6 +344,10 @@ class WorldMemory:
         match = re.search(r"Salidas:\s*(.+)\.", output)
         if not match:
             return
+        # look informa todas las salidas actuales: reemplazar la observacion
+        # anterior para no conservar bloqueos de puertas que ya se abrieron.
+        room.exits.clear()
+        room.blocked_exits.clear()
         for raw_part in match.group(1).split(","):
             part = raw_part.strip()
             blocked = re.match(r"([^\s]+)\s+\(bloqueada por ([^)]+)\)", part)
@@ -325,6 +366,8 @@ class WorldMemory:
         for item_id in _ID_PATTERN.findall(match.group(1)):
             item_id = item_id.strip()
             self.inventory.add(item_id)
+            self.takeable.add(item_id)
+            self.not_takeable.discard(item_id)
             self.revealed_not_taken.discard(item_id)
 
     def _update_revealed_items(self, output: str) -> None:
@@ -334,7 +377,7 @@ class WorldMemory:
         self._remember_item_labels(output)
         room = self._room()
         for item_id in ids:
-            if item_id not in self.inventory:
+            if item_id not in self.inventory and item_id not in self.not_takeable:
                 self.revealed_not_taken.add(item_id)
             if room is not None:
                 room.objects.add(item_id)
@@ -371,7 +414,7 @@ class WorldMemory:
             return set()
         return {
             item_id
-            for item_id in self.revealed_not_taken
+            for item_id in self.revealed_not_taken & self.takeable
             if self.current_room in self.object_locations.get(item_id, set())
         }
 

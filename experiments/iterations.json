@@ -1,0 +1,31 @@
+{
+  "name": "iterations",
+  "scenarios": "all",
+  "repetitions": 3,
+  "defaults": {
+    "prompt": "prompts/04_PROMPT",
+    "max_iterations": 45,
+    "max_history_messages": 80,
+    "use_structured_memory": true,
+    "stop_on_goal": false,
+    "use_completion_review": false
+  },
+  "variants": [
+    {
+      "id": "iterations_15",
+      "max_iterations": 15
+    },
+    {
+      "id": "iterations_30",
+      "max_iterations": 30
+    },
+    {
+      "id": "iterations_45",
+      "max_iterations": 45
+    },
+    {
+      "id": "iterations_60",
+      "max_iterations": 60
+    }
+  ]
+}

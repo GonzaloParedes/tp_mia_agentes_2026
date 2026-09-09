@@ -494,3 +494,12 @@ y pásenla al agente vía `build_agent({"llm_client": su_cliente})`. El
 - **Los tests fallan con `NotImplementedError`** — no es un fallo del
   andamiaje; significa que aún no implementaron `MyAgent.run` o
   `MyAgent.register_tool`.
+
+
+## Evaluacion experimental del grupo
+
+Los planes activos, comandos y formato de resultados se describen en [experiments/README.md](experiments/README.md). Para validar sin consumir tokens:
+
+```powershell
+python -m eval.run --experiments experiments/iterations.json --dry-run
+```

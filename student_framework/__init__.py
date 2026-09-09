@@ -44,6 +44,10 @@ def build_agent(config: dict[str, Any] | None = None) -> Agent:
         kwargs["max_history_messages"] = config["max_history_messages"]
     if "use_structured_memory" in config:
         kwargs["use_structured_memory"] = config["use_structured_memory"]
+    if "goal_checker" in config:
+        kwargs["goal_checker"] = config["goal_checker"]
+    if "use_completion_review" in config:
+        kwargs["use_completion_review"] = config["use_completion_review"]
 
     agent = MyAgent(**kwargs)
 
